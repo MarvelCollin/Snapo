@@ -23,32 +23,32 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check out main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: main
           path: main
 
       - name: Check out dev
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: dev
           path: dev
 
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
 
       - name: Restore main dependencies
         id: main-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: main/node_modules
           key: modules-${{ runner.os }}-node22-${{ hashFiles('main/package-lock.json') }}
 
       - name: Restore dev dependencies
         id: dev-modules
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: dev/node_modules
           key: modules-${{ runner.os }}-node22-${{ hashFiles('dev/package-lock.json') }}
@@ -86,10 +86,10 @@ jobs:
           du -sh site
 
       - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
       - name: Publish
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
