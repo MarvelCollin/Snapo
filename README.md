@@ -5,7 +5,7 @@ A cute photobooth that runs in the browser. Pick a strip layout, shoot with a li
 ## Features
 
 - **Layouts:** 27 strips, grids, postcards, singles and shapes, plus your own uploaded frames
-- **Shoot:** live filters, countdown, pose ideas, bonus shots with a "pick your best" step, and live photo clips
+- **Shoot:** countdown, pose ideas, studio backdrops and live photo clips
 - **Look:** 50 filters, a soft skin slider, and studio backdrops (color, pattern or blur) powered by on-device segmentation
 - **Decorate:** 61 frame themes including batik, Lebaran, Imlek and 17 Agustus, 207 stickers, 38 word stickers, text and doodle pens (marker, neon, outline, rainbow, sparkle)
 - **Save:** PNG, JPG, flipbook GIF, live strip as video or GIF, share, print and a local gallery

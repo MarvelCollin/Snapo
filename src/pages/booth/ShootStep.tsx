@@ -9,9 +9,8 @@ import {
   UploadSimple,
   Stop,
   ArrowCounterClockwise,
-  SquaresFour,
 } from '@phosphor-icons/react'
-import { useSession, type Bonus, type Timer } from '../../store/session'
+import { useSession, type Timer } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
 import { filterById } from '../../lib/filters'
@@ -28,7 +27,6 @@ import { LiveView } from '../../components/shoot/LiveView'
 import { FilterPicker } from '../../components/shared/FilterPicker'
 import { BackdropPicker } from '../../components/shared/BackdropPicker'
 import { BeautySlider } from '../../components/shared/BeautySlider'
-import { PickDialog } from '../../components/shoot/PickDialog'
 import { CompositionCanvas } from '../../components/shared/CompositionCanvas'
 import { Button } from '../../components/ui/Button'
 import { IconButton } from '../../components/ui/IconButton'
@@ -48,22 +46,18 @@ export default function ShootStep() {
   const {
     layoutId,
     photos,
-    takes,
     timer,
     mirror,
     autoSequence,
     sound,
-    bonus,
     poses,
     live: recordLive,
     setPhoto,
-    addTake,
     setTimer,
     setMirror,
     setAutoSequence,
     setSound,
     setPhotos,
-    setBonus,
     setPoses,
     setLive,
   } = useSession()
@@ -84,7 +78,6 @@ export default function ShootStep() {
   const [pose, setPose] = useState<PoseId | null>(null)
   const [look, setLook] = useState<Look>('filter')
   const [confirmRetake, setConfirmRetake] = useState(false)
-  const [pickOpen, setPickOpen] = useState(false)
   const cancelRef = useRef(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -94,7 +87,6 @@ export default function ShootStep() {
   const target = selected ?? (firstEmpty >= 0 ? firstEmpty : null)
   const busy = phase !== 'idle'
   const live = status === 'live'
-  const spare = takes.filter((tk) => !photos.includes(tk.photo)).length
   const backdropOn = backdropById(design.backdropId).kind !== 'none'
 
   const aspectFor = (photoIndex: number | null) => {
@@ -115,12 +107,11 @@ export default function ShootStep() {
     }
   }, [live, mirror, phase, fromVideo, videoRef])
 
-  const shoot = async (plan: (number | null)[], pickAfter = false) => {
+  const shoot = async (plan: number[]) => {
     if (!videoRef.current || !plan.length) return
     cancelRef.current = false
     const posePlan: PoseId[] = []
     for (let k = 0; k < plan.length; k++) posePlan.push(nextPose(posePlan[k - 1] ?? null))
-    let taken = 0
     for (let k = 0; k < plan.length; k++) {
       const slot = plan[k]
       setCurrent(slot)
@@ -145,9 +136,7 @@ export default function ShootStep() {
       const video = videoRef.current
       if (video && video.readyState >= 2) {
         const photo = await captureFrame(video, mirror)
-        addTake(photo)
-        if (slot !== null) setPhoto(slot, photo)
-        taken++
+        setPhoto(slot, photo)
         recorder
           ?.finish()
           .then((frames) => saveClip(photoKey(photo), frames))
@@ -166,10 +155,7 @@ export default function ShootStep() {
     setSelected(null)
     setRun(null)
     setPose(null)
-    if (pickAfter && taken === plan.length) setPickOpen(true)
   }
-
-  const extra = () => Array.from({ length: bonus }, () => null)
 
   const onShutter = () => {
     if (busy) {
@@ -185,12 +171,7 @@ export default function ShootStep() {
       return
     }
     const empties = photos.map((p, i) => (p ? -1 : i)).filter((i) => i >= 0)
-    if (!autoSequence) {
-      shoot(empties.slice(0, 1))
-      return
-    }
-    const fresh = filled === 0 && bonus > 0
-    shoot(fresh ? [...empties, ...extra()] : empties, fresh)
+    shoot(autoSequence ? empties : empties.slice(0, 1))
   }
 
   useEffect(() => {
@@ -209,11 +190,9 @@ export default function ShootStep() {
     const empties = all.filter((i) => !photos[i])
     const targets = (selected !== null ? all.slice(selected) : empties.length ? empties : all).slice(0, list.length)
     let added = 0
-    for (let k = 0; k < list.length; k++) {
+    for (let k = 0; k < targets.length; k++) {
       try {
-        const photo = await fileToPhoto(list[k])
-        addTake(photo)
-        if (k < targets.length) next[targets[k]] = photo
+        next[targets[k]] = await fileToPhoto(list[k])
         added++
       } catch {
         toast(t.shoot.couldNotRead(list[k].name), { tone: 'error' })
@@ -235,9 +214,7 @@ export default function ShootStep() {
           ? t.shoot.takeShot((target ?? 0) + 1)
           : filled
             ? t.shoot.shootMore(layout.shots - filled)
-            : bonus
-              ? t.shoot.startBonus(layout.shots + bonus, layout.shots)
-              : t.shoot.start(layout.shots)
+            : t.shoot.start(layout.shots)
 
   const remaining = layout.shots - filled
   const shotNumber = (current ?? target ?? 0) + 1
@@ -443,11 +420,6 @@ export default function ShootStep() {
               })}
             </ol>
             {selected !== null && <p className="tray__hint">{t.shoot.selected(selected + 1, !!photos[selected])}</p>}
-            {spare > 0 && (
-              <Button icon={<SquaresFour weight="bold" size={18} />} onClick={() => setPickOpen(true)} disabled={busy} block>
-                {t.shoot.pickBest(takes.length)}
-              </Button>
-            )}
           </div>
 
           <div className="settings">
@@ -462,19 +434,6 @@ export default function ShootStep() {
                 { value: 10, label: '10s' },
               ]}
             />
-            <div className="panel-stack panel-stack--tight">
-              <Segmented<Bonus>
-                label={t.shoot.bonus}
-                value={bonus}
-                onChange={setBonus}
-                options={[
-                  { value: 0, label: t.shoot.off },
-                  { value: 2, label: '+2' },
-                  { value: 4, label: '+4' },
-                ]}
-              />
-              <p className="field__hint">{t.shoot.bonusHint}</p>
-            </div>
             <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
             <Switch label={t.shoot.poses} hint={t.shoot.posesHint} checked={poses} onChange={setPoses} />
             <Switch label={t.shoot.live} hint={t.shoot.liveHint} checked={recordLive} onChange={setLive} />
@@ -497,7 +456,7 @@ export default function ShootStep() {
               icon={<ArrowCounterClockwise weight="bold" size={18} />}
               onClick={() => {
                 setConfirmRetake(false)
-                shoot([...photos.map((_, i) => i), ...extra()], bonus > 0)
+                shoot(photos.map((_, i) => i))
               }}
             >
               {t.shoot.retakeAll}
@@ -507,8 +466,6 @@ export default function ShootStep() {
       >
         <p>{t.shoot.retakeBody}</p>
       </Dialog>
-
-      <PickDialog open={pickOpen} onClose={() => setPickOpen(false)} />
     </section>
   )
 }
