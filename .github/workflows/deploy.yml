@@ -87,10 +87,36 @@ jobs:
           du -sh site
 
       - name: Upload site
+        id: upload
         uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
       - name: Publish
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/github-script@v9
+        env:
+          ARTIFACT_ID: ${{ steps.upload.outputs.artifact_id }}
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const version = `${context.sha}-${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}`
+            const { data } = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
+              owner,
+              repo,
+              artifact_id: Number(process.env.ARTIFACT_ID),
+              pages_build_version: version,
+              oidc_token: await core.getIDToken(),
+            })
+            core.setOutput('page_url', data.page_url)
+            const id = data.id ?? data.status_url.split('/').pop()
+            const done = ['succeed']
+            const failed = ['deployment_failed', 'deployment_content_failed', 'deployment_cancelled', 'deployment_lost', 'deployment_perms_error', 'deployment_attempt_error']
+            for (let i = 0; i < 120; i++) {
+              const { data: state } = await github.request('GET /repos/{owner}/{repo}/pages/deployments/{id}', { owner, repo, id })
+              core.info(`${version}: ${state.status}`)
+              if (done.includes(state.status)) return
+              if (failed.includes(state.status)) throw new Error(`Pages deployment ${state.status}`)
+              await new Promise((resolve) => setTimeout(resolve, 3000))
+            }
+            throw new Error('Pages deployment timed out')
