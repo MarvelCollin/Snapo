@@ -1,0 +1,65 @@
+:root {
+  --bg: oklch(0.982 0.012 12);
+  --surface: oklch(0.958 0.022 12);
+  --tint: oklch(0.925 0.045 10);
+  --soft: oklch(0.86 0.075 8);
+  --line: oklch(0.6 0.1 8);
+  --strong: oklch(0.47 0.13 8);
+  --ink: oklch(0.27 0.05 10);
+  --ink-muted: oklch(0.44 0.04 10);
+  --paper: oklch(0.995 0.004 12);
+
+  --mint-tint: oklch(0.94 0.035 168);
+  --mint-soft: oklch(0.87 0.07 168);
+  --mint-line: oklch(0.6 0.08 168);
+  --mint-strong: oklch(0.42 0.08 168);
+
+  --butter-tint: oklch(0.96 0.05 95);
+  --butter-soft: oklch(0.91 0.09 95);
+
+  --danger: oklch(0.52 0.17 25);
+  --danger-tint: oklch(0.94 0.035 25);
+  --success: oklch(0.45 0.09 155);
+
+  --font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
+  --text-md: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.563rem;
+  --text-2xl: 1.953rem;
+  --text-3xl: 2.441rem;
+  --text-4xl: 3.052rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-round: 999px;
+
+  --border: 2px solid var(--ink);
+  --shadow-pop: 0 3px 0 var(--ink);
+  --shadow-pop-lg: 0 5px 0 var(--ink);
+  --shadow-float: 0 18px 40px -18px oklch(0.4 0.08 10 / 0.45);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur-mid: 200ms;
+
+  --z-sticky: 10;
+  --z-overlay: 40;
+  --z-toast: 100;
+
+  --header-h: 64px;
+}
