@@ -186,13 +186,29 @@ export default function HomePage() {
         </ul>
       </section>
 
+      <section className="home-section home-booth" aria-labelledby="booth-title">
+        <div className="home-section__head">
+          <h2 id="booth-title">{t.home.boothTitle}</h2>
+          <p className="home-booth__lede">{t.home.boothText}</p>
+        </div>
+        <ul className="home-booth__list">
+          {t.home.features.map((f) => (
+            <li key={f.title} className="home-booth__item">
+              <img src={stickerSrc(f.sticker)} alt="" width={56} height={56} loading="lazy" />
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <footer className="home-foot">
         <p>
           {t.home.footer}{' '}
           <a href="https://github.com/microsoft/fluentui-emoji" target="_blank" rel="noreferrer">
             Microsoft Fluent Emoji
           </a>
-          .
+          . {t.home.footerModel}
         </p>
       </footer>
     </div>

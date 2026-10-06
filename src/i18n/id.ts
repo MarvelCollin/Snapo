@@ -40,7 +40,17 @@ export const id: Dict = {
     stickersText: 'Hewan lucu, jajanan, hati dan gaya tangan dengan pinggiran putih kayak stiker asli. Gingham, batik, polkadot, langit berbintang dan banyak lagi. Geser, putar, balik dan tumpuk di mana saja.',
     stickerExamples: 'Contoh stiker',
     makeOne: 'Bikin sekarang',
+    boothTitle: 'Rasanya kayak photobox beneran',
+    boothText: 'Semua yang kamu suka dari photobox di mal, langsung di browser.',
+    features: [
+      { sticker: 'camera-with-flash', title: 'Foto lebih, simpan yang terbaik', text: 'Ambil beberapa foto bonus, lalu pilih favoritmu untuk strip.' },
+      { sticker: 'sparkles', title: 'Strip foto live', text: 'Setiap foto menyimpan klip pendek, jadi strip kamu bisa bergerak sebagai video atau GIF.' },
+      { sticker: 'artist-palette', title: 'Background studio', text: 'Ganti tembok di belakangmu dengan warna pastel studio, motif lucu atau blur halus.' },
+      { sticker: 'magic-wand', title: 'Kulit halus dan coretan', text: 'Retouch ala photobox, lalu coret coret pakai pen neon.' },
+      { sticker: 'love-letter', title: 'Frame buatanmu sendiri', text: 'Upload frame PNG dari Canva dan Snapo akan menemukan tempat fotonya.' },
+    ],
     footer: 'Dibuat dengan cinta untuk penggemar photo strip. Gambar stiker dari',
+    footerModel: 'Background memakai MediaPipe dan berjalan di perangkat kamu.',
   },
   booth: {
     stepsLabel: 'Langkah booth',

@@ -40,7 +40,17 @@ export const en = {
     stickersText: 'Critters, sweets, hearts and hand signs with a die cut white edge. Gingham, batik, polka, starry night and more. Drag, spin, flip and stack them anywhere.',
     stickerExamples: 'Sticker examples',
     makeOne: 'Make one now',
+    boothTitle: 'Works like a real booth',
+    boothText: 'Everything you love from the photobox at the mall, right in your browser.',
+    features: [
+      { sticker: 'camera-with-flash', title: 'Shoot extra, keep the best', text: 'Take a couple of bonus shots, then pick your favorites for the strip.' },
+      { sticker: 'sparkles', title: 'Live photo strips', text: 'Every shot saves a tiny clip, so your strip can move as a video or GIF.' },
+      { sticker: 'artist-palette', title: 'Studio backdrops', text: 'Swap the wall behind you for pastel studio colors, patterns or a soft blur.' },
+      { sticker: 'magic-wand', title: 'Soft skin and doodles', text: 'Booth style retouching, then neon pens to scribble all over it.' },
+      { sticker: 'love-letter', title: 'Your own frame', text: 'Upload a PNG frame from Canva and Snapo finds the photo spots for you.' },
+    ],
     footer: 'Made with love for photo strip fans. Sticker art from',
+    footerModel: 'Backdrops use MediaPipe and run on your device.',
   },
   booth: {
     stepsLabel: 'Booth steps',
