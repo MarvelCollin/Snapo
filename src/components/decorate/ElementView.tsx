@@ -3,6 +3,7 @@ import { ArrowsClockwise, X } from '@phosphor-icons/react'
 import { useDesign, type CanvasEl } from '../../store/design'
 import { useElementArt } from '../../hooks/useElementArt'
 import { useElementName } from '../../hooks/useElementName'
+import { useT } from '../../i18n'
 
 type Props = {
   el: CanvasEl
@@ -13,6 +14,7 @@ type Props = {
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 
 export function ElementView({ el, stageRef, selected }: Props) {
+  const t = useT()
   const elementName = useElementName()
   const { select, updateElement, checkpoint, removeElement, duplicateElement } = useDesign()
   const src = useElementArt(el)
@@ -108,7 +110,7 @@ export function ElementView({ el, stageRef, selected }: Props) {
       role="button"
       tabIndex={0}
       aria-pressed={selected}
-      aria-label={`${elementName(el)}. Arrow keys move, plus and minus resize, brackets rotate, Delete removes`}
+      aria-label={t.decorate.elementHelp(elementName(el))}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -127,7 +129,7 @@ export function ElementView({ el, stageRef, selected }: Props) {
           <button
             type="button"
             className="el__handle el__handle--remove"
-            aria-label="Remove"
+            aria-label={t.decorate.remove}
             tabIndex={-1}
             onPointerDown={(e) => e.stopPropagation()}
             onClick={(e) => {
@@ -140,7 +142,7 @@ export function ElementView({ el, stageRef, selected }: Props) {
           <button
             type="button"
             className="el__handle el__handle--spin"
-            aria-label="Drag to resize and rotate"
+            aria-label={t.decorate.handle}
             tabIndex={-1}
             onPointerDown={onHandleDown}
             onPointerMove={onHandleMove}

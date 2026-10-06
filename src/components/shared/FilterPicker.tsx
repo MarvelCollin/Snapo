@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { filters, filterGroups, type FilterGroup } from '../../lib/filters'
 import { Tabs } from '../ui/Tabs'
+import { useT } from '../../i18n'
 
 type Props = {
   value: string
@@ -11,14 +12,15 @@ type Props = {
 }
 
 export function FilterPicker({ value, onChange, thumbs, variant = 'grid', idPrefix }: Props) {
+  const t = useT()
   const [group, setGroup] = useState<FilterGroup | 'all'>('all')
   const list = useMemo(() => (group === 'all' ? filters : filters.filter((f) => f.group === group)), [group])
 
   return (
     <div className={`filter-picker filter-picker--${variant}`}>
-      <Tabs label="Filter mood" tabs={filterGroups.map((g) => ({ id: g.id, label: g.label }))} active={group} onChange={setGroup} idPrefix={idPrefix} />
+      <Tabs label={t.look.filterMood} tabs={filterGroups.map((id) => ({ id, label: t.look.filterGroups[id] }))} active={group} onChange={setGroup} idPrefix={idPrefix} />
       <div id={`${idPrefix}-panel`} role="tabpanel" aria-labelledby={`${idPrefix}-tab-${group}`} className="filter-picker__scroll">
-        <div role="radiogroup" aria-label="Filters" className="filter-picker__list">
+        <div role="radiogroup" aria-label={t.look.filters} className="filter-picker__list">
           {list.map((f) => {
             const active = f.id === value
             return (

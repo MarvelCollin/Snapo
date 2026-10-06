@@ -2,20 +2,23 @@ import { useMemo, useState } from 'react'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { stickers, stickerPacks, stickerSrc, wordArt, wordPresets, type StickerPack, type WordSpec } from '../../lib/stickers'
 import { useAddElement } from '../../hooks/useAddElement'
+import { useT } from '../../i18n'
 import { Tabs } from '../ui/Tabs'
 import { TextField } from '../ui/TextField'
 import { Switch } from '../ui/Switch'
 
 function WordTile({ spec, onPick }: { spec: WordSpec; onPick: () => void }) {
+  const t = useT()
   const src = useMemo(() => wordArt(spec), [spec])
   return (
-    <button type="button" className="sticker-tile sticker-tile--word" onClick={onPick} aria-label={`Add word sticker ${spec.text}`}>
+    <button type="button" className="sticker-tile sticker-tile--word" onClick={onPick} aria-label={t.stickers.addWord(spec.text)}>
       <img src={src} alt="" />
     </button>
   )
 }
 
 export function StickerPanel() {
+  const t = useT()
   const [pack, setPack] = useState<StickerPack>('love')
   const [query, setQuery] = useState('')
   const [outline, setOutline] = useState(true)
@@ -29,9 +32,9 @@ export function StickerPanel() {
   return (
     <div className="panel-stack">
       <TextField
-        label="Search stickers"
+        label={t.stickers.search}
         hideLabel
-        placeholder={`Search ${stickers.length + wordPresets.length} stickers`}
+        placeholder={t.stickers.placeholder(stickers.length + wordPresets.length)}
         value={query}
         onChange={setQuery}
         icon={<MagnifyingGlass weight="bold" size={18} />}
@@ -39,10 +42,10 @@ export function StickerPanel() {
       />
       {!q && (
         <Tabs
-          label="Sticker packs"
+          label={t.stickers.packs}
           tabs={stickerPacks.map((p) => ({
             id: p.id,
-            label: p.label,
+            label: t.stickers.packNames[p.id],
             icon: <img src={stickerSrc(p.cover)} alt="" width={22} height={22} />,
           }))}
           active={pack}
@@ -51,18 +54,18 @@ export function StickerPanel() {
           variant="chunky"
         />
       )}
-      <Switch label="White sticker border" hint="Die cut edge like real vinyl stickers" checked={outline} onChange={setOutline} />
+      <Switch label={t.stickers.border} hint={t.stickers.borderHint} checked={outline} onChange={setOutline} />
       <div id="stickers-panel" role={q ? undefined : 'tabpanel'} aria-labelledby={q ? undefined : `stickers-tab-${pack}`} className="sticker-scroll">
         {q && (
           <p className="panel-note" aria-live="polite">
-            {list.length + words.length} {list.length + words.length === 1 ? 'match' : 'matches'} for "{query.trim()}"
+            {t.stickers.results(list.length + words.length, query.trim())}
           </p>
         )}
         {(q || pack !== 'words') && list.length > 0 && (
-          <ul className="sticker-grid" aria-label="Stickers">
+          <ul className="sticker-grid" aria-label={t.stickers.list}>
             {list.map((s) => (
               <li key={s.id}>
-                <button type="button" className="sticker-tile" onClick={() => addSticker(s.id, outline)} aria-label={`Add ${s.name}`}>
+                <button type="button" className="sticker-tile" onClick={() => addSticker(s.id, outline)} aria-label={t.stickers.add(s.name)}>
                   <img src={stickerSrc(s.id)} alt="" width={64} height={64} loading="lazy" />
                 </button>
               </li>
@@ -70,7 +73,7 @@ export function StickerPanel() {
           </ul>
         )}
         {showWords && (
-          <ul className="sticker-grid sticker-grid--words" aria-label="Word stickers">
+          <ul className="sticker-grid sticker-grid--words" aria-label={t.stickers.words}>
             {words.map((w) => (
               <li key={w.text}>
                 <WordTile spec={w} onPick={() => addWord(w)} />
@@ -80,9 +83,9 @@ export function StickerPanel() {
         )}
         {q && !list.length && !words.length && (
           <div className="empty-mini">
-            <p>No stickers match that. Try "heart", "cat" or "star".</p>
+            <p>{t.stickers.none}</p>
             <button type="button" className="link-btn" onClick={() => setQuery('')}>
-              Clear search
+              {t.stickers.clear}
             </button>
           </div>
         )}

@@ -17,21 +17,20 @@ import '@fontsource/patrick-hand/400.css'
 
 export type FontOption = {
   id: string
-  label: string
   family: string
   weight: number
   scale: number
 }
 
 export const captionFonts: FontOption[] = [
-  { id: 'fredoka', label: 'Bubbly', family: 'Fredoka', weight: 600, scale: 1 },
-  { id: 'caveat', label: 'Handwritten', family: 'Caveat', weight: 700, scale: 1.25 },
-  { id: 'pacifico', label: 'Script', family: 'Pacifico', weight: 400, scale: 0.92 },
-  { id: 'gaegu', label: 'Diary', family: 'Gaegu', weight: 700, scale: 1.2 },
-  { id: 'patrick', label: 'Marker', family: 'Patrick Hand', weight: 400, scale: 1.12 },
-  { id: 'serif', label: 'Classy', family: 'DM Serif Display', weight: 400, scale: 1 },
-  { id: 'pixel', label: 'Pixel', family: 'Silkscreen', weight: 400, scale: 0.78 },
-  { id: 'nunito', label: 'Clean', family: 'Nunito', weight: 800, scale: 0.95 },
+  { id: 'fredoka', family: 'Fredoka', weight: 600, scale: 1 },
+  { id: 'caveat', family: 'Caveat', weight: 700, scale: 1.25 },
+  { id: 'pacifico', family: 'Pacifico', weight: 400, scale: 0.92 },
+  { id: 'gaegu', family: 'Gaegu', weight: 700, scale: 1.2 },
+  { id: 'patrick', family: 'Patrick Hand', weight: 400, scale: 1.12 },
+  { id: 'serif', family: 'DM Serif Display', weight: 400, scale: 1 },
+  { id: 'pixel', family: 'Silkscreen', weight: 400, scale: 0.78 },
+  { id: 'nunito', family: 'Nunito', weight: 800, scale: 0.95 },
 ]
 
 export const fontById = (id: string) => captionFonts.find((f) => f.id === id) ?? captionFonts[0]

@@ -7,15 +7,15 @@ export type StickerMeta = { id: string; name: string; pack: Exclude<StickerPack,
 
 export const stickers = manifest as StickerMeta[]
 
-export const stickerPacks: { id: StickerPack; label: string; cover: string }[] = [
-  { id: 'love', label: 'Love', cover: 'sparkling-heart' },
-  { id: 'faces', label: 'Faces', cover: 'smiling-face-with-hearts' },
-  { id: 'critters', label: 'Critters', cover: 'rabbit-face' },
-  { id: 'sweets', label: 'Sweets', cover: 'strawberry' },
-  { id: 'sky', label: 'Sky and Bloom', cover: 'rainbow' },
-  { id: 'party', label: 'Party', cover: 'ribbon' },
-  { id: 'hands', label: 'Hands and Bubbles', cover: 'victory-hand' },
-  { id: 'words', label: 'Words', cover: 'speech-balloon' },
+export const stickerPacks: { id: StickerPack; cover: string }[] = [
+  { id: 'love', cover: 'sparkling-heart' },
+  { id: 'faces', cover: 'smiling-face-with-hearts' },
+  { id: 'critters', cover: 'rabbit-face' },
+  { id: 'sweets', cover: 'strawberry' },
+  { id: 'sky', cover: 'rainbow' },
+  { id: 'party', cover: 'ribbon' },
+  { id: 'hands', cover: 'victory-hand' },
+  { id: 'words', cover: 'speech-balloon' },
 ]
 
 export const stickerSrc = (id: string) => `/stickers/${id}.webp`
@@ -24,13 +24,13 @@ export type WordStyle = 'bubble' | 'script' | 'label' | 'pixel' | 'hand' | 'outl
 
 export type WordSpec = { text: string; style: WordStyle; color: string; font?: string }
 
-export const wordStyles: { id: WordStyle; label: string; font: string }[] = [
-  { id: 'bubble', label: 'Bubble', font: 'fredoka' },
-  { id: 'script', label: 'Script', font: 'pacifico' },
-  { id: 'label', label: 'Label tape', font: 'nunito' },
-  { id: 'hand', label: 'Handwritten', font: 'caveat' },
-  { id: 'pixel', label: 'Pixel', font: 'pixel' },
-  { id: 'outline', label: 'Outline', font: 'fredoka' },
+export const wordStyles: { id: WordStyle; font: string }[] = [
+  { id: 'bubble', font: 'fredoka' },
+  { id: 'script', font: 'pacifico' },
+  { id: 'label', font: 'nunito' },
+  { id: 'hand', font: 'caveat' },
+  { id: 'pixel', font: 'pixel' },
+  { id: 'outline', font: 'fredoka' },
 ]
 
 export const wordPresets: WordSpec[] = [

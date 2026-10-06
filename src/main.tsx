@@ -8,7 +8,14 @@ import './styles/shoot.css'
 import './styles/decorate.css'
 import './styles/save.css'
 import './styles/home.css'
+import { useLang } from './i18n'
 import App from './App.tsx'
+
+const syncLang = () => {
+  document.documentElement.lang = useLang.getState().lang
+}
+syncLang()
+useLang.subscribe(syncLang)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

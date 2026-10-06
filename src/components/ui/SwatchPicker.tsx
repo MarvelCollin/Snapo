@@ -1,6 +1,7 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import { Palette } from '@phosphor-icons/react'
 import { Slider } from './Slider'
+import { useT } from '../../i18n'
 
 type Props = {
   label: string
@@ -42,6 +43,7 @@ const hexToHsl = (hex: string): [number, number, number] => {
 }
 
 export function SwatchPicker({ label, value, colors, onChange, autoLabel, allowCustom = true }: Props) {
+  const t = useT()
   const id = useId()
   const refs = useRef<(HTMLButtonElement | null)[]>([])
   const [custom, setCustom] = useState(false)
@@ -94,7 +96,7 @@ export function SwatchPicker({ label, value, colors, onChange, autoLabel, allowC
               style={c ? { background: c } : undefined}
               onClick={() => onChange(c)}
             >
-              {c === null && <span aria-hidden="true">Auto</span>}
+              {c === null && <span aria-hidden="true">{t.common.auto}</span>}
             </button>
           )
         })}
@@ -103,7 +105,7 @@ export function SwatchPicker({ label, value, colors, onChange, autoLabel, allowC
             type="button"
             className={`swatch swatch--custom ${isCustomValue ? 'is-on' : ''}`}
             aria-expanded={custom}
-            aria-label="Custom color"
+            aria-label={t.common.customColor}
             style={isCustomValue && value ? { background: value } : undefined}
             onClick={() => setCustom((v) => !v)}
           >
@@ -113,9 +115,9 @@ export function SwatchPicker({ label, value, colors, onChange, autoLabel, allowC
       </div>
       {allowCustom && custom && (
         <div className="custom-color">
-          <Slider label="Hue" value={hsl[0]} min={0} max={359} onChange={(v) => setPart(0, v)} format={(v) => `${v}`} />
-          <Slider label="Saturation" value={hsl[1]} min={0} max={100} onChange={(v) => setPart(1, v)} format={(v) => `${v}%`} />
-          <Slider label="Lightness" value={hsl[2]} min={5} max={98} onChange={(v) => setPart(2, v)} format={(v) => `${v}%`} />
+          <Slider label={t.common.hue} value={hsl[0]} min={0} max={359} onChange={(v) => setPart(0, v)} format={(v) => `${v}`} />
+          <Slider label={t.common.saturation} value={hsl[1]} min={0} max={100} onChange={(v) => setPart(1, v)} format={(v) => `${v}%`} />
+          <Slider label={t.common.lightness} value={hsl[2]} min={5} max={98} onChange={(v) => setPart(2, v)} format={(v) => `${v}%`} />
         </div>
       )}
     </div>

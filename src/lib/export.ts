@@ -95,9 +95,9 @@ export async function makeGif(layout: Layout, design: Design, photos: (string | 
   return new Blob([gif.bytes() as BlobPart], { type: 'image/gif' })
 }
 
-export async function shareImage(blob: Blob, name: string) {
+export async function shareImage(blob: Blob, name: string, title: string) {
   const file = new File([blob], name, { type: blob.type })
-  const data = { files: [file], title: 'My Snapo strip' }
+  const data = { files: [file], title }
   if (!navigator.canShare?.(data)) return false
   await navigator.share(data)
   return true

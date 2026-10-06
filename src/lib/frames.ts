@@ -88,14 +88,7 @@ export const frames: Frame[] = [
   { id: 'xmas', name: 'Holly Jolly', group: 'season', fill: pat('snow', '#2f6b48', '#ffffff', '#ffffff', 0.9), text: '#fff3d6', accent: '#3d7f58', photoOutline: '#fff3d6' },
 ]
 
-export const frameGroups: { id: FrameGroup | 'all'; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'classic', label: 'Classic' },
-  { id: 'pastel', label: 'Pastel' },
-  { id: 'pattern', label: 'Patterns' },
-  { id: 'gradient', label: 'Gradients' },
-  { id: 'season', label: 'Seasons' },
-]
+export const frameGroups: (FrameGroup | 'all')[] = ['all', 'classic', 'pastel', 'pattern', 'gradient', 'season']
 
 export const frameById = (id: string) => frames.find((f) => f.id === id) ?? frames[0]
 

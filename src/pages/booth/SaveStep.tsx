@@ -16,12 +16,14 @@ import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
 import { canShareFiles, canvasToBlob, download, fileStamp, makeGif, printImage, renderFinal, shareImage, thumbnailOf, toJpeg } from '../../lib/export'
 import { saveToGallery } from '../../lib/gallery'
+import { useT } from '../../i18n'
 import { Button } from '../../components/ui/Button'
 import { toast } from '../../store/toasts'
 
 type Busy = null | 'jpg' | 'gif' | 'share' | 'gallery'
 
 export default function SaveStep() {
+  const t = useT()
   const navigate = useNavigate()
   const { layoutId, photos, clearPhotos, setPhotos } = useSession()
   const design = useDesign((s) => s.design)
@@ -62,7 +64,7 @@ export default function SaveStep() {
     try {
       await fn()
     } catch (err) {
-      if ((err as DOMException)?.name !== 'AbortError') toast('Something went wrong. Please try again.', { tone: 'error' })
+      if ((err as DOMException)?.name !== 'AbortError') toast(t.common.oops, { tone: 'error' })
     } finally {
       setBusy(null)
     }
@@ -87,7 +89,7 @@ export default function SaveStep() {
         png.blob,
       )
       setSavedId(id)
-      toast('Saved to your gallery', { actionLabel: 'Open gallery', onAction: () => navigate('/gallery') })
+      toast(t.save.savedToast, { actionLabel: t.save.openGallery, onAction: () => navigate('/gallery') })
     })
 
   const startOver = () => {
@@ -96,8 +98,8 @@ export default function SaveStep() {
     clearPhotos()
     useDesign.getState().update({ elements: [] })
     navigate('/booth/layout')
-    toast('Fresh strip started', {
-      actionLabel: 'Undo',
+    toast(t.save.fresh, {
+      actionLabel: t.common.undo,
       onAction: () => {
         setPhotos(backupPhotos)
         useDesign.getState().update(backup)
@@ -114,25 +116,25 @@ export default function SaveStep() {
         <div className="save__preview">
           <div className="save__frame" style={{ aspectRatio: String(ratio), ['--ratio' as string]: ratio }}>
             {png ? (
-              <img src={png.url} alt={`Your finished ${layout.name} strip`} className="save__img" />
+              <img src={png.url} alt={t.save.alt(layout.name)} className="save__img" />
             ) : error ? (
               <div className="save__error">
-                <p>The strip could not be drawn. This can happen when the browser runs low on memory.</p>
+                <p>{t.save.couldNotDraw}</p>
                 <Button variant="primary" onClick={() => setAttempt((a) => a + 1)}>
-                  Try again
+                  {t.common.tryAgain}
                 </Button>
               </div>
             ) : (
-              <div className="skeleton save__skeleton" aria-label="Drawing your strip" aria-busy="true" />
+              <div className="skeleton save__skeleton" aria-label={t.save.drawingLabel} aria-busy="true" />
             )}
           </div>
         </div>
 
         <div className="save__side">
           <header className="step__head">
-            <h1 id="save-title">Your strip is ready</h1>
+            <h1 id="save-title">{t.save.title}</h1>
             <p className="step__lede">
-              {layout.name} with the {design.frame.name} frame. {png ? `${png.canvas.width} by ${png.canvas.height} pixels, print ready.` : 'Drawing it in full size now.'}
+              {t.save.lede(layout.name, design.frame.name)} {png ? t.save.size(png.canvas.width, png.canvas.height) : t.save.drawing}
             </p>
           </header>
 
@@ -145,18 +147,20 @@ export default function SaveStep() {
               disabled={!png}
               onClick={() => png && download(png.blob, `${name}.png`)}
             >
-              Download PNG
+              {t.save.png}
             </Button>
             <div className="save__grid">
               <Button
                 icon={<FileJpg weight="bold" size={20} />}
                 disabled={!png}
                 loading={busy === 'jpg'}
-                onClick={() => run('jpg', async () => {
-                  if (png) download(await toJpeg(png.canvas), `${name}.jpg`)
-                })}
+                onClick={() =>
+                  run('jpg', async () => {
+                    if (png) download(await toJpeg(png.canvas), `${name}.jpg`)
+                  })
+                }
               >
-                JPG
+                {t.save.jpg}
               </Button>
               <Button
                 icon={<FilmStrip weight="bold" size={20} />}
@@ -164,43 +168,46 @@ export default function SaveStep() {
                 loading={busy === 'gif'}
                 onClick={() => run('gif', async () => download(await makeGif(layout, design, photos), `${name}.gif`))}
               >
-                Animated GIF
+                {t.save.flipbook}
               </Button>
               {share && (
                 <Button
                   icon={<ShareNetwork weight="bold" size={20} />}
                   disabled={!png}
                   loading={busy === 'share'}
-                  onClick={() => run('share', async () => {
-                    if (png) await shareImage(png.blob, `${name}.png`)
-                  })}
+                  onClick={() =>
+                    run('share', async () => {
+                      if (png) await shareImage(png.blob, `${name}.png`, t.save.shareTitle)
+                    })
+                  }
                 >
-                  Share
+                  {t.save.share}
                 </Button>
               )}
               <Button icon={<Printer weight="bold" size={20} />} disabled={!png} onClick={() => png && printImage(png.url, png.canvas.width, png.canvas.height)}>
-                Print
+                {t.save.print}
               </Button>
             </div>
+
             {savedId ? (
               <p className="save__saved">
                 <CheckCircle weight="fill" size={20} aria-hidden="true" />
-                Saved. <Link to="/gallery">See it in your gallery</Link>
+                {t.save.saved} <Link to="/gallery">{t.save.seeGallery}</Link>
               </p>
             ) : (
               <Button variant="mint" block icon={<Heart weight="bold" size={20} />} disabled={!png} loading={busy === 'gallery'} onClick={saveGallery}>
-                Save to my gallery
+                {t.save.saveGallery}
               </Button>
             )}
-            <p className="save__privacy">Photos stay on this device. Nothing is uploaded.</p>
+            <p className="save__privacy">{t.save.privacy}</p>
           </div>
 
           <div className="save__more">
             <Button variant="ghost" icon={<ArrowLeft weight="bold" size={18} />} onClick={() => navigate('/booth/decorate')}>
-              Keep decorating
+              {t.save.keepDecorating}
             </Button>
             <Button variant="ghost" icon={<Sparkle weight="bold" size={18} />} onClick={startOver}>
-              New strip
+              {t.save.newStrip}
             </Button>
           </div>
         </div>

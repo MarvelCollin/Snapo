@@ -6,6 +6,7 @@ import { filterById } from './filters'
 import { coverCrop, filterToCanvas } from './filterEngine'
 import { fontById, fontString, captionFonts } from './fonts'
 import { loadImage, stickerArt, wordArt } from './stickers'
+import { getLocale } from '../i18n'
 
 export type RenderInput = {
   layout: Layout
@@ -131,10 +132,10 @@ export function formatDate(d: Date, style: Design['dateStyle']) {
   const pad = (n: number) => String(n).padStart(2, '0')
   if (style === 'dots') return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())}`
   if (style === 'short') {
-    const mon = d.toLocaleString('en', { month: 'short' }).toUpperCase()
+    const mon = d.toLocaleString(getLocale(), { month: 'short' }).replace('.', '').toUpperCase()
     return `${pad(d.getDate())} ${mon} ${String(d.getFullYear()).slice(-2)}`
   }
-  return d.toLocaleDateString('en', { month: 'long', day: 'numeric', year: 'numeric' })
+  return d.toLocaleDateString(getLocale(), { month: 'long', day: 'numeric', year: 'numeric' })
 }
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxW: number) {

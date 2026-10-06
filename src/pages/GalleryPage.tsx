@@ -6,12 +6,14 @@ import { Button } from '../components/ui/Button'
 import { LinkButton } from '../components/ui/LinkButton'
 import { Dialog } from '../components/ui/Dialog'
 import { toast } from '../store/toasts'
+import { getLocale, useT } from '../i18n'
 
 const PAGE = 24
 
-const when = (t: number) => new Date(t).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })
+const when = (t: number) => new Date(t).toLocaleDateString(getLocale(), { month: 'short', day: 'numeric', year: 'numeric' })
 
 export default function GalleryPage() {
+  const t = useT()
   const [items, setItems] = useState<GalleryItem[] | null>(null)
   const [failed, setFailed] = useState(false)
   const [shown, setShown] = useState(PAGE)
@@ -50,8 +52,8 @@ export default function GalleryPage() {
     setOpen(null)
     const removed = await removeFromGallery(item.id)
     setItems((list) => list?.filter((i) => i.id !== item.id) ?? null)
-    toast(`Deleted ${item.layoutName} strip`, {
-      actionLabel: 'Undo',
+    toast(t.gallery.deleted(item.layoutName), {
+      actionLabel: t.common.undo,
       onAction: async () => {
         if (!removed) return
         await saveToGallery(removed.meta, removed.blob)
@@ -64,30 +66,30 @@ export default function GalleryPage() {
     <section className="step gallery" aria-labelledby="gallery-title">
       <header className="step__head step__head--row">
         <div>
-          <h1 id="gallery-title">Your gallery</h1>
+          <h1 id="gallery-title">{t.gallery.title}</h1>
           <p className="step__lede">
-            {items === null ? 'Loading your strips.' : items.length ? `${items.length} ${items.length === 1 ? 'strip' : 'strips'} saved on this device.` : 'Strips you save show up here.'}
+            {items === null ? t.gallery.loading : items.length ? t.gallery.count(items.length) : t.gallery.emptyLede}
           </p>
         </div>
         {!!items?.length && (
           <LinkButton to="/booth" variant="primary" icon={<Camera weight="bold" size={20} />}>
-            New strip
+            {t.gallery.newStrip}
           </LinkButton>
         )}
       </header>
 
       {failed && (
         <div className="empty">
-          <h2>Could not open your gallery</h2>
-          <p>Private browsing can block saved photos. Try again or use a normal window.</p>
+          <h2>{t.gallery.failedTitle}</h2>
+          <p>{t.gallery.failedText}</p>
           <Button variant="primary" onClick={load}>
-            Try again
+            {t.common.tryAgain}
           </Button>
         </div>
       )}
 
       {items === null && !failed && (
-        <ul className="gallery-grid" aria-busy="true" aria-label="Loading strips">
+        <ul className="gallery-grid" aria-busy="true" aria-label={t.gallery.loadingLabel}>
           {Array.from({ length: 8 }, (_, i) => (
             <li key={i}>
               <div className="skeleton gallery-skeleton" />
@@ -99,10 +101,10 @@ export default function GalleryPage() {
       {items?.length === 0 && (
         <div className="empty">
           <img src="/stickers/camera-with-flash.webp" alt="" width={96} height={96} />
-          <h2>No strips yet</h2>
-          <p>Shoot a strip, then press Save to my gallery on the last step.</p>
+          <h2>{t.gallery.emptyTitle}</h2>
+          <p>{t.gallery.emptyText}</p>
           <LinkButton to="/booth" variant="primary" size="lg" icon={<Camera weight="bold" size={20} />}>
-            Open the booth
+            {t.gallery.openBooth}
           </LinkButton>
         </div>
       )}
@@ -126,10 +128,8 @@ export default function GalleryPage() {
           </ul>
           {shown < items.length && (
             <div className="gallery__more">
-              <p>
-                Showing {shown} of {items.length}
-              </p>
-              <Button onClick={() => setShown((s) => s + PAGE)}>Show more</Button>
+              <p>{t.gallery.showing(shown, items.length)}</p>
+              <Button onClick={() => setShown((s) => s + PAGE)}>{t.gallery.showMore}</Button>
             </div>
           )}
         </>
@@ -144,10 +144,10 @@ export default function GalleryPage() {
           open && (
             <>
               <Button variant="danger" icon={<Trash weight="bold" size={18} />} onClick={() => onDelete(open)}>
-                Delete
+                {t.gallery.delete}
               </Button>
               <Button variant="primary" icon={<DownloadSimple weight="bold" size={18} />} onClick={() => onDownload(open)}>
-                Download PNG
+                {t.gallery.download}
               </Button>
             </>
           )
@@ -155,7 +155,7 @@ export default function GalleryPage() {
       >
         {open && (
           <div className="viewer" style={{ aspectRatio: `${open.width} / ${open.height}` }}>
-            <img src={openUrl ?? open.thumb} alt={`${open.layoutName} strip from ${when(open.createdAt)}`} />
+            <img src={openUrl ?? open.thumb} alt={t.gallery.alt(open.layoutName, when(open.createdAt))} />
           </div>
         )}
       </Dialog>

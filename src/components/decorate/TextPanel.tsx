@@ -7,10 +7,12 @@ import { TextField } from '../ui/TextField'
 import { Button } from '../ui/Button'
 import { SwatchPicker } from '../ui/SwatchPicker'
 import { useAddElement } from '../../hooks/useAddElement'
+import { useT } from '../../i18n'
 
 const textColors = ['#ff8fab', '#ff6f91', '#e2445c', '#ffb385', '#ffd166', '#7bdcb5', '#62c6e8', '#8ec5ff', '#c08bff', '#ffffff', '#3b2230', '#bde0fe']
 
 export function TextPanel() {
+  const t = useT()
   const { design, selectedId, updateElement } = useDesign()
   const selected = design.elements.find((e) => e.id === selectedId)
   const editing = selected?.kind === 'word' ? selected : null
@@ -30,11 +32,11 @@ export function TextPanel() {
 
   return (
     <div className="panel-stack">
-      <p className="panel-note">{editing ? 'Editing the selected text sticker. Changes show right away.' : 'Type anything and turn it into a sticker.'}</p>
-      <TextField label="Text" value={spec.text} onChange={(text) => set({ text })} maxLength={32} hint={`${spec.text.length} of 32 characters`} />
+      <p className="panel-note">{editing ? t.text.editing : t.text.fresh}</p>
+      <TextField label={t.text.text} value={spec.text} onChange={(text) => set({ text })} maxLength={32} hint={t.text.chars(spec.text.length)} />
       <div className="field">
         <span className="field__label" id="word-style">
-          Style
+          {t.text.style}
         </span>
         <div role="radiogroup" aria-labelledby="word-style" className="chip-grid">
           {wordStyles.map((s) => (
@@ -46,14 +48,14 @@ export function TextPanel() {
               className="font-chip"
               onClick={() => set({ style: s.id as WordStyle, font: undefined })}
             >
-              {s.label}
+              {t.text.styles[s.id]}
             </button>
           ))}
         </div>
       </div>
       <div className="field">
         <span className="field__label" id="word-font">
-          Font
+          {t.text.font}
         </span>
         <div role="radiogroup" aria-labelledby="word-font" className="chip-grid">
           {captionFonts.map((f) => {
@@ -68,23 +70,23 @@ export function TextPanel() {
                 style={{ fontFamily: `"${f.family}"`, fontWeight: f.weight }}
                 onClick={() => set({ font: f.id })}
               >
-                {f.label}
+                {t.text.fonts[f.id]}
               </button>
             )
           })}
         </div>
       </div>
-      <SwatchPicker label="Color" value={spec.color} colors={textColors} onChange={(c) => c && set({ color: c })} />
+      <SwatchPicker label={t.text.color} value={spec.color} colors={textColors} onChange={(c) => c && set({ color: c })} />
       <div className="word-preview" aria-hidden={!preview}>
-        {preview ? <img src={preview} alt={`Preview of ${spec.text}`} /> : <p className="panel-note">Type something to see a preview.</p>}
+        {preview ? <img src={preview} alt={t.text.previewOf(spec.text)} /> : <p className="panel-note">{t.text.typeSomething}</p>}
       </div>
       {editing ? (
         <Button variant="mint" icon={<Check weight="bold" size={18} />} block onClick={() => useDesign.getState().select(null)}>
-          Done editing
+          {t.text.done}
         </Button>
       ) : (
         <Button variant="primary" icon={<Plus weight="bold" size={18} />} block disabled={!spec.text.trim()} onClick={() => addWord({ ...spec, text: spec.text.trim() })}>
-          Add to strip
+          {t.text.add}
         </Button>
       )}
     </div>

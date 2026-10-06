@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { X } from '@phosphor-icons/react'
+import { useT } from '../../i18n'
 
 type Props = {
   open: boolean
@@ -11,6 +12,7 @@ type Props = {
 }
 
 export function Dialog({ open, onClose, title, children, footer, size = 'form' }: Props) {
+  const t = useT()
   const ref = useRef<HTMLDialogElement>(null)
   const returnFocus = useRef<HTMLElement | null>(null)
 
@@ -43,7 +45,7 @@ export function Dialog({ open, onClose, title, children, footer, size = 'form' }
         <div className="dialog__inner">
           <header className="dialog__head">
             <h2 id="dialog-title">{title}</h2>
-            <button type="button" className="dialog__close" aria-label="Close" onClick={onClose}>
+            <button type="button" className="dialog__close" aria-label={t.common.close} onClick={onClose}>
               <X weight="bold" size={20} />
             </button>
           </header>

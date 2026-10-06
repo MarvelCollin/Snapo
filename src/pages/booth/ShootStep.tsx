@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   ArrowRight,
@@ -17,6 +17,7 @@ import { filterById } from '../../lib/filters'
 import { useCamera } from '../../hooks/useCamera'
 import { useFilterThumbs } from '../../hooks/useFilterThumbs'
 import { captureFrame, fileToPhoto, beep, shutterSound } from '../../lib/photos'
+import { useT } from '../../i18n'
 import { LiveView } from '../../components/shoot/LiveView'
 import { FilterPicker } from '../../components/shared/FilterPicker'
 import { CompositionCanvas } from '../../components/shared/CompositionCanvas'
@@ -32,9 +33,22 @@ const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms))
 type Phase = 'idle' | 'countdown' | 'between'
 
 export default function ShootStep() {
+  const t = useT()
   const navigate = useNavigate()
-  const { layoutId, photos, timer, mirror, autoSequence, sound, setPhoto, setTimer, setMirror, setAutoSequence, setSound, setPhotos } =
-    useSession()
+  const {
+    layoutId,
+    photos,
+    timer,
+    mirror,
+    autoSequence,
+    sound,
+    setPhoto,
+    setTimer,
+    setMirror,
+    setAutoSequence,
+    setSound,
+    setPhotos,
+  } = useSession()
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const layout = layoutById(layoutId)
@@ -76,37 +90,34 @@ export default function ShootStep() {
     }
   }, [live, mirror, phase, fromVideo, videoRef])
 
-  const shoot = useCallback(
-    async (targets: number[]) => {
-      if (!videoRef.current || !targets.length) return
-      cancelRef.current = false
-      for (let k = 0; k < targets.length; k++) {
-        const t = targets[k]
-        setCurrent(t)
-        setPhase('countdown')
-        for (let n: number = timer; n > 0; n--) {
-          if (cancelRef.current) break
-          setCount(n)
-          if (sound) beep(n === 1 ? 1040 : 780)
-          await sleep(1000)
-        }
+  const shoot = async (targets: number[]) => {
+    if (!videoRef.current || !targets.length) return
+    cancelRef.current = false
+    for (let k = 0; k < targets.length; k++) {
+      const slot = targets[k]
+      setCurrent(slot)
+      setPhase('countdown')
+      for (let n: number = timer; n > 0; n--) {
         if (cancelRef.current) break
-        setCount(0)
-        setFlash((f) => f + 1)
-        if (sound) shutterSound()
-        const video = videoRef.current
-        if (video && video.readyState >= 2) setPhoto(t, captureFrame(video, mirror))
-        if (k < targets.length - 1) {
-          setPhase('between')
-          await sleep(1100)
-        }
+        setCount(n)
+        if (sound) beep(n === 1 ? 1040 : 780)
+        await sleep(1000)
       }
-      setPhase('idle')
-      setCurrent(null)
-      setSelected(null)
-    },
-    [timer, sound, mirror, setPhoto, videoRef],
-  )
+      if (cancelRef.current) break
+      setCount(0)
+      setFlash((f) => f + 1)
+      if (sound) shutterSound()
+      const video = videoRef.current
+      if (video && video.readyState >= 2) setPhoto(slot, captureFrame(video, mirror))
+      if (k < targets.length - 1) {
+        setPhase('between')
+        await sleep(1100)
+      }
+    }
+    setPhase('idle')
+    setCurrent(null)
+    setSelected(null)
+  }
 
   const onShutter = () => {
     if (busy) {
@@ -146,34 +157,37 @@ export default function ShootStep() {
         next[targets[k]] = await fileToPhoto(list[k])
         added++
       } catch {
-        toast(`Could not read ${list[k].name}. Try a JPG or PNG.`, { tone: 'error' })
+        toast(t.shoot.couldNotRead(list[k].name), { tone: 'error' })
       }
     }
     setPhotos(next)
     setSelected(null)
-    if (added) toast(`Added ${added} ${added === 1 ? 'photo' : 'photos'}`)
+    if (added) toast(t.shoot.added(added))
     if (fileRef.current) fileRef.current.value = ''
   }
 
-  const shotLabel = useMemo(() => {
-    if (busy) return 'Stop'
-    if (selected !== null) return `Retake shot ${selected + 1}`
-    if (complete) return 'Retake all'
-    if (!autoSequence) return `Take shot ${(target ?? 0) + 1}`
-    return filled ? `Shoot ${layout.shots - filled} more` : `Start ${layout.shots} shots`
-  }, [busy, selected, complete, autoSequence, target, filled, layout.shots])
+  const shotLabel = busy
+    ? t.shoot.stop
+    : selected !== null
+      ? t.shoot.retakeShot(selected + 1)
+      : complete
+        ? t.shoot.retakeAll
+        : !autoSequence
+          ? t.shoot.takeShot((target ?? 0) + 1)
+          : filled
+            ? t.shoot.shootMore(layout.shots - filled)
+            : t.shoot.start(layout.shots)
 
   const remaining = layout.shots - filled
   const shotNumber = (current ?? target ?? 0) + 1
+  const badge = t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
 
   return (
     <section className="step step--shoot" aria-labelledby="shoot-title">
       <header className="step__head step__head--row">
         <div>
-          <h1 id="shoot-title">Strike a pose</h1>
-          <p className="step__lede">
-            {layout.name}, {layout.shots} {layout.shots === 1 ? 'shot' : 'shots'}. Pick a filter now, you can change it later.
-          </p>
+          <h1 id="shoot-title">{t.shoot.title}</h1>
+          <p className="step__lede">{t.shoot.lede(layout.name, layout.shots)}</p>
         </div>
       </header>
 
@@ -184,7 +198,7 @@ export default function ShootStep() {
             <LiveView videoRef={videoRef} live={live} filter={filter} mirror={mirror} aspect={aspect}>
               {live && (
                 <span className="liveview__badge" aria-live="polite">
-                  Shot {Math.min(shotNumber, layout.shots)} of {layout.shots}
+                  {badge}
                 </span>
               )}
               {phase === 'countdown' && count > 0 && (
@@ -192,36 +206,32 @@ export default function ShootStep() {
                   {count}
                 </span>
               )}
-              {phase === 'between' && <span className="liveview__note">Next pose</span>}
+              {phase === 'between' && <span className="liveview__note">{t.shoot.nextPose}</span>}
               {flash > 0 && <span key={`flash-${flash}`} className="liveview__flash" aria-hidden="true" />}
               {status !== 'live' && (
                 <div className="liveview__state">
                   {status === 'requesting' || status === 'idle' ? (
                     <>
                       <div className="skeleton liveview__skeleton" />
-                      <p className="liveview__state-text">Waiting for your camera. Allow access when the browser asks.</p>
+                      <p className="liveview__state-text">{t.shoot.waiting}</p>
                     </>
                   ) : (
                     <>
                       <CameraSlash size={40} weight="bold" aria-hidden="true" />
                       <h2 className="liveview__state-title">
-                        {status === 'denied' ? 'Camera is blocked' : status === 'unavailable' ? 'No camera found' : 'Camera could not start'}
+                        {status === 'denied' ? t.shoot.blockedTitle : status === 'unavailable' ? t.shoot.noneTitle : t.shoot.errorTitle}
                       </h2>
                       <p className="liveview__state-text">
-                        {status === 'denied'
-                          ? 'Allow camera access from the icon in your address bar, then try again. You can also upload photos instead.'
-                          : status === 'unavailable'
-                            ? 'Snapo needs a camera and a secure page (https or localhost). Upload photos from your device instead.'
-                            : 'Another app might be using it. Close it and try again, or upload photos.'}
+                        {status === 'denied' ? t.shoot.blockedText : status === 'unavailable' ? t.shoot.noneText : t.shoot.errorText}
                       </p>
                       <div className="liveview__state-actions">
                         {status !== 'unavailable' && (
                           <Button variant="primary" icon={<ArrowsClockwise weight="bold" size={18} />} onClick={() => start()}>
-                            Try again
+                            {t.common.tryAgain}
                           </Button>
                         )}
                         <Button icon={<UploadSimple weight="bold" size={18} />} onClick={() => fileRef.current?.click()}>
-                          Upload photos
+                          {t.shoot.upload}
                         </Button>
                       </div>
                     </>
@@ -243,13 +253,8 @@ export default function ShootStep() {
               {shotLabel}
             </Button>
             <div className="shoot__quick">
-              <IconButton
-                label="Upload photos"
-                icon={<UploadSimple weight="bold" size={20} />}
-                onClick={() => fileRef.current?.click()}
-                disabled={busy}
-              />
-              {canSwitch && <IconButton label="Switch camera" icon={<ArrowsClockwise weight="bold" size={20} />} onClick={switchCamera} disabled={busy} />}
+              <IconButton label={t.shoot.upload} icon={<UploadSimple weight="bold" size={20} />} onClick={() => fileRef.current?.click()} disabled={busy} />
+              {canSwitch && <IconButton label={t.shoot.switchCamera} icon={<ArrowsClockwise weight="bold" size={20} />} onClick={switchCamera} disabled={busy} />}
             </div>
             <input
               ref={fileRef}
@@ -266,7 +271,7 @@ export default function ShootStep() {
           <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} variant="rail" idPrefix="shoot-filters" />
         </div>
 
-        <aside className="shoot__side" aria-label="Your strip">
+        <aside className="shoot__side" aria-label={t.shoot.stripLabel}>
           <div className="shoot__preview">
             <CompositionCanvas
               layout={layout}
@@ -274,14 +279,14 @@ export default function ShootStep() {
               photos={photos}
               displayHeight={300}
               displayWidth={260}
-              label={`${layout.name} preview with ${filled} of ${layout.shots} photos`}
+              label={t.shoot.previewLabel(layout.name, filled, layout.shots)}
             />
           </div>
 
           <div className="shoot__next">
             <p className="shoot__status" aria-live="polite">
-              <strong>{complete ? 'All shots done' : `${remaining} ${remaining === 1 ? 'shot' : 'shots'} to go`}</strong>
-              <span>{complete ? 'Time to add frames and stickers.' : 'Fill every shot to start decorating.'}</span>
+              <strong>{complete ? t.shoot.allDone : t.shoot.toGo(remaining)}</strong>
+              <span>{complete ? t.shoot.doneHint : t.shoot.fillHint}</span>
             </p>
             <Button
               variant="primary"
@@ -290,15 +295,15 @@ export default function ShootStep() {
               disabled={!complete || busy}
               onClick={() => navigate('/booth/decorate')}
             >
-              Decorate
+              {t.shoot.decorate}
             </Button>
           </div>
 
           <div className="tray">
             <div className="tray__head">
-              <h2 className="panel-title">Shots</h2>
+              <h2 className="panel-title">{t.shoot.shots}</h2>
               <span className="tray__count">
-                {filled} of {layout.shots}
+                {filled} / {layout.shots}
               </span>
             </div>
             <ol className="tray__list">
@@ -311,7 +316,7 @@ export default function ShootStep() {
                       type="button"
                       className="tray__thumb"
                       aria-pressed={isSel}
-                      aria-label={p ? `Shot ${i + 1}. Select to retake` : `Shot ${i + 1}, empty. Select to shoot this one next`}
+                      aria-label={p ? t.shoot.slotFilled(i + 1) : t.shoot.slotEmpty(i + 1)}
                       onClick={() => setSelected(isSel ? null : i)}
                       disabled={busy}
                       style={{ aspectRatio: String(aspectFor(i)) }}
@@ -320,13 +325,13 @@ export default function ShootStep() {
                     </button>
                     {p && (
                       <IconButton
-                        label={`Remove shot ${i + 1}`}
+                        label={t.shoot.removeShot(i + 1)}
                         tone="plain"
                         size="sm"
                         icon={<Trash weight="bold" size={16} />}
                         onClick={() => {
                           setPhoto(i, null)
-                          toast(`Removed shot ${i + 1}`, { actionLabel: 'Undo', onAction: () => setPhoto(i, p) })
+                          toast(t.shoot.removed(i + 1), { actionLabel: t.common.undo, onAction: () => setPhoto(i, p) })
                         }}
                         disabled={busy}
                       />
@@ -335,17 +340,13 @@ export default function ShootStep() {
                 )
               })}
             </ol>
-            {selected !== null && (
-              <p className="tray__hint">
-                Shot {selected + 1} selected. Press the big button to {photos[selected] ? 'retake it' : 'shoot it'}.
-              </p>
-            )}
+            {selected !== null && <p className="tray__hint">{t.shoot.selected(selected + 1, !!photos[selected])}</p>}
           </div>
 
           <div className="settings">
-            <h2 className="panel-title">Camera settings</h2>
+            <h2 className="panel-title">{t.shoot.settings}</h2>
             <Segmented<Timer>
-              label="Timer"
+              label={t.shoot.timer}
               value={timer}
               onChange={setTimer}
               options={[
@@ -354,9 +355,9 @@ export default function ShootStep() {
                 { value: 10, label: '10s' },
               ]}
             />
-            <Switch label="Shoot all in a row" hint="Takes every empty shot back to back" checked={autoSequence} onChange={setAutoSequence} />
-            <Switch label="Mirror" hint="Flip like a selfie" checked={mirror} onChange={setMirror} />
-            <Switch label="Sounds" hint="Beeps on countdown" checked={sound} onChange={setSound} />
+            <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
+            <Switch label={t.shoot.mirror} hint={t.shoot.mirrorHint} checked={mirror} onChange={setMirror} />
+            <Switch label={t.shoot.sounds} hint={t.shoot.soundsHint} checked={sound} onChange={setSound} />
           </div>
         </aside>
       </div>
@@ -364,11 +365,11 @@ export default function ShootStep() {
       <Dialog
         open={confirmRetake}
         onClose={() => setConfirmRetake(false)}
-        title={`Retake all ${layout.shots} shots?`}
+        title={t.shoot.retakeTitle(layout.shots)}
         size="confirm"
         footer={
           <>
-            <Button onClick={() => setConfirmRetake(false)}>Keep my shots</Button>
+            <Button onClick={() => setConfirmRetake(false)}>{t.shoot.keep}</Button>
             <Button
               variant="danger"
               icon={<ArrowCounterClockwise weight="bold" size={18} />}
@@ -377,12 +378,12 @@ export default function ShootStep() {
                 shoot(photos.map((_, i) => i))
               }}
             >
-              Retake all
+              {t.shoot.retakeAll}
             </Button>
           </>
         }
       >
-        <p>Each new shot replaces the old one as you go. To redo just one, pick it in the Shots list instead.</p>
+        <p>{t.shoot.retakeBody}</p>
       </Dialog>
     </section>
   )

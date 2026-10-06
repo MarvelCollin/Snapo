@@ -27,15 +27,7 @@ export type FilterDef = {
 
 export type FilterGroup = 'natural' | 'booth' | 'film' | 'mono' | 'dreamy' | 'fun'
 
-export const filterGroups: { id: FilterGroup | 'all'; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'natural', label: 'Natural' },
-  { id: 'booth', label: 'Booth' },
-  { id: 'film', label: 'Film' },
-  { id: 'mono', label: 'Mono' },
-  { id: 'dreamy', label: 'Dreamy' },
-  { id: 'fun', label: 'Fun' },
-]
+export const filterGroups: (FilterGroup | 'all')[] = ['all', 'natural', 'booth', 'film', 'mono', 'dreamy', 'fun']
 
 export const filters: FilterDef[] = [
   { id: 'original', name: 'Original', group: 'natural' },

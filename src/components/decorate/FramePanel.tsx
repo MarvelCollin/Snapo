@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { frames, frameGroups, swatches, type Fill, type Frame, type FrameGroup } from '../../lib/frames'
-import { patternList, type PatternId } from '../../lib/patterns'
+import { patternList } from '../../lib/patterns'
 import { fillStyleFor } from '../../lib/render'
 import { useDesign } from '../../store/design'
 import { Tabs } from '../ui/Tabs'
 import { Segmented } from '../ui/Segmented'
 import { SwatchPicker } from '../ui/SwatchPicker'
 import { Slider } from '../ui/Slider'
+import { useT } from '../../i18n'
 
 const lightness = (hex: string) => {
   const n = parseInt(hex.replace('#', '').padEnd(6, '0'), 16)
@@ -40,6 +41,7 @@ function FillThumb({ fill, w = 64, h = 84, strip = true }: { fill: Fill; w?: num
 }
 
 export function FramePanel() {
+  const t = useT()
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const [group, setGroup] = useState<FrameGroup | 'all'>('all')
@@ -62,23 +64,23 @@ export function FramePanel() {
   return (
     <div className="panel-stack">
       <Segmented<'themes' | 'custom'>
-        label="Frame view"
+        label={t.frames.view}
         hideLabel
         value={view}
         onChange={setView}
         options={[
-          { value: 'themes', label: `${frames.length} themes` },
-          { value: 'custom', label: 'Customize' },
+          { value: 'themes', label: t.frames.themes(frames.length) },
+          { value: 'custom', label: t.frames.customize },
         ]}
       />
       {view === 'themes' && (
         <section className="panel-section" aria-labelledby="frame-presets">
           <h3 id="frame-presets" className="visually-hidden">
-            Frame themes
+            {t.frames.presets}
           </h3>
-          <Tabs label="Frame themes" tabs={frameGroups.map((g) => ({ id: g.id, label: g.label }))} active={group} onChange={setGroup} idPrefix="frames" />
+          <Tabs label={t.frames.presets} tabs={frameGroups.map((id) => ({ id, label: t.frames.groups[id] }))} active={group} onChange={setGroup} idPrefix="frames" />
           <div id="frames-panel" role="tabpanel" aria-labelledby={`frames-tab-${group}`}>
-            <div role="radiogroup" aria-label="Frame themes" className="frame-grid">
+            <div role="radiogroup" aria-label={t.frames.presets} className="frame-grid">
               {list.map((f) => {
                 const active = frame.id === f.id
                 return (
@@ -100,7 +102,7 @@ export function FramePanel() {
             </div>
           </div>
           <button type="button" className="link-btn" onClick={() => setView('custom')}>
-            Tweak colors and patterns of {frame.name}
+            {t.frames.tweak(frame.name)}
           </button>
         </section>
       )}
@@ -108,66 +110,66 @@ export function FramePanel() {
       {view === 'custom' && (
         <section className="panel-section" aria-labelledby="frame-custom">
           <h3 id="frame-custom" className="panel-subtitle">
-            Customize {frame.name}
+            {t.frames.customizeTitle(frame.name)}
           </h3>
           <Segmented<Fill['kind']>
-            label="Background"
+            label={t.frames.background}
             value={fill.kind}
             onChange={toKind}
             options={[
-              { value: 'solid', label: 'Solid' },
-              { value: 'gradient', label: 'Gradient' },
-              { value: 'pattern', label: 'Pattern' },
+              { value: 'solid', label: t.frames.solid },
+              { value: 'gradient', label: t.frames.gradient },
+              { value: 'pattern', label: t.frames.pattern },
             ]}
           />
-          {fill.kind === 'solid' && <SwatchPicker label="Color" value={fill.color} colors={swatches} onChange={(c) => c && setFill({ ...fill, color: c })} />}
+          {fill.kind === 'solid' && <SwatchPicker label={t.frames.color} value={fill.color} colors={swatches} onChange={(c) => c && setFill({ ...fill, color: c })} />}
           {fill.kind === 'gradient' && (
             <>
               <SwatchPicker
-                label="Top color"
+                label={t.frames.topColor}
                 value={fill.colors[0]}
                 colors={swatches}
                 onChange={(c) => c && setFill({ ...fill, colors: [c, ...fill.colors.slice(1)] })}
               />
               <SwatchPicker
-                label="Bottom color"
+                label={t.frames.bottomColor}
                 value={fill.colors[fill.colors.length - 1]}
                 colors={swatches}
                 onChange={(c) => c && setFill({ ...fill, colors: [...fill.colors.slice(0, -1), c] })}
               />
-              <Slider label="Angle" value={fill.angle} min={0} max={360} step={5} onChange={(v) => setFill({ ...fill, angle: v })} format={(v) => `${v}°`} />
+              <Slider label={t.frames.angle} value={fill.angle} min={0} max={360} step={5} onChange={(v) => setFill({ ...fill, angle: v })} format={(v) => `${v}°`} />
             </>
           )}
           {fill.kind === 'pattern' && (
             <>
               <div className="field">
                 <span className="field__label" id="pattern-label">
-                  Pattern
+                  {t.frames.pattern}
                 </span>
                 <div role="radiogroup" aria-labelledby="pattern-label" className="pattern-grid">
-                  {patternList.map((p) => {
-                    const active = fill.pattern === p.id
+                  {patternList.map((id) => {
+                    const active = fill.pattern === id
                     return (
                       <button
-                        key={p.id}
+                        key={id}
                         type="button"
                         role="radio"
                         aria-checked={active}
                         className={`pattern-tile ${active ? 'is-active' : ''}`}
-                        onClick={() => setFill({ ...fill, pattern: p.id as PatternId })}
+                        onClick={() => setFill({ ...fill, pattern: id })}
                       >
-                        <FillThumb fill={{ ...fill, pattern: p.id }} w={52} h={52} strip={false} />
-                        <span>{p.label}</span>
+                        <FillThumb fill={{ ...fill, pattern: id }} w={52} h={52} strip={false} />
+                        <span>{t.frames.patterns[id]}</span>
                       </button>
                     )
                   })}
                 </div>
               </div>
-              <SwatchPicker label="Background color" value={fill.base} colors={swatches} onChange={(c) => c && setFill({ ...fill, base: c })} />
-              <SwatchPicker label="Pattern color" value={fill.ink} colors={swatches} onChange={(c) => c && setFill({ ...fill, ink: c })} />
-              <SwatchPicker label="Accent color" value={fill.extra} colors={swatches} onChange={(c) => c && setFill({ ...fill, extra: c })} />
+              <SwatchPicker label={t.frames.bgColor} value={fill.base} colors={swatches} onChange={(c) => c && setFill({ ...fill, base: c })} />
+              <SwatchPicker label={t.frames.patternColor} value={fill.ink} colors={swatches} onChange={(c) => c && setFill({ ...fill, ink: c })} />
+              <SwatchPicker label={t.frames.accentColor} value={fill.extra} colors={swatches} onChange={(c) => c && setFill({ ...fill, extra: c })} />
               <Slider
-                label="Pattern size"
+                label={t.frames.patternSize}
                 value={Math.round(fill.scale * 100)}
                 min={30}
                 max={200}
@@ -177,7 +179,7 @@ export function FramePanel() {
               />
             </>
           )}
-          <SwatchPicker label="Empty slot and sprocket color" value={frame.accent} colors={swatches} onChange={(c) => c && setFrame({ accent: c })} />
+          <SwatchPicker label={t.frames.emptyColor} value={frame.accent} colors={swatches} onChange={(c) => c && setFrame({ accent: c })} />
         </section>
       )}
     </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Layout } from '../../lib/layouts'
 import { useDesign } from '../../store/design'
+import { useT } from '../../i18n'
 import { CompositionCanvas } from '../shared/CompositionCanvas'
 import { ElementView } from './ElementView'
 
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export function Stage({ layout, photos }: Props) {
+  const t = useT()
   const design = useDesign((s) => s.design)
   const selectedId = useDesign((s) => s.selectedId)
   const select = useDesign((s) => s.select)
@@ -43,7 +45,7 @@ export function Stage({ layout, photos }: Props) {
   return (
     <div ref={wrapRef} className="stage-wrap" onPointerDown={() => select(null)}>
       <div ref={stageRef} className="stage" style={{ width: w, height: h }}>
-        <CompositionCanvas layout={layout} design={base} photos={photos} displayWidth={w} label="Your decorated strip" />
+        <CompositionCanvas layout={layout} design={base} photos={photos} displayWidth={w} label={t.decorate.stage} />
         <div className="stage__layer">
           {design.elements.map((el) => (
             <ElementView key={el.id} el={el} stageRef={stageRef} selected={el.id === selectedId} />

@@ -7,8 +7,10 @@ import { Switch } from '../ui/Switch'
 import { Segmented } from '../ui/Segmented'
 import { SwatchPicker } from '../ui/SwatchPicker'
 import { Slider } from '../ui/Slider'
+import { useT } from '../../i18n'
 
 export function StylePanel() {
+  const t = useT()
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const checkpoint = useDesign((s) => s.checkpoint)
@@ -18,19 +20,19 @@ export function StylePanel() {
     <div className="panel-stack">
       <section className="panel-section" aria-labelledby="caption-title">
         <h3 id="caption-title" className="panel-subtitle">
-          Caption
+          {t.caption.caption}
         </h3>
         <TextField
-          label="Caption text"
+          label={t.caption.captionText}
           value={design.caption}
           maxLength={60}
           onFocus={checkpoint}
           onChange={(caption) => update({ caption }, { history: false })}
-          hint="Leave empty for no caption"
+          hint={t.caption.hint}
         />
         <div className="field">
           <span className="field__label" id="caption-font">
-            Font
+            {t.caption.font}
           </span>
           <div role="radiogroup" aria-labelledby="caption-font" className="chip-grid">
             {captionFonts.map((f) => (
@@ -43,16 +45,16 @@ export function StylePanel() {
                 style={{ fontFamily: `"${f.family}"`, fontWeight: f.weight }}
                 onClick={() => update({ captionFont: f.id })}
               >
-                {f.label}
+                {t.text.fonts[f.id]}
               </button>
             ))}
           </div>
         </div>
-        <SwatchPicker label="Text color" value={design.captionColor} colors={swatches} autoLabel="Match frame" onChange={(c) => update({ captionColor: c })} />
-        <Switch label="Show date" checked={design.showDate} onChange={(showDate) => update({ showDate })} />
+        <SwatchPicker label={t.caption.textColor} value={design.captionColor} colors={swatches} autoLabel={t.caption.matchFrame} onChange={(c) => update({ captionColor: c })} />
+        <Switch label={t.caption.showDate} checked={design.showDate} onChange={(showDate) => update({ showDate })} />
         {design.showDate && (
           <Segmented<DateStyle>
-            label="Date style"
+            label={t.caption.dateStyle}
             value={design.dateStyle}
             onChange={(dateStyle) => update({ dateStyle })}
             options={[
@@ -63,30 +65,30 @@ export function StylePanel() {
             size="sm"
           />
         )}
-        <Switch label="Show snapo mark" checked={design.showLogo} onChange={(showLogo) => update({ showLogo })} />
+        <Switch label={t.caption.showMark} checked={design.showLogo} onChange={(showLogo) => update({ showLogo })} />
       </section>
 
       <section className="panel-section" aria-labelledby="photo-style">
         <h3 id="photo-style" className="panel-subtitle">
-          Photos
+          {t.caption.photos}
         </h3>
         <Slider
-          label="Rounded corners"
+          label={t.caption.corners}
           value={Math.round(design.photoRadius * 100)}
           min={0}
           max={30}
           onChange={(v) => update({ photoRadius: v / 100 }, { history: false })}
-          format={(v) => (v === 0 ? 'Square' : `${v}%`)}
+          format={(v) => (v === 0 ? t.caption.square : `${v}%`)}
         />
         <Segmented<Design['photoOutline']>
-          label="Photo border"
+          label={t.caption.border}
           value={design.photoOutline}
           onChange={(photoOutline) => update({ photoOutline })}
           options={[
-            { value: 'frame', label: 'Theme' },
-            { value: 'none', label: 'None' },
-            { value: 'white', label: 'White' },
-            { value: 'ink', label: 'Ink' },
+            { value: 'frame', label: t.caption.borders.frame },
+            { value: 'none', label: t.caption.borders.none },
+            { value: 'white', label: t.caption.borders.white },
+            { value: 'ink', label: t.caption.borders.ink },
           ]}
         />
       </section>
