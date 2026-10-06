@@ -1,10 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Drop, FrameCorners, Smiley, TextAa, SlidersHorizontal, PaintBrush } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, FrameCorners, Smiley, TextAa, SlidersHorizontal, PaintBrush } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
-import { useImageThumbs } from '../../hooks/useFilterThumbs'
 import { useT } from '../../i18n'
 import { Stage } from '../../components/decorate/Stage'
 import { ElementToolbar } from '../../components/decorate/ElementToolbar'
@@ -13,25 +12,20 @@ import { StickerPanel } from '../../components/decorate/StickerPanel'
 import { TextPanel } from '../../components/decorate/TextPanel'
 import { StylePanel } from '../../components/decorate/StylePanel'
 import { DrawPanel } from '../../components/decorate/DrawPanel'
-import { FilterPicker } from '../../components/shared/FilterPicker'
-import { BackdropPicker } from '../../components/shared/BackdropPicker'
-import { BeautySlider } from '../../components/shared/BeautySlider'
 import { Tabs } from '../../components/ui/Tabs'
 import { Button } from '../../components/ui/Button'
-import { Slider } from '../../components/ui/Slider'
 
-type Panel = 'frames' | 'look' | 'stickers' | 'text' | 'draw' | 'style'
+type Panel = 'frames' | 'stickers' | 'text' | 'draw' | 'style'
 
 const icons: Record<Panel, ReactNode> = {
   frames: <FrameCorners weight="bold" size={18} aria-hidden="true" />,
-  look: <Drop weight="bold" size={18} aria-hidden="true" />,
   stickers: <Smiley weight="bold" size={18} aria-hidden="true" />,
   text: <TextAa weight="bold" size={18} aria-hidden="true" />,
   draw: <PaintBrush weight="bold" size={18} aria-hidden="true" />,
   style: <SlidersHorizontal weight="bold" size={18} aria-hidden="true" />,
 }
 
-const order: Panel[] = ['frames', 'look', 'stickers', 'text', 'draw', 'style']
+const order: Panel[] = ['frames', 'stickers', 'text', 'draw', 'style']
 
 export default function DecorateStep() {
   const t = useT()
@@ -39,12 +33,10 @@ export default function DecorateStep() {
   const layoutId = useSession((s) => s.layoutId)
   const photos = useSession((s) => s.photos)
   const design = useDesign((s) => s.design)
-  const update = useDesign((s) => s.update)
   const selectedId = useDesign((s) => s.selectedId)
   const [panel, setPanel] = useState<Panel>('frames')
   const layout = layoutById(layoutId)
   const complete = photos.length === layout.shots && photos.every(Boolean)
-  const thumbs = useImageThumbs(photos[0] ?? null)
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -81,7 +73,7 @@ export default function DecorateStep() {
           <p className="step__lede">{t.decorate.lede}</p>
         </div>
         <div className="step__actions">
-          <Button variant="ghost" icon={<ArrowLeft weight="bold" size={18} />} onClick={() => navigate('/booth/shoot')}>
+          <Button variant="ghost" icon={<ArrowLeft weight="bold" size={18} />} onClick={() => navigate('/booth/edit')}>
             {t.decorate.shots}
           </Button>
           <Button variant="primary" size="lg" iconEnd={<ArrowRight weight="bold" size={20} />} onClick={() => navigate('/booth/save')}>
@@ -100,34 +92,6 @@ export default function DecorateStep() {
           <Tabs label={t.decorate.tools} tabs={tabs} active={panel} onChange={setPanel} idPrefix="tools" variant="chunky" />
           <div id="tools-panel" role="tabpanel" aria-labelledby={`tools-tab-${panel}`} className="decorate__body" tabIndex={0}>
             {panel === 'frames' && <FramePanel />}
-            {panel === 'look' && (
-              <div className="panel-stack">
-                <section className="panel-section" aria-labelledby="look-backdrop">
-                  <h3 id="look-backdrop" className="panel-subtitle">
-                    {t.look.backdrop}
-                  </h3>
-                  <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} />
-                </section>
-                <section className="panel-section" aria-labelledby="look-beauty">
-                  <h3 id="look-beauty" className="visually-hidden">
-                    {t.look.beauty}
-                  </h3>
-                  <BeautySlider value={design.beauty} onChange={(beauty) => update({ beauty }, { history: false })} />
-                </section>
-                <section className="panel-section" aria-labelledby="look-filter">
-                  <h3 id="look-filter" className="panel-subtitle">
-                    {t.look.filter}
-                  </h3>
-                  <Slider
-                    label={t.look.strength}
-                    value={Math.round(design.strength * 100)}
-                    onChange={(v) => update({ strength: v / 100 }, { history: false })}
-                    format={(v) => `${v}%`}
-                  />
-                  <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} idPrefix="deco-filters" />
-                </section>
-              </div>
-            )}
             {panel === 'stickers' && <StickerPanel />}
             {panel === 'text' && <TextPanel />}
             {panel === 'draw' && <DrawPanel />}

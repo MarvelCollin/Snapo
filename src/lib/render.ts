@@ -1,4 +1,4 @@
-import type { Design, CanvasEl } from '../store/design'
+import type { Design, CanvasEl, PhotoEdit } from '../store/design'
 import type { Layout, Rect, Slot } from './layouts'
 import { patternTile, heartPath } from './patterns'
 import type { Fill, Frame } from './frames'
@@ -10,6 +10,7 @@ import { backdropById, backdropSource } from './backdrops'
 import { photoMask } from './segment'
 import { drawStrokes } from './doodle'
 import { getLocale } from '../i18n'
+import { photoKey } from './photos'
 
 export type LiveFrame = { source: TexImageSource & CanvasImageSource; width: number; height: number; mask?: Mask | null }
 
@@ -26,12 +27,24 @@ export type RenderInput = {
 
 const filteredCache = new Map<string, HTMLCanvasElement>()
 
-function renderPhoto(source: TexImageSource, sw: number, sh: number, W: number, H: number, design: Design, mask: Mask | null) {
+export const editFor = (design: Design, src: string | null | undefined): PhotoEdit => (src ? design.edits?.[photoKey(src)] : undefined) ?? {}
+
+export function cropFor(sw: number, sh: number, W: number, H: number, edit: PhotoEdit) {
+  const base = coverCrop(sw, sh, W, H)
+  const zoom = Math.min(4, Math.max(1, edit.zoom ?? 1))
+  const w = base.w / zoom
+  const h = base.h / zoom
+  const cx = Math.min(1 - w / 2, Math.max(w / 2, edit.cx ?? 0.5))
+  const cy = Math.min(1 - h / 2, Math.max(h / 2, edit.cy ?? 0.5))
+  return { x: cx - w / 2, y: cy - h / 2, w, h }
+}
+
+function renderPhoto(source: TexImageSource, sw: number, sh: number, W: number, H: number, design: Design, mask: Mask | null, edit: PhotoEdit) {
   const backdrop = mask ? backdropSource(design.backdropId, W, H) : null
-  return filterToCanvas(source, filterById(design.filterId), {
+  return filterToCanvas(source, filterById(edit.filterId ?? design.filterId), {
     width: W,
     height: H,
-    crop: coverCrop(sw, sh, W, H),
+    crop: cropFor(sw, sh, W, H, edit),
     strength: design.strength,
     seed: 3.7,
     smooth: design.beauty ?? 0,
@@ -44,13 +57,14 @@ async function filteredPhoto(src: string, w: number, h: number, design: Design) 
   const W = Math.max(1, Math.round(w))
   const H = Math.max(1, Math.round(h))
   const beauty = design.beauty ?? 0
-  const key = `${src.length}:${src.slice(-48)}|${W}x${H}|${design.filterId}|${design.strength.toFixed(2)}|${beauty.toFixed(2)}|${design.backdropId}`
+  const edit = editFor(design, src)
+  const key = `${src.length}:${src.slice(-48)}|${W}x${H}|${design.filterId}|${design.strength.toFixed(2)}|${beauty.toFixed(2)}|${design.backdropId}|${JSON.stringify(edit)}`
   const hit = filteredCache.get(key)
   if (hit) return hit
   const img = await loadImage(src)
   const wantsBackdrop = backdropById(design.backdropId).kind !== 'none'
   const mask = wantsBackdrop ? await photoMask(src) : null
-  const out = renderPhoto(img, img.naturalWidth, img.naturalHeight, W, H, design, mask)
+  const out = renderPhoto(img, img.naturalWidth, img.naturalHeight, W, H, design, mask, edit)
   if (filteredCache.size > 80) filteredCache.delete(filteredCache.keys().next().value!)
   filteredCache.set(key, out)
   return out
@@ -336,7 +350,7 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
       if (frame) {
         const W = Math.max(1, Math.round(slot.w * s))
         const H = Math.max(1, Math.round(slot.h * s))
-        return renderPhoto(frame.source, frame.width, frame.height, W, H, design, frame.mask ?? null)
+        return renderPhoto(frame.source, frame.width, frame.height, W, H, design, frame.mask ?? null, editFor(design, photos[slot.photo]))
       }
       const src = photos[slot.photo]
       if (!src) return null

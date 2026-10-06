@@ -1,9 +1,9 @@
 import { GIFEncoder, quantize, applyPalette } from 'gifenc'
 import type { Design } from '../store/design'
 import type { Layout } from './layouts'
-import { exportScale, fillStyleFor, formatDate, renderComposition } from './render'
+import { cropFor, editFor, exportScale, fillStyleFor, formatDate, renderComposition } from './render'
 import { filterById } from './filters'
-import { coverCrop, filterToCanvas } from './filterEngine'
+import { filterToCanvas } from './filterEngine'
 import { loadImage } from './stickers'
 import { fontById, fontString } from './fonts'
 
@@ -50,15 +50,15 @@ export async function makeGif(layout: Layout, design: Design, photos: (string | 
   canvas.height = H
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!
   const gif = GIFEncoder()
-  const filter = filterById(design.filterId)
   const font = fontById(design.captionFont)
   const color = design.captionColor ?? design.frame.text
   const list = photos.filter((p): p is string => !!p)
 
   for (const src of list) {
     const img = await loadImage(src)
-    const crop = coverCrop(img.naturalWidth, img.naturalHeight, photoW, photoH)
-    const filtered = filterToCanvas(img, filter, { width: photoW, height: photoH, crop, strength: design.strength, seed: 2 })
+    const edit = editFor(design, src)
+    const crop = cropFor(img.naturalWidth, img.naturalHeight, photoW, photoH, edit)
+    const filtered = filterToCanvas(img, filterById(edit.filterId ?? design.filterId), { width: photoW, height: photoH, crop, strength: design.strength, seed: 2, smooth: design.beauty ?? 0 })
     ctx.fillStyle = fillStyleFor(ctx, design.frame.fill, W, H, 0.5)
     ctx.fillRect(0, 0, W, H)
     ctx.save()

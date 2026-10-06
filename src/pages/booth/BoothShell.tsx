@@ -5,7 +5,7 @@ import { useCustomFrames } from '../../store/customFrames'
 import { layoutById } from '../../lib/layouts'
 import { useT } from '../../i18n'
 
-const steps = ['layout', 'shoot', 'decorate', 'save'] as const
+const steps = ['layout', 'shoot', 'edit', 'decorate', 'save'] as const
 
 export default function BoothShell() {
   const t = useT()

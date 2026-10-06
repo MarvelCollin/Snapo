@@ -20,13 +20,10 @@ import { ClipRecorder, saveClip } from '../../lib/clips'
 import { nextPose, poseSticker, type PoseId } from '../../lib/poses'
 import { stickerSrc } from '../../lib/stickers'
 import { useCamera } from '../../hooks/useCamera'
-import { useFilterThumbs } from '../../hooks/useFilterThumbs'
 import { captureFrame, fileToPhoto, beep, shutterSound, photoKey } from '../../lib/photos'
 import { useT } from '../../i18n'
 import { LiveView } from '../../components/shoot/LiveView'
-import { FilterPicker } from '../../components/shared/FilterPicker'
 import { BackdropPicker } from '../../components/shared/BackdropPicker'
-import { BeautySlider } from '../../components/shared/BeautySlider'
 import { CompositionCanvas } from '../../components/shared/CompositionCanvas'
 import { Button } from '../../components/ui/Button'
 import { IconButton } from '../../components/ui/IconButton'
@@ -38,7 +35,6 @@ import { toast } from '../../store/toasts'
 const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms))
 
 type Phase = 'idle' | 'countdown' | 'between'
-type Look = 'filter' | 'backdrop' | 'beauty'
 
 export default function ShootStep() {
   const t = useT()
@@ -64,9 +60,8 @@ export default function ShootStep() {
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const layout = layoutById(layoutId)
-  const filter = filterById(design.filterId)
+  const filter = filterById('original')
   const { videoRef, status, start, switchCamera, canSwitch } = useCamera()
-  const { thumbs, fromVideo } = useFilterThumbs()
   const segStatus = useSegmenterStatus()
 
   const [phase, setPhase] = useState<Phase>('idle')
@@ -76,7 +71,6 @@ export default function ShootStep() {
   const [current, setCurrent] = useState<number | null>(null)
   const [run, setRun] = useState<{ index: number; total: number } | null>(null)
   const [pose, setPose] = useState<PoseId | null>(null)
-  const [look, setLook] = useState<Look>('filter')
   const [confirmRetake, setConfirmRetake] = useState(false)
   const cancelRef = useRef(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -94,18 +88,6 @@ export default function ShootStep() {
     return slot.w / slot.h
   }
   const aspect = aspectFor(current ?? target)
-
-  useEffect(() => {
-    if (!live) return
-    const first = window.setTimeout(() => fromVideo(videoRef.current, mirror), 700)
-    const id = window.setInterval(() => {
-      if (phase === 'idle') fromVideo(videoRef.current, mirror)
-    }, 6000)
-    return () => {
-      window.clearTimeout(first)
-      window.clearInterval(id)
-    }
-  }, [live, mirror, phase, fromVideo, videoRef])
 
   const shoot = async (plan: number[]) => {
     if (!videoRef.current || !plan.length) return
@@ -330,23 +312,7 @@ export default function ShootStep() {
           </div>
 
           <div className="shoot__look">
-            <Segmented<Look>
-              label={t.shoot.lookLabel}
-              hideLabel
-              size="sm"
-              value={look}
-              onChange={setLook}
-              options={[
-                { value: 'filter', label: t.shoot.look.filter },
-                { value: 'backdrop', label: t.shoot.look.backdrop },
-                { value: 'beauty', label: t.shoot.look.beauty },
-              ]}
-            />
-            {look === 'filter' && (
-              <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} variant="rail" idPrefix="shoot-filters" />
-            )}
-            {look === 'backdrop' && <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} variant="rail" />}
-            {look === 'beauty' && <BeautySlider value={design.beauty} onChange={(beauty) => update({ beauty }, { history: false })} />}
+            <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} variant="rail" />
           </div>
         </div>
 
@@ -372,7 +338,7 @@ export default function ShootStep() {
               block
               iconEnd={<ArrowRight weight="bold" size={20} />}
               disabled={!complete || busy}
-              onClick={() => navigate('/booth/decorate')}
+              onClick={() => navigate('/booth/edit')}
             >
               {t.shoot.decorate}
             </Button>

@@ -30,6 +30,8 @@ export type WordEl = {
 
 export type CanvasEl = StickerEl | WordEl
 
+export type PhotoEdit = { filterId?: string; zoom?: number; cx?: number; cy?: number }
+
 export type DateStyle = 'dots' | 'long' | 'short'
 
 export type Design = {
@@ -48,6 +50,7 @@ export type Design = {
   beauty: number
   backdropId: string
   strokes: Stroke[]
+  edits: Record<string, PhotoEdit>
 }
 
 export const defaultDesign = (): Design => ({
@@ -56,6 +59,7 @@ export const defaultDesign = (): Design => ({
   beauty: 0.3,
   backdropId: 'none',
   strokes: [],
+  edits: {},
   frame: { ...frameById('strawberry-milk') },
   photoRadius: 0,
   photoOutline: 'frame',
@@ -86,6 +90,8 @@ type DesignState = {
   reorderElement: (id: string, dir: 'up' | 'down') => void
   addStroke: (stroke: Stroke) => void
   removeStrokes: (ids: string[], opts?: { history?: boolean }) => void
+  editPhoto: (key: string, patch: PhotoEdit, opts?: { history?: boolean }) => void
+  setFilterForAll: (filterId: string) => void
   reset: () => void
 }
 
@@ -161,6 +167,18 @@ export const useDesign = create<DesignState>()(
           if (!ids.length) return
           if (opts?.history !== false) push()
           set({ design: { ...get().design, strokes: get().design.strokes.filter((s) => !ids.includes(s.id)) } })
+        },
+        editPhoto: (key, patch, opts) => {
+          if (opts?.history !== false) push()
+          const edits = { ...get().design.edits }
+          edits[key] = { ...edits[key], ...patch }
+          set({ design: { ...get().design, edits } })
+        },
+        setFilterForAll: (filterId) => {
+          push()
+          const edits: Record<string, PhotoEdit> = {}
+          for (const [key, edit] of Object.entries(get().design.edits)) edits[key] = { ...edit, filterId: undefined }
+          set({ design: { ...get().design, filterId, edits } })
         },
         reset: () => set({ design: defaultDesign(), past: [], future: [], selectedId: null, createdAt: Date.now() }),
       }

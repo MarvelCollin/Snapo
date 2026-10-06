@@ -8,6 +8,7 @@ import { useT } from './i18n'
 
 const LayoutStep = lazy(() => import('./pages/booth/LayoutStep'))
 const ShootStep = lazy(() => import('./pages/booth/ShootStep'))
+const EditStep = lazy(() => import('./pages/booth/EditStep'))
 const DecorateStep = lazy(() => import('./pages/booth/DecorateStep'))
 const SaveStep = lazy(() => import('./pages/booth/SaveStep'))
 const GalleryPage = lazy(() => import('./pages/GalleryPage'))
@@ -50,6 +51,7 @@ export default function App() {
               <Route index element={<Navigate to="layout" replace />} />
               <Route path="layout" element={<LayoutStep />} />
               <Route path="shoot" element={<ShootStep />} />
+              <Route path="edit" element={<EditStep />} />
               <Route path="decorate" element={<DecorateStep />} />
               <Route path="save" element={<SaveStep />} />
             </Route>
