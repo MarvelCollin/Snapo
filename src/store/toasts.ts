@@ -10,7 +10,7 @@ export type Toast = {
 
 type ToastState = {
   toasts: Toast[]
-  push: (t: Omit<Toast, 'id'>, ms?: number) => void
+  push: (t: Omit<Toast, 'id'>, ms?: number) => number
   dismiss: (id: number) => void
 }
 
@@ -22,6 +22,7 @@ export const useToasts = create<ToastState>((set, get) => ({
     const id = ++seq
     set({ toasts: [...get().toasts.slice(-2), { ...t, id }] })
     window.setTimeout(() => get().dismiss(id), ms)
+    return id
   },
   dismiss: (id) => set({ toasts: get().toasts.filter((t) => t.id !== id) }),
 }))

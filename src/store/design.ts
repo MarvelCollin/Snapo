@@ -4,6 +4,8 @@ import { frameById, type Frame } from '../lib/frames'
 import type { WordSpec } from '../lib/stickers'
 import type { Stroke } from '../lib/doodle'
 import { idbStorage } from '../lib/idbStorage'
+import { starterTemplate, templateDesign } from '../lib/templates'
+import { getT } from '../i18n'
 
 export type StickerEl = {
   id: string
@@ -51,6 +53,7 @@ export type Design = {
   backdropId: string
   strokes: Stroke[]
   edits: Record<string, PhotoEdit>
+  template?: string
 }
 
 export const defaultDesign = (): Design => ({
@@ -71,6 +74,8 @@ export const defaultDesign = (): Design => ({
   showLogo: true,
   elements: [],
 })
+
+export const starterDesign = () => templateDesign(defaultDesign(), starterTemplate, getT().layout.captions[starterTemplate.id])
 
 type DesignState = {
   design: Design
@@ -107,7 +112,7 @@ export const useDesign = create<DesignState>()(
         set({ past: [...past.slice(-LIMIT + 1), design], future: [] })
       }
       return {
-        design: defaultDesign(),
+        design: starterDesign(),
         past: [],
         future: [],
         selectedId: null,
@@ -180,7 +185,7 @@ export const useDesign = create<DesignState>()(
           for (const [key, edit] of Object.entries(get().design.edits)) edits[key] = { ...edit, filterId: undefined }
           set({ design: { ...get().design, filterId, edits } })
         },
-        reset: () => set({ design: defaultDesign(), past: [], future: [], selectedId: null, createdAt: Date.now() }),
+        reset: () => set({ design: starterDesign(), past: [], future: [], selectedId: null, createdAt: Date.now() }),
       }
     },
     {
@@ -189,7 +194,7 @@ export const useDesign = create<DesignState>()(
       partialize: (s) => ({ design: s.design, createdAt: s.createdAt }),
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<Pick<DesignState, 'design' | 'createdAt'>>
-        return { ...current, ...saved, design: { ...defaultDesign(), ...saved.design } }
+        return { ...current, ...saved, design: saved.design ? { ...defaultDesign(), ...saved.design } : current.design }
       },
     },
   ),

@@ -14,6 +14,14 @@ import '@fontsource/gaegu/700.css'
 import '@fontsource/silkscreen/400.css'
 import '@fontsource/dm-serif-display/400.css'
 import '@fontsource/patrick-hand/400.css'
+import '@fontsource/unifrakturmaguntia/400.css'
+import '@fontsource/playfair-display/400-italic.css'
+import '@fontsource/playfair-display/700.css'
+import '@fontsource/playfair-display/900.css'
+import '@fontsource/oswald/500.css'
+import '@fontsource/oswald/700.css'
+import '@fontsource/space-mono/400.css'
+import '@fontsource/space-mono/700.css'
 
 export type FontOption = {
   id: string
@@ -42,3 +50,19 @@ export async function ensureFonts(fonts: FontOption[] = captionFonts) {
   if (!('fonts' in document)) return
   await Promise.all(fonts.map((f) => document.fonts.load(fontString(f, 40)).catch(() => [])))
 }
+
+export const artFonts = [
+  '400 40px "UnifrakturMaguntia"',
+  'italic 400 40px "Playfair Display"',
+  '700 40px "Playfair Display"',
+  '900 40px "Playfair Display"',
+  '500 40px "Oswald"',
+  '700 40px "Oswald"',
+  '400 40px "Space Mono"',
+  '700 40px "Space Mono"',
+  '400 40px "Silkscreen"',
+  '700 40px "Caveat"',
+  '600 40px "Fredoka"',
+  '700 40px "Fredoka"',
+  '400 40px "Pacifico"',
+]

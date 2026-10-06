@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { layoutById } from '../lib/layouts'
+import { starterTemplate } from '../lib/templates'
 import { photoKey } from '../lib/photos'
 import { pruneClips } from '../lib/clips'
 import { idbStorage } from '../lib/idbStorage'
@@ -35,7 +36,7 @@ const fit = (photos: (string | null)[], n: number) => Array.from({ length: n }, 
 export const useSession = create<SessionState>()(
   persist(
     (set, get) => ({
-      layoutId: 'classic-4',
+      layoutId: starterTemplate.id,
       photos: fit([], 4),
       timer: 3,
       mirror: true,

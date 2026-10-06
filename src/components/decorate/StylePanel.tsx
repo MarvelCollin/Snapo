@@ -13,7 +13,10 @@ import { useT } from '../../i18n'
 
 export function StylePanel() {
   const t = useT()
-  const noCaption = useSession((s) => layoutById(s.layoutId).captions.length === 0)
+  const noCaption = useSession((s) => {
+    const layout = layoutById(s.layoutId)
+    return layout.captions.length === 0 && !layout.art
+  })
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const checkpoint = useDesign((s) => s.checkpoint)

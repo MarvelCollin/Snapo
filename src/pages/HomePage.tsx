@@ -8,8 +8,9 @@ import { frameById, frames } from '../lib/frames'
 import { filters } from '../lib/filters'
 import { stickers, stickerSrc, wordPresets } from '../lib/stickers'
 import { samplePhoto, samplePhotos } from '../lib/samples'
+import { templateById, templateDesign } from '../lib/templates'
 import { makeThumbs, thumbStyle, type FilterThumbs } from '../lib/filterThumbs'
-import { defaultDesign, type CanvasEl, type Design } from '../store/design'
+import { defaultDesign, useDesign, type CanvasEl, type Design } from '../store/design'
 import { useSession } from '../store/session'
 import { useT } from '../i18n'
 
@@ -50,7 +51,7 @@ const heroStrips: { layout: string; design: Partial<Design>; offset: number }[] 
   },
 ]
 
-const quickLayouts = ['classic-4', 'twin-4', 'hearts', 'bubbles', 'polaroid', 'film-4']
+const quickLayouts = ['tpl-kitty', 'tpl-newspaper', 'tpl-photocard', 'tpl-comic', 'tpl-camcorder', 'tpl-merdeka']
 const demoFilters = ['original', 'seoul', 'strawberry-milk', 'golden-hour', 'life4', 'cotton-candy', 'pink-duo', 'y2k']
 const wall = ['sparkling-heart', 'rabbit-face', 'strawberry', 'ribbon', 'rainbow', 'cat-face', 'bubble-tea', 'sparkles', 'cherry-blossom', 'teddy-bear', 'shortcake', 'victory-hand', 'crown', 'butterfly', 'star-struck', 'cherries', 'hamster', 'love-letter', 'four-leaf-clover', 'unicorn', 'balloon', 'heart-hands', 'soft-ice-cream', 'ghost']
 
@@ -75,10 +76,13 @@ export default function HomePage() {
   }, [])
 
   const base = useMemo(() => defaultDesign(), [])
-  const quickDesign = useMemo(() => ({ ...base, elements: [], caption: 'snap snap' }), [base])
+  const captions = t.layout.captions
+  const quickDesigns = useMemo(() => new Map(quickLayouts.map((id) => [id, templateDesign(base, templateById(id)!, captions[id])])), [base, captions])
 
   const start = (id: string) => {
+    const tpl = templateById(id)
     setLayout(id)
+    if (tpl) useDesign.getState().update(templateDesign(useDesign.getState().design, tpl, captions[id]))
     navigate('/booth/shoot')
   }
 
@@ -137,7 +141,7 @@ export default function HomePage() {
                 <button type="button" className="quick-card" onClick={() => start(id)}>
                   <span className="quick-card__art">
                     {photos ? (
-                      <CompositionCanvas layout={l} design={quickDesign} photos={photos.slice(0, l.shots)} displayHeight={190} displayWidth={180} label="" />
+                      <CompositionCanvas lazy layout={l} design={quickDesigns.get(id)!} photos={photos.slice(0, l.shots)} includeElements emptyLabel={false} displayHeight={190} displayWidth={180} label="" />
                     ) : (
                       <span className="skeleton quick-card__skeleton" />
                     )}

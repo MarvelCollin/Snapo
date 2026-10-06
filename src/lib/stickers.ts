@@ -139,17 +139,31 @@ export function dieCut(src: CanvasImageSource, w: number, h: number, opts: { out
   return out
 }
 
+export const canvasUrl = (c: HTMLCanvasElement, type = 'image/png', quality?: number) =>
+  new Promise<string>((resolve) => c.toBlob((b) => resolve(b ? URL.createObjectURL(b) : c.toDataURL(type, quality)), type, quality))
+
+const cutCache = new Map<string, Promise<HTMLImageElement | HTMLCanvasElement>>()
 const artCache = new Map<string, Promise<string>>()
+
+export function stickerImage(id: string, outline: boolean) {
+  const key = `${id}|${outline}`
+  const hit = cutCache.get(key)
+  if (hit) return hit
+  const p = loadImage(stickerSrc(id)).then((img) => {
+    if (!outline) return img
+    const size = img.naturalWidth || 256
+    return dieCut(img, size, size, { outline: size * 0.055, shadow: true })
+  })
+  cutCache.set(key, p)
+  p.catch(() => cutCache.delete(key))
+  return p
+}
 
 export function stickerArt(id: string, outline: boolean) {
   const key = `${id}|${outline}`
   const hit = artCache.get(key)
   if (hit) return hit
-  const p = loadImage(stickerSrc(id)).then((img) => {
-    if (!outline) return img.src
-    const size = img.naturalWidth || 256
-    return dieCut(img, size, size, { outline: size * 0.055, shadow: true }).toDataURL('image/png')
-  })
+  const p = stickerImage(id, outline).then((art) => (art instanceof HTMLImageElement ? art.src : canvasUrl(art)))
   artCache.set(key, p)
   return p
 }

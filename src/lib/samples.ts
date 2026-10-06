@@ -1,4 +1,4 @@
-import { loadImage, stickerSrc } from './stickers'
+import { canvasUrl, loadImage, stickerSrc } from './stickers'
 
 type Scene = { bg: [string, string]; hero: string; buddy: string; dots: string }
 
@@ -27,7 +27,7 @@ export function samplePhoto(index: number) {
     const c = document.createElement('canvas')
     c.width = W
     c.height = H
-    const ctx = c.getContext('2d')!
+    const ctx = c.getContext('2d', { willReadFrequently: true })!
     const g = ctx.createLinearGradient(0, 0, W * 0.4, H)
     g.addColorStop(0, s.bg[0])
     g.addColorStop(1, s.bg[1])
@@ -66,7 +66,7 @@ export function samplePhoto(index: number) {
       ctx.drawImage(buddy, -b / 2, -b / 2, b, b)
       ctx.restore()
     }
-    return c.toDataURL('image/jpeg', 0.9)
+    return canvasUrl(c, 'image/jpeg', 0.9)
   })()
   cache.set(i, p)
   return p

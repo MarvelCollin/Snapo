@@ -16,6 +16,7 @@ import {
 import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
+import { templateById, templateDesign } from '../../lib/templates'
 import { canShareFiles, canvasToBlob, download, fileStamp, makeGif, printImage, renderFinal, shareImage, thumbnailOf, toJpeg } from '../../lib/export'
 import { hasLiveClips, liveGif, liveVideo, makeLiveStrip, videoType, type LiveStrip } from '../../lib/liveStrip'
 import { saveToGallery } from '../../lib/gallery'
@@ -117,7 +118,8 @@ export default function SaveStep() {
     const backupPhotos = [...photos]
     const backup = useDesign.getState().design
     clearPhotos()
-    useDesign.getState().update({ elements: [], strokes: [] })
+    const tpl = backup.template ? templateById(backup.template) : undefined
+    useDesign.getState().update(tpl ? templateDesign(backup, tpl, backup.caption) : { elements: [], strokes: [] })
     navigate('/booth/layout')
     toast(t.save.fresh, {
       actionLabel: t.common.undo,

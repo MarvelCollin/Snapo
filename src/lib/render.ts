@@ -4,12 +4,13 @@ import { patternTile, heartPath } from './patterns'
 import type { Fill, Frame } from './frames'
 import { filterById } from './filters'
 import { coverCrop, filterToCanvas, type Mask } from './filterEngine'
-import { fontById, fontString, captionFonts } from './fonts'
-import { loadImage, stickerArt, wordArt } from './stickers'
+import { fontById, fontString, captionFonts, artFonts } from './fonts'
+import { loadImage, stickerImage, wordArt } from './stickers'
 import { backdropById, backdropSource } from './backdrops'
 import { photoMask } from './segment'
 import { drawStrokes } from './doodle'
-import { getLocale } from '../i18n'
+import { getLocale, getT } from '../i18n'
+import { artPaper, templateArt, type ArtArgs } from './templateArt'
 import { photoKey } from './photos'
 
 export type LiveFrame = { source: TexImageSource & CanvasImageSource; width: number; height: number; mask?: Mask | null }
@@ -26,6 +27,7 @@ export type RenderInput = {
 }
 
 const filteredCache = new Map<string, HTMLCanvasElement>()
+const scaledCache = new Map<string, HTMLCanvasElement>()
 
 export const editFor = (design: Design, src: string | null | undefined): PhotoEdit => (src ? design.edits?.[photoKey(src)] : undefined) ?? {}
 
@@ -53,6 +55,30 @@ function renderPhoto(source: TexImageSource, sw: number, sh: number, W: number, 
   })
 }
 
+function sourceFor(img: HTMLImageElement, src: string, W: number, H: number, edit: PhotoEdit) {
+  const sw = img.naturalWidth
+  const sh = img.naturalHeight
+  const crop = cropFor(sw, sh, W, H, edit)
+  const need = Math.max(W / (crop.w * sw), H / (crop.h * sh))
+  const long = Math.max(sw, sh)
+  const target = 2 ** Math.ceil(Math.log2(Math.max(64, long * need * 1.5)))
+  if (target >= long * 0.75) return { source: img as TexImageSource, sw, sh }
+  const key = `${src.length}:${src.slice(-48)}|${target}`
+  let c = scaledCache.get(key)
+  if (!c) {
+    const k = target / long
+    c = document.createElement('canvas')
+    c.width = Math.max(1, Math.round(sw * k))
+    c.height = Math.max(1, Math.round(sh * k))
+    const x = c.getContext('2d', { willReadFrequently: true })!
+    x.imageSmoothingQuality = 'high'
+    x.drawImage(img, 0, 0, c.width, c.height)
+    if (scaledCache.size > 32) scaledCache.delete(scaledCache.keys().next().value!)
+    scaledCache.set(key, c)
+  }
+  return { source: c as TexImageSource, sw: c.width, sh: c.height }
+}
+
 async function filteredPhoto(src: string, w: number, h: number, design: Design) {
   const W = Math.max(1, Math.round(w))
   const H = Math.max(1, Math.round(h))
@@ -64,7 +90,8 @@ async function filteredPhoto(src: string, w: number, h: number, design: Design) 
   const img = await loadImage(src)
   const wantsBackdrop = backdropById(design.backdropId).kind !== 'none'
   const mask = wantsBackdrop ? await photoMask(src) : null
-  const out = renderPhoto(img, img.naturalWidth, img.naturalHeight, W, H, design, mask, edit)
+  const { source, sw, sh } = sourceFor(img, src, W, H, edit)
+  const out = renderPhoto(source, sw, sh, W, H, design, mask, edit)
   if (filteredCache.size > 80) filteredCache.delete(filteredCache.keys().next().value!)
   filteredCache.set(key, out)
   return out
@@ -332,7 +359,7 @@ function drawEmpty(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 }
 
 export async function elementImage(el: CanvasEl) {
-  if (el.kind === 'sticker') return loadImage(await stickerArt(el.ref, el.outline))
+  if (el.kind === 'sticker') return stickerImage(el.ref, el.outline)
   return loadImage(wordArt(el.spec))
 }
 
@@ -342,7 +369,8 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
   const H = Math.round(layout.size.h * s)
   const frame = design.frame
 
-  await Promise.all(captionFonts.map((f) => document.fonts?.load(fontString(f, 40)).catch(() => [])))
+  const art = layout.art ? templateArt[layout.art] : undefined
+  await Promise.all([...captionFonts.map((f) => fontString(f, 40)), ...(art ? artFonts : [])].map((f) => document.fonts?.load(f).catch(() => [])))
 
   const slotImages = await Promise.all(
     layout.slots.map(async (slot) => {
@@ -381,6 +409,25 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
   }
 
   if (layout.decoration) drawFilm(ctx, layout, frame, s)
+
+  const date = input.date ?? new Date()
+  const artArgs: ArtArgs | null = art
+    ? {
+        c: ctx,
+        s,
+        w: W,
+        h: H,
+        ink: frame.text,
+        accent: frame.accent,
+        paper: artPaper(frame.fill),
+        caption: design.caption.trim(),
+        date,
+        locale: getLocale(),
+        t: getT().art,
+        slots: layout.slots.map((sl, i) => ({ x: sl.x, y: sl.y, w: sl.w, h: sl.h, index: i })),
+      }
+    : null
+  if (art?.under && artArgs) art.under(artArgs)
 
   const outline = outlineColor(design, frame)
 
@@ -428,8 +475,8 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
   })
 
   if (overlay) ctx.drawImage(overlay, 0, 0, W, H)
+  if (art?.over && artArgs) art.over(artArgs)
 
-  const date = input.date ?? new Date()
   for (const rect of layout.captions) drawCaption(ctx, rect, design, layout, s, date)
 
   if (input.includeElements && design.strokes?.length) drawStrokes(ctx, design.strokes, W, H)
@@ -439,7 +486,7 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
       const img = elImages[i]
       if (!img) return
       const ew = el.w * W
-      const eh = ew * (img.naturalHeight / img.naturalWidth)
+      const eh = img instanceof HTMLImageElement ? ew * (img.naturalHeight / img.naturalWidth) : ew * (img.height / img.width)
       ctx.save()
       ctx.translate(el.x * W, el.y * H)
       ctx.rotate((el.rot * Math.PI) / 180)

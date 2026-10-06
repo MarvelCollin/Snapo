@@ -10,7 +10,7 @@ export type Slot = Rect & {
   card?: boolean
 }
 
-export type LayoutGroup = 'strip' | 'grid' | 'postcard' | 'single' | 'fun' | 'mine'
+export type LayoutGroup = 'template' | 'strip' | 'grid' | 'postcard' | 'single' | 'fun' | 'mine'
 
 export type Layout = {
   id: string
@@ -24,6 +24,7 @@ export type Layout = {
   decoration?: 'film' | 'film-wide'
   shots: number
   overlay?: string
+  art?: string
 }
 
 type GridOpts = {
@@ -69,6 +70,225 @@ const grid = (o: GridOpts): Slot[] => {
 type Def = Omit<Layout, 'shots'>
 
 const defs: Def[] = [
+  {
+    id: 'tpl-newspaper',
+    name: 'Snapo Times',
+    group: 'template',
+    art: 'newspaper',
+    size: { w: 1200, h: 1600 },
+    sizeLabel: '4 x 5.3 in',
+    slots: [
+      { x: 360, y: 530, w: 790, h: 590, photo: 0 },
+      { x: 50, y: 1265, w: 360, h: 290, photo: 1 },
+      { x: 790, y: 1265, w: 360, h: 290, photo: 2 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-magazine',
+    name: 'Cover Story',
+    group: 'template',
+    art: 'magazine',
+    size: { w: 1200, h: 1600 },
+    sizeLabel: 'Magazine',
+    slots: [
+      { x: 0, y: 0, w: 1200, h: 1600, photo: 0 },
+      { x: 700, y: 1170, w: 200, h: 200, photo: 1, card: true, rotate: -6 },
+      { x: 950, y: 1130, w: 200, h: 200, photo: 2, card: true, rotate: 5 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-kitty',
+    name: 'Kitty Club',
+    group: 'template',
+    art: 'kitty',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: grid({ w: 1200, h: 1800, cols: 2, rows: 2, left: 70, top: 330, bottom: 280, gap: 40, radius: 0.08 }),
+    captions: [{ x: 70, y: 1560, w: 1060, h: 200 }],
+  },
+  {
+    id: 'tpl-bunny',
+    name: 'Bunny Picnic',
+    group: 'template',
+    art: 'bunny',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 70, y: 400, w: 330, h: 640, photo: 0, shape: 'arch' },
+      { x: 435, y: 400, w: 330, h: 640, photo: 1, shape: 'arch' },
+      { x: 800, y: 400, w: 330, h: 640, photo: 2, shape: 'arch' },
+    ],
+    captions: [{ x: 140, y: 1280, w: 920, h: 220 }],
+  },
+  {
+    id: 'tpl-bear',
+    name: 'Bear Cafe',
+    group: 'template',
+    art: 'bear',
+    size: { w: 1200, h: 1600 },
+    sizeLabel: '4 x 5.3 in',
+    slots: grid({ w: 1200, h: 1600, cols: 2, rows: 2, left: 70, top: 360, bottom: 190, gap: 36, radius: 0.05 }),
+    captions: [],
+  },
+  {
+    id: 'tpl-photocard',
+    name: 'Idol Photocard',
+    group: 'template',
+    art: 'photocard',
+    size: { w: 1100, h: 1700 },
+    sizeLabel: '55 x 85 mm',
+    slots: [{ x: 60, y: 60, w: 980, h: 1340, photo: 0, radius: 0.05 }],
+    captions: [],
+  },
+  {
+    id: 'tpl-camcorder',
+    name: 'Camcorder',
+    group: 'template',
+    art: 'camcorder',
+    size: { w: 600, h: 1900 },
+    sizeLabel: '2 x 6.3 in',
+    slots: grid({ w: 600, h: 1900, cols: 1, rows: 4, left: 34, top: 34, bottom: 300, gap: 22 }),
+    captions: [],
+  },
+  {
+    id: 'tpl-negative',
+    name: 'Film Roll 400',
+    group: 'template',
+    art: 'negative',
+    size: { w: 640, h: 1900 },
+    sizeLabel: '35mm strip',
+    slots: grid({ w: 640, h: 1900, cols: 1, rows: 4, left: 110, top: 70, bottom: 260, gap: 40 }),
+    captions: [],
+  },
+  {
+    id: 'tpl-pocket',
+    name: 'Pocket Player',
+    group: 'template',
+    art: 'pocket',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [{ x: 230, y: 220, w: 740, h: 560, photo: 0, radius: 0.02 }],
+    captions: [],
+  },
+  {
+    id: 'tpl-ticket',
+    name: 'Movie Night',
+    group: 'template',
+    art: 'ticket',
+    size: { w: 1800, h: 700 },
+    sizeLabel: 'Ticket',
+    slots: [
+      { x: 60, y: 200, w: 400, h: 360, photo: 0 },
+      { x: 485, y: 200, w: 400, h: 360, photo: 1 },
+      { x: 910, y: 200, w: 400, h: 360, photo: 2 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-receipt',
+    name: 'Snapo Mart',
+    group: 'template',
+    art: 'receipt',
+    size: { w: 700, h: 2150 },
+    sizeLabel: 'Receipt',
+    slots: [
+      { x: 60, y: 250, w: 580, h: 420, photo: 0 },
+      { x: 60, y: 700, w: 580, h: 420, photo: 1 },
+      { x: 60, y: 1150, w: 580, h: 420, photo: 2 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-boarding',
+    name: 'Snapo Air',
+    group: 'template',
+    art: 'boarding',
+    size: { w: 1800, h: 760 },
+    sizeLabel: 'Boarding pass',
+    slots: [
+      { x: 60, y: 430, w: 360, h: 280, photo: 0, radius: 0.04 },
+      { x: 440, y: 430, w: 360, h: 280, photo: 1, radius: 0.04 },
+      { x: 820, y: 430, w: 360, h: 280, photo: 2, radius: 0.04 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-comic',
+    name: 'Comic Pop',
+    group: 'template',
+    art: 'comic',
+    size: { w: 1200, h: 1700 },
+    sizeLabel: '4 x 5.7 in',
+    slots: [
+      { x: 60, y: 60, w: 1080, h: 640, photo: 0 },
+      { x: 60, y: 730, w: 520, h: 620, photo: 1 },
+      { x: 620, y: 730, w: 520, h: 620, photo: 2 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-letter',
+    name: 'Love Letter',
+    group: 'template',
+    art: 'letter',
+    size: { w: 1200, h: 1600 },
+    sizeLabel: '4 x 5.3 in',
+    slots: [
+      { x: 160, y: 640, w: 400, h: 400, photo: 0, card: true, rotate: -7 },
+      { x: 640, y: 660, w: 400, h: 400, photo: 1, card: true, rotate: 6 },
+    ],
+    captions: [{ x: 100, y: 1250, w: 1000, h: 260 }],
+  },
+  {
+    id: 'tpl-birthday',
+    name: 'Birthday Bash',
+    group: 'template',
+    art: 'birthday',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: grid({ w: 1200, h: 1800, cols: 2, rows: 2, left: 70, top: 360, bottom: 240, gap: 36, radius: 0.04 }),
+    captions: [{ x: 70, y: 180, w: 1060, h: 150 }],
+  },
+  {
+    id: 'tpl-graduation',
+    name: 'Class Of',
+    group: 'template',
+    art: 'graduation',
+    size: { w: 1200, h: 1600 },
+    sizeLabel: '4 x 5.3 in',
+    slots: [
+      { x: 60, y: 330, w: 1080, h: 600, photo: 0, radius: 0.02 },
+      { x: 60, y: 960, w: 525, h: 430, photo: 1, radius: 0.02 },
+      { x: 615, y: 960, w: 525, h: 430, photo: 2, radius: 0.02 },
+    ],
+    captions: [],
+  },
+  {
+    id: 'tpl-merdeka',
+    name: 'Dirgahayu',
+    group: 'template',
+    art: 'merdeka',
+    size: { w: 600, h: 1900 },
+    sizeLabel: '2 x 6.3 in',
+    slots: grid({ w: 600, h: 1900, cols: 1, rows: 4, left: 40, top: 300, bottom: 280, gap: 22 }),
+    captions: [],
+  },
+  {
+    id: 'tpl-lebaran',
+    name: 'Lebaran Day',
+    group: 'template',
+    art: 'lebaran',
+    size: { w: 1200, h: 1600 },
+    sizeLabel: '4 x 5.3 in',
+    slots: [
+      { x: 80, y: 360, w: 320, h: 640, photo: 0, shape: 'arch' },
+      { x: 440, y: 360, w: 320, h: 640, photo: 1, shape: 'arch' },
+      { x: 800, y: 360, w: 320, h: 640, photo: 2, shape: 'arch' },
+    ],
+    captions: [{ x: 80, y: 1200, w: 1040, h: 260 }],
+  },
   {
     id: 'classic-4',
     name: 'Classic Four',
@@ -349,7 +569,7 @@ export const layouts: Layout[] = defs.map((d) => ({
   shots: d.slots.reduce((m, s) => Math.max(m, s.photo + 1), 0),
 }))
 
-export const layoutGroups: (LayoutGroup | 'all')[] = ['all', 'strip', 'grid', 'postcard', 'single', 'fun', 'mine']
+export const layoutGroups: (LayoutGroup | 'all')[] = ['template', 'all', 'strip', 'grid', 'postcard', 'single', 'fun', 'mine']
 
 const custom = new Map<string, Layout>()
 
@@ -358,4 +578,6 @@ export function setCustomLayouts(list: Layout[]) {
   for (const l of list) custom.set(l.id, l)
 }
 
-export const layoutById = (id: string) => custom.get(id) ?? layouts.find((l) => l.id === id) ?? layouts[0]
+const fallback = layouts.find((l) => l.id === 'classic-4') ?? layouts[0]
+
+export const layoutById = (id: string) => custom.get(id) ?? layouts.find((l) => l.id === id) ?? fallback
