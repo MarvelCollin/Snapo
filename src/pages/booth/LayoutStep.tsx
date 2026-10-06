@@ -20,7 +20,7 @@ export default function LayoutStep() {
   const selected = layoutById(layoutId)
 
   const list = useMemo(() => (group === 'all' ? layouts : layouts.filter((l) => l.group === group)), [group])
-  const thumbDesign = useMemo(() => ({ ...design, elements: [] }), [design])
+  const thumbDesign = useMemo(() => ({ ...design, elements: [], strokes: [] }), [design])
 
   const tabs = layoutGroups.map((id) => ({
     id,

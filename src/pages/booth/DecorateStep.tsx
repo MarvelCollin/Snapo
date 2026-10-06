@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Drop, FrameCorners, Smiley, TextAa, SlidersHorizontal } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, Drop, FrameCorners, Smiley, TextAa, SlidersHorizontal, PaintBrush } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
@@ -12,6 +12,7 @@ import { FramePanel } from '../../components/decorate/FramePanel'
 import { StickerPanel } from '../../components/decorate/StickerPanel'
 import { TextPanel } from '../../components/decorate/TextPanel'
 import { StylePanel } from '../../components/decorate/StylePanel'
+import { DrawPanel } from '../../components/decorate/DrawPanel'
 import { FilterPicker } from '../../components/shared/FilterPicker'
 import { BackdropPicker } from '../../components/shared/BackdropPicker'
 import { BeautySlider } from '../../components/shared/BeautySlider'
@@ -19,17 +20,18 @@ import { Tabs } from '../../components/ui/Tabs'
 import { Button } from '../../components/ui/Button'
 import { Slider } from '../../components/ui/Slider'
 
-type Panel = 'frames' | 'look' | 'stickers' | 'text' | 'style'
+type Panel = 'frames' | 'look' | 'stickers' | 'text' | 'draw' | 'style'
 
 const icons: Record<Panel, ReactNode> = {
   frames: <FrameCorners weight="bold" size={18} aria-hidden="true" />,
   look: <Drop weight="bold" size={18} aria-hidden="true" />,
   stickers: <Smiley weight="bold" size={18} aria-hidden="true" />,
   text: <TextAa weight="bold" size={18} aria-hidden="true" />,
+  draw: <PaintBrush weight="bold" size={18} aria-hidden="true" />,
   style: <SlidersHorizontal weight="bold" size={18} aria-hidden="true" />,
 }
 
-const order: Panel[] = ['frames', 'look', 'stickers', 'text', 'style']
+const order: Panel[] = ['frames', 'look', 'stickers', 'text', 'draw', 'style']
 
 export default function DecorateStep() {
   const t = useT()
@@ -90,8 +92,8 @@ export default function DecorateStep() {
 
       <div className="decorate">
         <div className="decorate__stage">
-          <ElementToolbar />
-          <Stage layout={layout} photos={photos} />
+          <ElementToolbar drawing={panel === 'draw'} />
+          <Stage layout={layout} photos={photos} drawing={panel === 'draw'} />
         </div>
 
         <aside className="decorate__panel" aria-label={t.decorate.tools}>
@@ -128,6 +130,7 @@ export default function DecorateStep() {
             )}
             {panel === 'stickers' && <StickerPanel />}
             {panel === 'text' && <TextPanel />}
+            {panel === 'draw' && <DrawPanel />}
             {panel === 'style' && <StylePanel />}
           </div>
         </aside>

@@ -8,6 +8,7 @@ import { fontById, fontString, captionFonts } from './fonts'
 import { loadImage, stickerArt, wordArt } from './stickers'
 import { backdropById, backdropSource } from './backdrops'
 import { photoMask } from './segment'
+import { drawStrokes } from './doodle'
 import { getLocale } from '../i18n'
 
 export type LiveFrame = { source: TexImageSource & CanvasImageSource; width: number; height: number; mask?: Mask | null }
@@ -413,6 +414,8 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
 
   const date = input.date ?? new Date()
   for (const rect of layout.captions) drawCaption(ctx, rect, design, layout, s, date)
+
+  if (input.includeElements && design.strokes?.length) drawStrokes(ctx, design.strokes, W, H)
 
   if (input.includeElements) {
     design.elements.forEach((el, i) => {

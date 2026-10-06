@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { frameById, type Frame } from '../lib/frames'
 import type { WordSpec } from '../lib/stickers'
+import type { Stroke } from '../lib/doodle'
 import { idbStorage } from '../lib/idbStorage'
 
 export type StickerEl = {
@@ -46,6 +47,7 @@ export type Design = {
   elements: CanvasEl[]
   beauty: number
   backdropId: string
+  strokes: Stroke[]
 }
 
 export const defaultDesign = (): Design => ({
@@ -53,6 +55,7 @@ export const defaultDesign = (): Design => ({
   strength: 1,
   beauty: 0.3,
   backdropId: 'none',
+  strokes: [],
   frame: { ...frameById('strawberry-milk') },
   photoRadius: 0,
   photoOutline: 'frame',
@@ -81,6 +84,8 @@ type DesignState = {
   removeElement: (id: string) => void
   duplicateElement: (id: string) => void
   reorderElement: (id: string, dir: 'up' | 'down') => void
+  addStroke: (stroke: Stroke) => void
+  removeStrokes: (ids: string[], opts?: { history?: boolean }) => void
   reset: () => void
 }
 
@@ -147,6 +152,15 @@ export const useDesign = create<DesignState>()(
           push()
           ;[list[i], list[j]] = [list[j], list[i]]
           set({ design: { ...get().design, elements: list } })
+        },
+        addStroke: (stroke) => {
+          push()
+          set({ design: { ...get().design, strokes: [...get().design.strokes, stroke] } })
+        },
+        removeStrokes: (ids, opts) => {
+          if (!ids.length) return
+          if (opts?.history !== false) push()
+          set({ design: { ...get().design, strokes: get().design.strokes.filter((s) => !ids.includes(s.id)) } })
         },
         reset: () => set({ design: defaultDesign(), past: [], future: [], selectedId: null, createdAt: Date.now() }),
       }

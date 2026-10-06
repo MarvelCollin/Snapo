@@ -377,7 +377,7 @@ export default function ShootStep() {
           <div className="shoot__preview">
             <CompositionCanvas
               layout={layout}
-              design={{ ...design, elements: [] }}
+              design={{ ...design, elements: [], strokes: [] }}
               photos={photos}
               displayHeight={300}
               displayWidth={260}

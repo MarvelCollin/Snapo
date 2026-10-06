@@ -79,7 +79,7 @@ export function PickDialog({ open, onClose }: Props) {
           </ul>
         </div>
         <aside className="pick__side" aria-label={t.pick.preview}>
-          <CompositionCanvas layout={layout} design={{ ...design, elements: [] }} photos={photos} displayHeight={340} displayWidth={220} label={t.pick.preview} />
+          <CompositionCanvas layout={layout} design={{ ...design, elements: [], strokes: [] }} photos={photos} displayHeight={340} displayWidth={220} label={t.pick.preview} />
           <p className="pick__count" aria-live="polite">
             {t.pick.count(filled, layout.shots)}
           </p>

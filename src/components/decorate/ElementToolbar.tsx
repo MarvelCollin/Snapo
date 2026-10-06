@@ -17,11 +17,11 @@ import { useT } from '../../i18n'
 import { IconButton } from '../ui/IconButton'
 import { useElementName } from '../../hooks/useElementName'
 
-export function ElementToolbar() {
+export function ElementToolbar({ drawing = false }: { drawing?: boolean }) {
   const t = useT()
   const elementName = useElementName()
   const { design, selectedId, updateElement, removeElement, duplicateElement, reorderElement, undo, redo, past, future } = useDesign()
-  const el = design.elements.find((e) => e.id === selectedId)
+  const el = drawing ? undefined : design.elements.find((e) => e.id === selectedId)
 
   return (
     <div className="el-toolbar" role="toolbar" aria-label={t.decorate.edit}>
@@ -53,7 +53,7 @@ export function ElementToolbar() {
           <IconButton label={t.decorate.delete} tone="danger" icon={<Trash weight="bold" size={20} />} onClick={() => removeElement(el.id)} tooltipSide="bottom" />
         </div>
       ) : (
-        <p className="el-toolbar__hint">{design.elements.length ? t.decorate.hintHas : t.decorate.hintNone}</p>
+        <p className="el-toolbar__hint">{drawing ? t.decorate.hintDraw : design.elements.length ? t.decorate.hintHas : t.decorate.hintNone}</p>
       )}
     </div>
   )

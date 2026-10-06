@@ -117,7 +117,7 @@ export default function SaveStep() {
     const backupPhotos = [...photos]
     const backup = useDesign.getState().design
     clearPhotos()
-    useDesign.getState().update({ elements: [] })
+    useDesign.getState().update({ elements: [], strokes: [] })
     navigate('/booth/layout')
     toast(t.save.fresh, {
       actionLabel: t.common.undo,
