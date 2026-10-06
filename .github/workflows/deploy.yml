@@ -100,7 +100,8 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo
-            const version = `${context.sha}-${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}`
+            const { createHash } = require('node:crypto')
+            const version = createHash('sha1').update(`${context.sha}:${context.runId}:${process.env.GITHUB_RUN_ATTEMPT}`).digest('hex')
             const { data } = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
               owner,
               repo,
