@@ -10,17 +10,23 @@ import {
   ShareNetwork,
   Sparkle,
   CheckCircle,
+  VideoCamera,
+  Gif,
 } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
 import { canShareFiles, canvasToBlob, download, fileStamp, makeGif, printImage, renderFinal, shareImage, thumbnailOf, toJpeg } from '../../lib/export'
+import { hasLiveClips, liveGif, liveVideo, makeLiveStrip, videoType, type LiveStrip } from '../../lib/liveStrip'
 import { saveToGallery } from '../../lib/gallery'
 import { useT } from '../../i18n'
 import { Button } from '../../components/ui/Button'
+import { Segmented } from '../../components/ui/Segmented'
+import { LivePlayer } from '../../components/save/LivePlayer'
 import { toast } from '../../store/toasts'
 
-type Busy = null | 'jpg' | 'gif' | 'share' | 'gallery'
+type Busy = null | 'jpg' | 'gif' | 'share' | 'gallery' | 'video' | 'livegif'
+type LiveState = { status: 'none' | 'loading' | 'error' } | { status: 'ready'; strip: LiveStrip }
 
 export default function SaveStep() {
   const t = useT()
@@ -34,8 +40,11 @@ export default function SaveStep() {
   const [busy, setBusy] = useState<Busy>(null)
   const [savedId, setSavedId] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
+  const [live, setLive] = useState<LiveState>({ status: 'none' })
+  const [view, setView] = useState<'photo' | 'live'>('photo')
   const urlRef = useRef<string | null>(null)
   const share = useMemo(canShareFiles, [])
+  const canVideo = useMemo(() => !!videoType(), [])
   const name = useMemo(() => `snapo-${fileStamp()}`, [])
 
   useEffect(() => {
@@ -49,8 +58,20 @@ export default function SaveStep() {
         const url = URL.createObjectURL(blob)
         urlRef.current = url
         setPng({ blob, url, canvas })
+        if (!(await hasLiveClips(photos)) || !alive) return
+        setLive({ status: 'loading' })
+        const strip = await makeLiveStrip(layout, design, photos)
+        if (!alive) return
+        setLive(strip ? { status: 'ready', strip } : { status: 'none' })
       })
-      .catch(() => alive && setError(true))
+      .catch(() => {
+        if (!alive) return
+        setPng((p) => {
+          if (!p) setError(true)
+          return p
+        })
+        setLive((l) => (l.status === 'loading' ? { status: 'error' } : l))
+      })
     return () => {
       alive = false
       if (urlRef.current) URL.revokeObjectURL(urlRef.current)
@@ -109,13 +130,30 @@ export default function SaveStep() {
   }
 
   const ratio = layout.size.w / layout.size.h
+  const strip = live.status === 'ready' ? live.strip : null
+  const showLive = view === 'live' && strip
 
   return (
     <section className="step step--save" aria-labelledby="save-title">
       <div className="save">
         <div className="save__preview">
+          {strip && (
+            <Segmented<'photo' | 'live'>
+              label={t.save.view}
+              hideLabel
+              size="sm"
+              value={view}
+              onChange={setView}
+              options={[
+                { value: 'photo', label: t.save.photo },
+                { value: 'live', label: t.save.live },
+              ]}
+            />
+          )}
           <div className="save__frame" style={{ aspectRatio: String(ratio), ['--ratio' as string]: ratio }}>
-            {png ? (
+            {showLive ? (
+              <LivePlayer strip={strip} label={t.save.liveAlt(layout.name)} />
+            ) : png ? (
               <img src={png.url} alt={t.save.alt(layout.name)} className="save__img" />
             ) : error ? (
               <div className="save__error">
@@ -128,6 +166,13 @@ export default function SaveStep() {
               <div className="skeleton save__skeleton" aria-label={t.save.drawingLabel} aria-busy="true" />
             )}
           </div>
+          {live.status === 'loading' && (
+            <p className="look-status" aria-live="polite">
+              <span className="btn__spinner" aria-hidden="true" />
+              {t.save.making}
+            </p>
+          )}
+          {live.status === 'error' && <p className="look-status look-status--error">{t.save.liveFailed}</p>}
         </div>
 
         <div className="save__side">
@@ -188,6 +233,38 @@ export default function SaveStep() {
                 {t.save.print}
               </Button>
             </div>
+
+            {strip && (
+              <div className="save__live">
+                <h2 className="panel-title">{t.save.liveTitle}</h2>
+                <p className="field__hint">{t.save.liveText}</p>
+                <div className="save__grid">
+                  {canVideo && (
+                    <Button
+                      icon={<VideoCamera weight="bold" size={20} />}
+                      loading={busy === 'video'}
+                      disabled={!!busy && busy !== 'video'}
+                      onClick={() =>
+                        run('video', async () => {
+                          const { blob, ext } = await liveVideo(strip)
+                          download(blob, `${name}-live.${ext}`)
+                        })
+                      }
+                    >
+                      {t.save.liveVideo}
+                    </Button>
+                  )}
+                  <Button
+                    icon={<Gif weight="bold" size={20} />}
+                    loading={busy === 'livegif'}
+                    disabled={!!busy && busy !== 'livegif'}
+                    onClick={() => run('livegif', async () => download(await liveGif(strip), `${name}-live.gif`))}
+                  >
+                    {t.save.liveGif}
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {savedId ? (
               <p className="save__saved">

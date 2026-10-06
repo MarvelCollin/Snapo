@@ -10,6 +10,8 @@ import { backdropById, backdropSource } from './backdrops'
 import { photoMask } from './segment'
 import { getLocale } from '../i18n'
 
+export type LiveFrame = { source: TexImageSource & CanvasImageSource; width: number; height: number; mask?: Mask | null }
+
 export type RenderInput = {
   layout: Layout
   design: Design
@@ -18,6 +20,7 @@ export type RenderInput = {
   includeElements?: boolean
   date?: Date
   emptyLabel?: boolean
+  frames?: (LiveFrame | null)[]
 }
 
 const filteredCache = new Map<string, HTMLCanvasElement>()
@@ -328,6 +331,12 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
 
   const slotImages = await Promise.all(
     layout.slots.map(async (slot) => {
+      const frame = input.frames?.[slot.photo]
+      if (frame) {
+        const W = Math.max(1, Math.round(slot.w * s))
+        const H = Math.max(1, Math.round(slot.h * s))
+        return renderPhoto(frame.source, frame.width, frame.height, W, H, design, frame.mask ?? null)
+      }
       const src = photos[slot.photo]
       if (!src) return null
       return filteredPhoto(src, slot.w * s, slot.h * s, design)

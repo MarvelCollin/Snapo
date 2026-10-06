@@ -17,11 +17,12 @@ import { layoutById } from '../../lib/layouts'
 import { filterById } from '../../lib/filters'
 import { backdropById } from '../../lib/backdrops'
 import { useSegmenterStatus } from '../../hooks/useSegmenterStatus'
+import { ClipRecorder, saveClip } from '../../lib/clips'
 import { nextPose, poseSticker, type PoseId } from '../../lib/poses'
 import { stickerSrc } from '../../lib/stickers'
 import { useCamera } from '../../hooks/useCamera'
 import { useFilterThumbs } from '../../hooks/useFilterThumbs'
-import { captureFrame, fileToPhoto, beep, shutterSound } from '../../lib/photos'
+import { captureFrame, fileToPhoto, beep, shutterSound, photoKey } from '../../lib/photos'
 import { useT } from '../../i18n'
 import { LiveView } from '../../components/shoot/LiveView'
 import { FilterPicker } from '../../components/shared/FilterPicker'
@@ -54,6 +55,7 @@ export default function ShootStep() {
     sound,
     bonus,
     poses,
+    live: recordLive,
     setPhoto,
     addTake,
     setTimer,
@@ -63,6 +65,7 @@ export default function ShootStep() {
     setPhotos,
     setBonus,
     setPoses,
+    setLive,
   } = useSession()
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
@@ -124,13 +127,18 @@ export default function ShootStep() {
       setRun({ index: k, total: plan.length })
       setPose(poses ? posePlan[k] : null)
       setPhase('countdown')
+      const recorder = recordLive && videoRef.current ? new ClipRecorder(videoRef.current, mirror) : null
+      recorder?.start()
       for (let n: number = timer; n > 0; n--) {
         if (cancelRef.current) break
         setCount(n)
         if (sound) beep(n === 1 ? 1040 : 780)
         await sleep(1000)
       }
-      if (cancelRef.current) break
+      if (cancelRef.current) {
+        recorder?.stop()
+        break
+      }
       setCount(0)
       setFlash((f) => f + 1)
       if (sound) shutterSound()
@@ -140,6 +148,12 @@ export default function ShootStep() {
         addTake(photo)
         if (slot !== null) setPhoto(slot, photo)
         taken++
+        recorder
+          ?.finish()
+          .then((frames) => saveClip(photoKey(photo), frames))
+          .catch(() => undefined)
+      } else {
+        recorder?.stop()
       }
       if (k < plan.length - 1) {
         setPose(poses ? posePlan[k + 1] : null)
@@ -463,6 +477,7 @@ export default function ShootStep() {
             </div>
             <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
             <Switch label={t.shoot.poses} hint={t.shoot.posesHint} checked={poses} onChange={setPoses} />
+            <Switch label={t.shoot.live} hint={t.shoot.liveHint} checked={recordLive} onChange={setLive} />
             <Switch label={t.shoot.mirror} hint={t.shoot.mirrorHint} checked={mirror} onChange={setMirror} />
             <Switch label={t.shoot.sounds} hint={t.shoot.soundsHint} checked={sound} onChange={setSound} />
           </div>

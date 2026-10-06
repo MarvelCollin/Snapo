@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { layoutById } from '../lib/layouts'
+import { photoKey } from '../lib/photos'
+import { pruneClips } from '../lib/clips'
 import { idbStorage } from '../lib/idbStorage'
 
 export type Timer = 3 | 5 | 10
@@ -21,6 +23,7 @@ type SessionState = {
   sound: boolean
   bonus: Bonus
   poses: boolean
+  live: boolean
   hydrated: boolean
   setLayout: (id: string) => void
   setPhoto: (index: number, url: string | null) => void
@@ -35,6 +38,7 @@ type SessionState = {
   setSound: (v: boolean) => void
   setBonus: (v: Bonus) => void
   setPoses: (v: boolean) => void
+  setLive: (v: boolean) => void
 }
 
 const fit = (photos: (string | null)[], n: number) => Array.from({ length: n }, (_, i) => photos[i] ?? null)
@@ -51,6 +55,7 @@ export const useSession = create<SessionState>()(
       sound: true,
       bonus: 2,
       poses: true,
+      live: true,
       hydrated: false,
       setLayout: (id) => {
         const n = layoutById(id).shots
@@ -86,12 +91,18 @@ export const useSession = create<SessionState>()(
       setSound: (sound) => set({ sound }),
       setBonus: (bonus) => set({ bonus }),
       setPoses: (poses) => set({ poses }),
+      setLive: (live) => set({ live }),
     }),
     {
       name: 'snapo-session',
       storage: createJSONStorage(() => idbStorage(300)),
       partialize: ({ hydrated: _h, ...rest }) => rest,
-      onRehydrateStorage: () => () => useSession.setState({ hydrated: true }),
+      onRehydrateStorage: () => (state) => {
+        useSession.setState({ hydrated: true })
+        if (!state) return
+        const keep = [...state.photos, ...state.takes.map((t) => t.photo)].filter((p): p is string => !!p).map(photoKey)
+        pruneClips(keep).catch(() => undefined)
+      },
     },
   ),
 )
