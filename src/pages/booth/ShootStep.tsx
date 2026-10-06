@@ -16,6 +16,8 @@ import { layoutById } from '../../lib/layouts'
 import { filterById } from '../../lib/filters'
 import { backdropById } from '../../lib/backdrops'
 import { useSegmenterStatus } from '../../hooks/useSegmenterStatus'
+import { nextPose, poseSticker, type PoseId } from '../../lib/poses'
+import { stickerSrc } from '../../lib/stickers'
 import { useCamera } from '../../hooks/useCamera'
 import { useFilterThumbs } from '../../hooks/useFilterThumbs'
 import { captureFrame, fileToPhoto, beep, shutterSound } from '../../lib/photos'
@@ -47,12 +49,14 @@ export default function ShootStep() {
     mirror,
     autoSequence,
     sound,
+    poses,
     setPhoto,
     setTimer,
     setMirror,
     setAutoSequence,
     setSound,
     setPhotos,
+    setPoses,
   } = useSession()
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
@@ -67,6 +71,7 @@ export default function ShootStep() {
   const [flash, setFlash] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [current, setCurrent] = useState<number | null>(null)
+  const [pose, setPose] = useState<PoseId | null>(null)
   const [look, setLook] = useState<Look>('filter')
   const [confirmRetake, setConfirmRetake] = useState(false)
   const cancelRef = useRef(false)
@@ -101,9 +106,12 @@ export default function ShootStep() {
   const shoot = async (targets: number[]) => {
     if (!videoRef.current || !targets.length) return
     cancelRef.current = false
+    const posePlan: PoseId[] = []
+    for (let k = 0; k < targets.length; k++) posePlan.push(nextPose(posePlan[k - 1] ?? null))
     for (let k = 0; k < targets.length; k++) {
       const slot = targets[k]
       setCurrent(slot)
+      setPose(poses ? posePlan[k] : null)
       setPhase('countdown')
       for (let n: number = timer; n > 0; n--) {
         if (cancelRef.current) break
@@ -118,6 +126,7 @@ export default function ShootStep() {
       const video = videoRef.current
       if (video && video.readyState >= 2) setPhoto(slot, captureFrame(video, mirror))
       if (k < targets.length - 1) {
+        setPose(poses ? posePlan[k + 1] : null)
         setPhase('between')
         await sleep(1100)
       }
@@ -125,6 +134,7 @@ export default function ShootStep() {
     setPhase('idle')
     setCurrent(null)
     setSelected(null)
+    setPose(null)
   }
 
   const onShutter = () => {
@@ -223,12 +233,21 @@ export default function ShootStep() {
                   {t.shoot.backdropLoading}
                 </span>
               )}
+              {pose && phase !== 'idle' && (
+                <span key={`pose-${pose}-${phase}`} className="liveview__pose" aria-live="polite">
+                  <img src={stickerSrc(poseSticker(pose))} alt="" width={44} height={44} />
+                  <span>
+                    {phase === 'between' && <span className="liveview__pose-next">{t.shoot.nextPose}</span>}
+                    {t.poses[pose]}
+                  </span>
+                </span>
+              )}
               {phase === 'countdown' && count > 0 && (
                 <span key={`count-${count}`} className="liveview__count" aria-live="assertive">
                   {count}
                 </span>
               )}
-              {phase === 'between' && <span className="liveview__note">{t.shoot.nextPose}</span>}
+              {phase === 'between' && !pose && <span className="liveview__note">{t.shoot.nextPose}</span>}
               {flash > 0 && <span key={`flash-${flash}`} className="liveview__flash" aria-hidden="true" />}
               {status !== 'live' && (
                 <div className="liveview__state">
@@ -396,6 +415,7 @@ export default function ShootStep() {
               ]}
             />
             <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
+            <Switch label={t.shoot.poses} hint={t.shoot.posesHint} checked={poses} onChange={setPoses} />
             <Switch label={t.shoot.mirror} hint={t.shoot.mirrorHint} checked={mirror} onChange={setMirror} />
             <Switch label={t.shoot.sounds} hint={t.shoot.soundsHint} checked={sound} onChange={setSound} />
           </div>

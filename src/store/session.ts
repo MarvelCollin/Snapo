@@ -12,6 +12,7 @@ type SessionState = {
   mirror: boolean
   autoSequence: boolean
   sound: boolean
+  poses: boolean
   hydrated: boolean
   setLayout: (id: string) => void
   setPhoto: (index: number, url: string | null) => void
@@ -22,6 +23,7 @@ type SessionState = {
   setMirror: (m: boolean) => void
   setAutoSequence: (v: boolean) => void
   setSound: (v: boolean) => void
+  setPoses: (v: boolean) => void
 }
 
 const fit = (photos: (string | null)[], n: number) => Array.from({ length: n }, (_, i) => photos[i] ?? null)
@@ -35,6 +37,7 @@ export const useSession = create<SessionState>()(
       mirror: true,
       autoSequence: true,
       sound: true,
+      poses: true,
       hydrated: false,
       setLayout: (id) => {
         const n = layoutById(id).shots
@@ -56,6 +59,7 @@ export const useSession = create<SessionState>()(
       setMirror: (mirror) => set({ mirror }),
       setAutoSequence: (autoSequence) => set({ autoSequence }),
       setSound: (sound) => set({ sound }),
+      setPoses: (poses) => set({ poses }),
     }),
     {
       name: 'snapo-session',
