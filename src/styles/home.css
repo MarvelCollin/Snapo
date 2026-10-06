@@ -309,10 +309,11 @@
   }
 
   .hero__art {
-    height: 380px;
-    transform: scale(0.82);
-    transform-origin: top center;
-    margin-bottom: -60px;
+    width: 500px;
+    max-width: none;
+    height: 520px;
+    margin: 0 auto;
+    zoom: 0.62;
   }
 
   .quick-row {

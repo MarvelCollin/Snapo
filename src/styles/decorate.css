@@ -529,18 +529,30 @@
   }
 
   .decorate__stage {
-    position: static;
+    position: sticky;
+    top: var(--header-h);
+    z-index: 5;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    background: var(--bg);
   }
 
   .stage-wrap {
-    height: 56dvh;
-    min-height: 320px;
+    height: 44dvh;
+    min-height: 260px;
     padding: var(--space-3);
   }
 
   .decorate__panel {
     position: static;
     max-height: none;
+  }
+
+  .decorate__panel > .tabs {
+    position: sticky;
+    top: calc(var(--header-h) + 44dvh + 84px);
+    z-index: 4;
+    box-shadow: 0 6px 10px -6px oklch(0.4 0.08 10 / 0.3);
   }
 
   .decorate__body {

@@ -42,6 +42,10 @@
   box-shadow: var(--shadow-pop);
 }
 
+.btn svg {
+  flex: none;
+}
+
 .btn--primary {
   --btn-bg: var(--soft);
 }

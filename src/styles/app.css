@@ -74,6 +74,7 @@
 
 .app-main {
   outline: none;
+  overflow-x: clip;
   max-width: 1320px;
   margin: 0 auto;
   padding: var(--space-5) var(--space-4) var(--space-8);
@@ -364,6 +365,18 @@
   }
 
   .stepper__label {
+    display: none;
+  }
+
+  .stepper__list {
+    gap: var(--space-1);
+  }
+
+  .stepper__item + .stepper__item::before {
+    width: 10px;
+  }
+
+  .stepper__count {
     display: none;
   }
 
