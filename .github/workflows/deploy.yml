@@ -81,6 +81,7 @@ jobs:
           cp -r main/dist/. site/
           mkdir -p site/dev
           cp -r dev/dist/. site/dev/
+          if [ ! -f site/404.html ]; then cp dev/dist/404.html site/404.html; fi
           rm -f site/dev/404.html
           touch site/.nojekyll
           du -sh site
