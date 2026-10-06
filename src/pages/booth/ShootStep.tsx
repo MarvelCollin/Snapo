@@ -144,7 +144,7 @@ export default function ShootStep() {
       if (sound) shutterSound()
       const video = videoRef.current
       if (video && video.readyState >= 2) {
-        const photo = captureFrame(video, mirror)
+        const photo = await captureFrame(video, mirror)
         addTake(photo)
         if (slot !== null) setPhoto(slot, photo)
         taken++

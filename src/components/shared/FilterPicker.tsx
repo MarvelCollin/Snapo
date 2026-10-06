@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react'
 import { filters, filterGroups, type FilterGroup } from '../../lib/filters'
 import { Tabs } from '../ui/Tabs'
 import { useT } from '../../i18n'
+import { thumbStyle, type FilterThumbs } from '../../lib/filterThumbs'
 
 type Props = {
   value: string
   onChange: (id: string) => void
-  thumbs: Record<string, string>
+  thumbs: FilterThumbs | null
   variant?: 'rail' | 'grid'
   idPrefix: string
 }
@@ -33,7 +34,7 @@ export function FilterPicker({ value, onChange, thumbs, variant = 'grid', idPref
                 onClick={() => onChange(f.id)}
               >
                 <span className="filter-chip__img">
-                  {thumbs[f.id] ? <img src={thumbs[f.id]} alt="" width={96} height={112} /> : <span className="skeleton filter-chip__skeleton" />}
+                  {thumbs ? <span className="filter-chip__sprite" style={thumbStyle(thumbs, f.id)} /> : <span className="skeleton filter-chip__skeleton" />}
                 </span>
                 <span className="filter-chip__name">{f.name}</span>
               </button>

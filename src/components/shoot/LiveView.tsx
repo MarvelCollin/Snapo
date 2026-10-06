@@ -29,34 +29,51 @@ export function LiveView({ videoRef, live, filter, mirror, aspect, beauty = 0, b
   useEffect(() => {
     if (!live) return
     const canvas = canvasRef.current
-    if (!canvas) return
+    const source = videoRef.current
+    if (!canvas || !source) return
     engineRef.current ??= new FilterEngine(canvas)
     const engine = engineRef.current
-    let raf = 0
+    let stopped = false
+    let handle = 0
+    let lastTime = -1
     let seed = 0
     let mask: Mask | null = null
     let blend: Uint8Array | null = null
     let raw: Uint8Array | undefined
     let lastSeg = 0
     let segCost = 0
-    const held = document.createElement('canvas')
-    const hold = (video: HTMLVideoElement) => {
-      const k = Math.min(1, 1280 / Math.max(video.videoWidth, video.videoHeight))
-      const w = Math.round(video.videoWidth * k)
-      const h = Math.round(video.videoHeight * k)
-      if (held.width !== w) held.width = w
-      if (held.height !== h) held.height = h
-      held.getContext('2d')!.drawImage(video, 0, 0, w, h)
-      return held
+    let inflight = false
+    const segment = (video: HTMLVideoElement) => {
+      inflight = true
+      const t0 = performance.now()
+      const vw = video.videoWidth
+      const vh = video.videoHeight
+      createImageBitmap(video, { resizeWidth: 256, resizeHeight: Math.max(1, Math.round((256 * vh) / vw)), resizeQuality: 'low' })
+        .then((frame) => {
+          if (!stopped) {
+            const next = segmentNow(frame, frame.width, frame.height, 256, raw)
+            if (next) {
+              raw = next.data
+              if (!blend || blend.length !== next.data.length) blend = new Uint8Array(next.data)
+              else for (let i = 0; i < blend.length; i++) blend[i] = (next.data[i] * 7 + blend[i]) / 8
+              mask = { data: blend, width: next.width, height: next.height }
+            }
+          }
+          frame.close()
+        })
+        .catch(() => undefined)
+        .finally(() => {
+          segCost = performance.now() - t0
+          inflight = false
+        })
     }
-    const loop = () => {
-      raf = requestAnimationFrame(loop)
+    const draw = () => {
       const video = videoRef.current
       const box = boxRef.current
       if (!video || !box || video.readyState < 2) return
       const dpr = Math.min(2, window.devicePixelRatio || 1)
       const p = params.current
-      const width = Math.min(1280, Math.round(box.clientWidth * dpr))
+      const width = Math.max(64, Math.min(1280, Math.round(box.clientWidth * dpr), video.videoWidth || 1280))
       const height = Math.round(width / p.aspect)
       const crop = coverCrop(video.videoWidth, video.videoHeight, width, height)
       seed = (seed + 1) % 97
@@ -65,24 +82,36 @@ export function LiveView({ videoRef, live, filter, mirror, aspect, beauty = 0, b
       const now = performance.now()
       if (!wantsBackdrop) {
         mask = null
-      } else if (now - lastSeg >= Math.max(16, segCost * 1.25)) {
-        const t0 = performance.now()
-        const frame = hold(video)
-        const next = segmentNow(frame, frame.width, frame.height, 256, raw)
-        segCost = performance.now() - t0
+      } else if (!inflight && now - lastSeg >= Math.max(40, segCost)) {
         lastSeg = now
-        if (next) {
-          raw = next.data
-          if (!blend || blend.length !== next.data.length) blend = new Uint8Array(next.data)
-          else for (let i = 0; i < blend.length; i++) blend[i] = (next.data[i] * 7 + blend[i]) / 8
-          mask = { data: blend, width: next.width, height: next.height }
-        }
+        segment(video)
       }
       const backdrop = mask ? backdropSource(p.backdropId, width, height) : null
-      engine.render(mask ? held : video, p.filter, { width, height, crop, mirror: p.mirror, seed, smooth: p.beauty, mask, backdrop })
+      engine.render(video, p.filter, { width, height, crop, mirror: p.mirror, seed, smooth: p.beauty, mask, backdrop })
     }
-    loop()
-    return () => cancelAnimationFrame(raf)
+    const perFrame = typeof source.requestVideoFrameCallback === 'function'
+    if (perFrame) {
+      const onFrame = () => {
+        if (stopped) return
+        handle = source.requestVideoFrameCallback(onFrame)
+        draw()
+      }
+      handle = source.requestVideoFrameCallback(onFrame)
+    } else {
+      const loop = () => {
+        if (stopped) return
+        handle = requestAnimationFrame(loop)
+        if (source.currentTime === lastTime) return
+        lastTime = source.currentTime
+        draw()
+      }
+      loop()
+    }
+    return () => {
+      stopped = true
+      if (perFrame) source.cancelVideoFrameCallback(handle)
+      else cancelAnimationFrame(handle)
+    }
   }, [live, videoRef])
 
   return (

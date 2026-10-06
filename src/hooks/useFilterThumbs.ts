@@ -1,24 +1,50 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { makeThumbs } from '../lib/filterThumbs'
+import { makeThumbs, type FilterThumbs } from '../lib/filterThumbs'
 
 export function useFilterThumbs() {
-  const [thumbs, setThumbs] = useState<Record<string, string>>({})
+  const [thumbs, setThumbs] = useState<FilterThumbs | null>(null)
   const busy = useRef(false)
+  const current = useRef<string | null>(null)
 
-  const fromVideo = useCallback((video: HTMLVideoElement | null, mirror: boolean) => {
-    if (!video || video.readyState < 2 || busy.current) return
-    busy.current = true
-    try {
-      setThumbs(makeThumbs(video, video.videoWidth, video.videoHeight, mirror))
-    } finally {
-      busy.current = false
-    }
+  const keep = useCallback((next: FilterThumbs) => {
+    const old = current.current
+    current.current = next.src
+    setThumbs(next)
+    if (old?.startsWith('blob:')) window.setTimeout(() => URL.revokeObjectURL(old), 2000)
   }, [])
 
-  const fromImage = useCallback((img: HTMLImageElement | null) => {
-    if (!img) return
-    setThumbs(makeThumbs(img, img.naturalWidth, img.naturalHeight))
-  }, [])
+  useEffect(
+    () => () => {
+      if (current.current?.startsWith('blob:')) URL.revokeObjectURL(current.current)
+    },
+    [],
+  )
+
+  const fromVideo = useCallback(
+    async (video: HTMLVideoElement | null, mirror: boolean) => {
+      if (!video || video.readyState < 2 || busy.current) return
+      busy.current = true
+      try {
+        keep(await makeThumbs(video, video.videoWidth, video.videoHeight, mirror))
+      } finally {
+        busy.current = false
+      }
+    },
+    [keep],
+  )
+
+  const fromImage = useCallback(
+    async (img: HTMLImageElement | null) => {
+      if (!img || busy.current) return
+      busy.current = true
+      try {
+        keep(await makeThumbs(img, img.naturalWidth, img.naturalHeight))
+      } finally {
+        busy.current = false
+      }
+    },
+    [keep],
+  )
 
   return { thumbs, fromVideo, fromImage }
 }

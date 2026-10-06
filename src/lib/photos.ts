@@ -2,6 +2,21 @@ const MAX = 1600
 
 export const photoKey = (src: string) => `${src.length}:${src.slice(-40)}`
 
+const toDataUrl = (c: HTMLCanvasElement) =>
+  new Promise<string>((resolve, reject) =>
+    c.toBlob(
+      (blob) => {
+        if (!blob) return reject(new Error('Could not encode the photo'))
+        const reader = new FileReader()
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = () => reject(reader.error)
+        reader.readAsDataURL(blob)
+      },
+      'image/jpeg',
+      0.92,
+    ),
+  )
+
 export function captureFrame(video: HTMLVideoElement, mirror: boolean) {
   const vw = video.videoWidth
   const vh = video.videoHeight
@@ -17,7 +32,7 @@ export function captureFrame(video: HTMLVideoElement, mirror: boolean) {
     ctx.scale(-1, 1)
   }
   ctx.drawImage(video, 0, 0, w, h)
-  return c.toDataURL('image/jpeg', 0.92)
+  return toDataUrl(c)
 }
 
 export async function fileToPhoto(file: File) {
@@ -30,7 +45,7 @@ export async function fileToPhoto(file: File) {
   c.height = h
   c.getContext('2d')!.drawImage(bitmap, 0, 0, w, h)
   bitmap.close()
-  return c.toDataURL('image/jpeg', 0.92)
+  return toDataUrl(c)
 }
 
 let audio: AudioContext | null = null

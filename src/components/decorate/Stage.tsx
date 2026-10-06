@@ -24,16 +24,26 @@ function DoodleLayer({ w, h, active }: { w: number; h: number; active: boolean }
   const W = Math.round(w * dpr)
   const H = Math.round(h * dpr)
 
+  const done = useRef<HTMLCanvasElement | null>(null)
+
   const redraw = () => {
     const c = ref.current
-    if (!c) return
+    const cached = done.current
+    if (!c || !cached) return
     const ctx = c.getContext('2d')!
     ctx.clearRect(0, 0, c.width, c.height)
-    drawStrokes(ctx, useDesign.getState().design.strokes, c.width, c.height)
+    ctx.drawImage(cached, 0, 0)
     if (live.current) drawStroke(ctx, live.current, c.width, c.height)
   }
 
-  useEffect(redraw, [strokes, W, H])
+  useEffect(() => {
+    const cached = done.current ?? document.createElement('canvas')
+    cached.width = W
+    cached.height = H
+    drawStrokes(cached.getContext('2d')!, strokes, W, H)
+    done.current = cached
+    redraw()
+  }, [strokes, W, H])
 
   const point = (e: PointerEvent<HTMLCanvasElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()

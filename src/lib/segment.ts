@@ -69,7 +69,7 @@ function shrink(source: CanvasImageSource, w: number, h: number, max: number) {
   const ch = Math.max(1, Math.round(h * k))
   if (work.width !== cw) work.width = cw
   if (work.height !== ch) work.height = ch
-  work.getContext('2d')!.drawImage(source, 0, 0, cw, ch)
+  work.getContext('2d', { willReadFrequently: true })!.drawImage(source, 0, 0, cw, ch)
   return work
 }
 

@@ -408,6 +408,13 @@
   object-fit: cover;
 }
 
+.filter-chip__sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+}
+
 .filter-chip__skeleton {
   display: block;
   width: 100%;

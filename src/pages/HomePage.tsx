@@ -8,7 +8,7 @@ import { frameById, frames } from '../lib/frames'
 import { filters } from '../lib/filters'
 import { stickers, stickerSrc, wordPresets } from '../lib/stickers'
 import { samplePhoto, samplePhotos } from '../lib/samples'
-import { makeThumbs } from '../lib/filterThumbs'
+import { makeThumbs, thumbStyle, type FilterThumbs } from '../lib/filterThumbs'
 import { defaultDesign, type CanvasEl, type Design } from '../store/design'
 import { useSession } from '../store/session'
 import { useT } from '../i18n'
@@ -59,14 +59,14 @@ export default function HomePage() {
   const navigate = useNavigate()
   const setLayout = useSession((s) => s.setLayout)
   const [photos, setPhotos] = useState<string[] | null>(null)
-  const [demo, setDemo] = useState<Record<string, string>>({})
+  const [demo, setDemo] = useState<FilterThumbs | null>(null)
 
   useEffect(() => {
     let alive = true
     samplePhotos(9).then((p) => alive && setPhotos(p))
     samplePhoto(3).then((src) => {
       const img = new Image()
-      img.onload = () => alive && setDemo(makeThumbs(img, img.naturalWidth, img.naturalHeight))
+      img.onload = () => makeThumbs(img, img.naturalWidth, img.naturalHeight).then((t) => alive && setDemo(t))
       img.src = src
     })
     return () => {
@@ -161,7 +161,7 @@ export default function HomePage() {
             const f = filters.find((x) => x.id === id)!
             return (
               <li key={id}>
-                <span className="filter-demo__img">{demo[id] ? <img src={demo[id]} alt="" width={96} height={112} /> : <span className="skeleton" />}</span>
+                <span className="filter-demo__img">{demo ? <span className="filter-chip__sprite" style={thumbStyle(demo, id)} /> : <span className="skeleton" />}</span>
                 <span className="filter-demo__name">{f.name}</span>
               </li>
             )
