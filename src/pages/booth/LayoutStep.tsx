@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState, type DragEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, CheckCircle, Trash, UploadSimple } from '@phosphor-icons/react'
+import { ArrowRight, Trash, UploadSimple } from '@phosphor-icons/react'
 import { layouts, layoutGroups, layoutById, type Layout, type LayoutGroup } from '../../lib/layouts'
 import { templates, templateGroups, templateDesign, plainDesign, type Template, type TemplateGroup } from '../../lib/templates'
 import { samplePhotos } from '../../lib/samples'
@@ -15,6 +15,7 @@ import { Button } from '../../components/ui/Button'
 import { IconButton } from '../../components/ui/IconButton'
 import { Segmented } from '../../components/ui/Segmented'
 import { LayoutThumb } from '../../components/shared/LayoutThumb'
+import { LayoutCard } from '../../components/layout/LayoutCard'
 
 export default function LayoutStep() {
   const t = useT()
@@ -135,27 +136,8 @@ export default function LayoutStep() {
     upload(e.dataTransfer.files[0])
   }
 
-  const card = (l: Layout, active: boolean, art: ReactNode, onPick: () => void) => (
-    <button
-      type="button"
-      className={`layout-card ${active ? 'is-active' : ''}`}
-      aria-pressed={active}
-      onClick={onPick}
-      onDoubleClick={() => {
-        onPick()
-        navigate('/booth/shoot')
-      }}
-    >
-      <span className="layout-card__art">{art}</span>
-      <span className="layout-card__text">
-        <span className="layout-card__name">
-          {l.name}
-          {active && <CheckCircle weight="fill" size={20} aria-hidden="true" className="layout-card__check" />}
-        </span>
-        <span className="layout-card__meta">{t.layout.meta(l.shots, l.group === 'mine' ? t.layout.custom.sizeLabel : l.sizeLabel)}</span>
-      </span>
-    </button>
-  )
+  const meta = (l: Layout) => t.layout.meta(l.shots, l.group === 'mine' ? t.layout.custom.sizeLabel : l.sizeLabel)
+  const open = () => navigate('/booth/shoot')
 
   return (
     <section className="step step--layout" aria-labelledby="layout-title">
@@ -190,16 +172,13 @@ export default function LayoutStep() {
               const look = active && design.template === tpl.id ? design : previews.get(tpl.id)!
               return (
                 <li key={tpl.id}>
-                  {card(
-                    l,
-                    active,
-                    previewPhotos.length ? (
+                  <LayoutCard name={l.name} meta={meta(l)} active={active} onPick={() => pickTemplate(tpl)} onOpen={open}>
+                    {previewPhotos.length ? (
                       <LayoutThumb layout={l} design={look} photos={previewPhotos} includeElements emptyLabel={false} label={t.layout.preview(l.name)} />
                     ) : (
                       <span className="btn__spinner" aria-hidden="true" />
-                    ),
-                    () => pickTemplate(tpl),
-                  )}
+                    )}
+                  </LayoutCard>
                 </li>
               )
             })}
@@ -244,12 +223,9 @@ export default function LayoutStep() {
               const own = l.group === 'mine'
               return (
                 <li key={l.id} className={own ? 'layout-item--own' : undefined}>
-                  {card(
-                    l,
-                    l.id === layoutId,
-                    <LayoutThumb layout={l} design={thumbDesign} photos={photos} label={t.layout.preview(l.name)} />,
-                    () => pickLayout(l),
-                  )}
+                  <LayoutCard name={l.name} meta={meta(l)} active={l.id === layoutId} onPick={() => pickLayout(l)} onOpen={open}>
+                    <LayoutThumb layout={l} design={thumbDesign} photos={photos} label={t.layout.preview(l.name)} />
+                  </LayoutCard>
                   {own && <IconButton className="layout-card__remove" label={t.layout.custom.remove(l.name)} tone="danger" size="sm" icon={<Trash weight="bold" size={16} />} onClick={() => remove(l)} />}
                 </li>
               )
