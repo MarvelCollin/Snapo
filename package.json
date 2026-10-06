@@ -26,6 +26,7 @@
     "@phosphor-icons/react": "^2.1.10",
     "gifenc": "^1.0.3",
     "idb-keyval": "^6.3.0",
+    "qrcode-generator": "^1.5.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.4",

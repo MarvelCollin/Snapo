@@ -24,6 +24,7 @@ import { useT } from '../../i18n'
 import { Button } from '../../components/ui/Button'
 import { Segmented } from '../../components/ui/Segmented'
 import { LivePlayer } from '../../components/save/LivePlayer'
+import { QrDownload } from '../../components/save/QrDownload'
 import { toast } from '../../store/toasts'
 
 type Busy = null | 'jpg' | 'gif' | 'share' | 'gallery' | 'video' | 'livegif'
@@ -267,6 +268,15 @@ export default function SaveStep() {
                 </div>
               </div>
             )}
+
+            <QrDownload
+              disabled={!png}
+              filename={`${name}.jpg`}
+              getFile={async () => {
+                if (!png) throw new Error('not ready')
+                return toJpeg(png.canvas)
+              }}
+            />
 
             {savedId ? (
               <p className="save__saved">
