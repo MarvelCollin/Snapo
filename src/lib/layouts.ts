@@ -10,7 +10,7 @@ export type Slot = Rect & {
   card?: boolean
 }
 
-export type LayoutGroup = 'strip' | 'grid' | 'postcard' | 'single' | 'fun'
+export type LayoutGroup = 'strip' | 'grid' | 'postcard' | 'single' | 'fun' | 'mine'
 
 export type Layout = {
   id: string
@@ -23,6 +23,7 @@ export type Layout = {
   captionOverlay?: boolean
   decoration?: 'film' | 'film-wide'
   shots: number
+  overlay?: string
 }
 
 type GridOpts = {
@@ -348,6 +349,13 @@ export const layouts: Layout[] = defs.map((d) => ({
   shots: d.slots.reduce((m, s) => Math.max(m, s.photo + 1), 0),
 }))
 
-export const layoutGroups: (LayoutGroup | 'all')[] = ['all', 'strip', 'grid', 'postcard', 'single', 'fun']
+export const layoutGroups: (LayoutGroup | 'all')[] = ['all', 'strip', 'grid', 'postcard', 'single', 'fun', 'mine']
 
-export const layoutById = (id: string) => layouts.find((l) => l.id === id) ?? layouts[0]
+const custom = new Map<string, Layout>()
+
+export function setCustomLayouts(list: Layout[]) {
+  custom.clear()
+  for (const l of list) custom.set(l.id, l)
+}
+
+export const layoutById = (id: string) => custom.get(id) ?? layouts.find((l) => l.id === id) ?? layouts[0]

@@ -7,6 +7,8 @@ import { Tabs } from '../ui/Tabs'
 import { Segmented } from '../ui/Segmented'
 import { SwatchPicker } from '../ui/SwatchPicker'
 import { Slider } from '../ui/Slider'
+import { useSession } from '../../store/session'
+import { layoutById } from '../../lib/layouts'
 import { useT } from '../../i18n'
 
 const lightness = (hex: string) => {
@@ -42,6 +44,7 @@ function FillThumb({ fill, w = 64, h = 84, strip = true }: { fill: Fill; w?: num
 
 export function FramePanel() {
   const t = useT()
+  const ownFrame = useSession((s) => !!layoutById(s.layoutId).overlay)
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const [group, setGroup] = useState<FrameGroup | 'all'>('all')
@@ -73,6 +76,7 @@ export function FramePanel() {
           { value: 'custom', label: t.frames.customize },
         ]}
       />
+      {ownFrame && <p className="panel-note">{t.frames.ownFrame}</p>}
       {view === 'themes' && (
         <section className="panel-section" aria-labelledby="frame-presets">
           <h3 id="frame-presets" className="visually-hidden">

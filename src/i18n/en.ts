@@ -57,7 +57,7 @@ export const en = {
     preview: (name: string) => `${name} preview`,
     meta: (shots: number, size: string) => `${s(shots, 'shot', 'shots')}, ${size}`,
     shoot: (n: number) => `Shoot ${s(n, 'photo', 'photos')}`,
-    groups: { all: 'All', strip: 'Strips', grid: 'Grids', postcard: 'Postcards', single: 'Singles', fun: 'Shapes' },
+    groups: { all: 'All', strip: 'Strips', grid: 'Grids', postcard: 'Postcards', single: 'Singles', fun: 'Shapes', mine: 'My frames' },
     blurbs: {
       'classic-4': 'The Seoul booth original. Four landscape cuts in a tall strip.',
       trio: 'Three taller cuts, more room for your poses.',
@@ -87,6 +87,22 @@ export const en = {
       blooms: 'Flower shaped windows for a garden party feel.',
       scrapbook: 'Tilted instant prints pinned on a page.',
     } as Record<string, string>,
+    custom: {
+      upload: 'Upload your frame',
+      uploadText: 'A PNG with see-through photo spots',
+      howTo: 'Design a frame in Canva or any editor. Leave the photo spots transparent, then export it as a PNG.',
+      reading: 'Reading your frame',
+      blurb: (n: number) => `Your own frame with ${s(n, 'photo spot', 'photo spots')}.`,
+      twinBlurb: (n: number) => `Your own frame. ${s(n, 'photo', 'photos')}, printed twice.`,
+      noHoles: 'No see-through photo spots found. Export your frame as a PNG with transparent windows.',
+      tooMany: (n: number) => `Found ${n} photo spots. Snapo can fill up to 12.`,
+      notImage: 'That file is not an image Snapo can read. Try a PNG.',
+      added: (name: string, n: number) => `Added ${name} with ${s(n, 'photo spot', 'photo spots')}`,
+      remove: (name: string) => `Remove ${name}`,
+      removed: (name: string) => `Removed ${name}`,
+      empty: 'No frames yet. Upload one and it shows up here.',
+      sizeLabel: 'Your frame',
+    },
   },
   shoot: {
     title: 'Strike a pose',
@@ -247,6 +263,7 @@ export const en = {
     accentColor: 'Accent color',
     patternSize: 'Pattern size',
     emptyColor: 'Empty slot and sprocket color',
+    ownFrame: 'Your own frame sits on top, so the theme only shows through its see-through gaps.',
     groups: { all: 'All', classic: 'Classic', pastel: 'Pastel', pattern: 'Patterns', gradient: 'Gradients', season: 'Seasons', local: 'Indonesia' },
     patterns: {
       dots: 'Tiny dots',
@@ -326,6 +343,7 @@ export const en = {
     square: 'Square',
     border: 'Photo border',
     borders: { frame: 'Theme', none: 'None', white: 'White', ink: 'Ink' },
+    noCaption: 'Your own frame has no caption space. Add text stickers from the Text tab instead.',
   },
   draw: {
     tool: 'Tool',
@@ -347,6 +365,7 @@ export const en = {
   save: {
     title: 'Your strip is ready',
     lede: (layout: string, frame: string) => `${layout} with the ${frame} frame.`,
+    ledeOwn: (layout: string) => `${layout}, your own frame.`,
     size: (w: number, h: number) => `${w} by ${h} pixels, print ready.`,
     drawing: 'Drawing it in full size now.',
     png: 'Download PNG',

@@ -344,6 +344,7 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
     }),
   )
   const elImages = input.includeElements ? await Promise.all(design.elements.map((e) => elementImage(e).catch(() => null))) : []
+  const overlay = layout.overlay ? await loadImage(layout.overlay).catch(() => null) : null
 
   if (canvas.width !== W) canvas.width = W
   if (canvas.height !== H) canvas.height = H
@@ -411,6 +412,8 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
     }
     ctx.restore()
   })
+
+  if (overlay) ctx.drawImage(overlay, 0, 0, W, H)
 
   const date = input.date ?? new Date()
   for (const rect of layout.captions) drawCaption(ctx, rect, design, layout, s, date)

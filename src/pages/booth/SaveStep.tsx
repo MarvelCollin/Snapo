@@ -179,7 +179,7 @@ export default function SaveStep() {
           <header className="step__head">
             <h1 id="save-title">{t.save.title}</h1>
             <p className="step__lede">
-              {t.save.lede(layout.name, design.frame.name)} {png ? t.save.size(png.canvas.width, png.canvas.height) : t.save.drawing}
+              {layout.overlay ? t.save.ledeOwn(layout.name) : t.save.lede(layout.name, design.frame.name)} {png ? t.save.size(png.canvas.width, png.canvas.height) : t.save.drawing}
             </p>
           </header>
 

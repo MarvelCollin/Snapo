@@ -1,6 +1,7 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Check } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
+import { useCustomFrames } from '../../store/customFrames'
 import { layoutById } from '../../lib/layouts'
 import { useT } from '../../i18n'
 
@@ -10,6 +11,7 @@ export default function BoothShell() {
   const t = useT()
   const { pathname } = useLocation()
   const hydrated = useSession((s) => s.hydrated)
+  const framesReady = useCustomFrames((s) => s.hydrated)
   const photos = useSession((s) => s.photos)
   const layoutId = useSession((s) => s.layoutId)
   const complete = photos.length === layoutById(layoutId).shots && photos.every(Boolean)
@@ -48,7 +50,7 @@ export default function BoothShell() {
           })}
         </ol>
       </nav>
-      {hydrated ? (
+      {hydrated && framesReady ? (
         <Outlet />
       ) : (
         <div className="page-fallback" aria-busy="true" aria-label={t.booth.loadingSession}>

@@ -57,7 +57,7 @@ export const id: Dict = {
     preview: (name: string) => `Pratinjau ${name}`,
     meta: (shots: number, size: string) => `${shots} foto, ${size}`,
     shoot: (n: number) => `Ambil ${n} foto`,
-    groups: { all: 'Semua', strip: 'Strip', grid: 'Grid', postcard: 'Kartu pos', single: 'Satuan', fun: 'Bentuk' },
+    groups: { all: 'Semua', strip: 'Strip', grid: 'Grid', postcard: 'Kartu pos', single: 'Satuan', fun: 'Bentuk', mine: 'Frame saya' },
     blurbs: {
       'classic-4': 'Gaya asli photobox Seoul. Empat foto lebar dalam strip tinggi.',
       trio: 'Tiga foto lebih tinggi, lebih leluasa buat bergaya.',
@@ -87,6 +87,22 @@ export const id: Dict = {
       blooms: 'Jendela berbentuk bunga, berasa garden party.',
       scrapbook: 'Foto instan miring yang ditempel di halaman.',
     } as Record<string, string>,
+    custom: {
+      upload: 'Upload frame kamu',
+      uploadText: 'PNG dengan tempat foto yang transparan',
+      howTo: 'Desain frame di Canva atau aplikasi lain. Biarkan tempat fotonya transparan, lalu export sebagai PNG.',
+      reading: 'Membaca frame kamu',
+      blurb: (n: number) => `Frame buatanmu dengan ${n} tempat foto.`,
+      twinBlurb: (n: number) => `Frame buatanmu. ${n} foto, dicetak dua kali.`,
+      noHoles: 'Tidak ada tempat foto transparan. Export frame kamu sebagai PNG dengan jendela transparan.',
+      tooMany: (n: number) => `Ada ${n} tempat foto. Snapo bisa mengisi sampai 12.`,
+      notImage: 'File itu bukan gambar yang bisa dibaca Snapo. Coba pakai PNG.',
+      added: (name: string, n: number) => `${name} ditambahkan dengan ${n} tempat foto`,
+      remove: (name: string) => `Hapus ${name}`,
+      removed: (name: string) => `${name} dihapus`,
+      empty: 'Belum ada frame. Upload satu dan frame kamu muncul di sini.',
+      sizeLabel: 'Frame kamu',
+    },
   },
   shoot: {
     title: 'Ayo bergaya',
@@ -247,6 +263,7 @@ export const id: Dict = {
     accentColor: 'Warna aksen',
     patternSize: 'Ukuran motif',
     emptyColor: 'Warna slot kosong dan lubang film',
+    ownFrame: 'Frame buatanmu ada di paling atas, jadi tema cuma terlihat di celah yang transparan.',
     groups: { all: 'Semua', classic: 'Klasik', pastel: 'Pastel', pattern: 'Motif', gradient: 'Gradasi', season: 'Musim', local: 'Indonesia' },
     patterns: {
       dots: 'Titik kecil',
@@ -326,6 +343,7 @@ export const id: Dict = {
     square: 'Kotak',
     border: 'Pinggiran foto',
     borders: { frame: 'Tema', none: 'Tidak ada', white: 'Putih', ink: 'Gelap' },
+    noCaption: 'Frame buatanmu tidak punya ruang caption. Tambahkan stiker teks dari tab Teks saja.',
   },
   draw: {
     tool: 'Alat',
@@ -347,6 +365,7 @@ export const id: Dict = {
   save: {
     title: 'Strip kamu sudah jadi',
     lede: (layout: string, frame: string) => `${layout} dengan frame ${frame}.`,
+    ledeOwn: (layout: string) => `${layout}, frame buatanmu sendiri.`,
     size: (w: number, h: number) => `${w} kali ${h} piksel, siap cetak.`,
     drawing: 'Sedang digambar dalam ukuran penuh.',
     png: 'Unduh PNG',

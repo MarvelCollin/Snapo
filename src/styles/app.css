@@ -414,6 +414,41 @@
   flex: none;
 }
 
+.layout-grid > li {
+  position: relative;
+}
+
+.layout-item--own .tooltip-anchor {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+}
+
+.upload-card {
+  border-style: dashed;
+  border-color: var(--line);
+}
+
+.upload-card.is-dragging {
+  border-color: var(--ink);
+  border-style: solid;
+  background: var(--tint);
+}
+
+.upload-card__art {
+  color: var(--strong);
+}
+
+.upload-card__art .btn__spinner {
+  width: 28px;
+  height: 28px;
+}
+
+.layout-howto {
+  max-width: 64ch;
+  margin-top: var(--space-4);
+}
+
 @media (max-width: 520px) {
   .brand__word {
     display: none;

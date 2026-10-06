@@ -8,6 +8,7 @@ import './styles/shoot.css'
 import './styles/decorate.css'
 import './styles/save.css'
 import './styles/home.css'
+import './store/customFrames'
 import { useLang } from './i18n'
 import App from './App.tsx'
 

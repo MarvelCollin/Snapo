@@ -7,10 +7,13 @@ import { Switch } from '../ui/Switch'
 import { Segmented } from '../ui/Segmented'
 import { SwatchPicker } from '../ui/SwatchPicker'
 import { Slider } from '../ui/Slider'
+import { useSession } from '../../store/session'
+import { layoutById } from '../../lib/layouts'
 import { useT } from '../../i18n'
 
 export function StylePanel() {
   const t = useT()
+  const noCaption = useSession((s) => layoutById(s.layoutId).captions.length === 0)
   const design = useDesign((s) => s.design)
   const update = useDesign((s) => s.update)
   const checkpoint = useDesign((s) => s.checkpoint)
@@ -22,6 +25,7 @@ export function StylePanel() {
         <h3 id="caption-title" className="panel-subtitle">
           {t.caption.caption}
         </h3>
+        {noCaption && <p className="panel-note">{t.caption.noCaption}</p>}
         <TextField
           label={t.caption.captionText}
           value={design.caption}
