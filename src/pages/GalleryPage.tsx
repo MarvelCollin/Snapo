@@ -113,7 +113,7 @@ export default function GalleryPage() {
               <li key={item.id}>
                 <button type="button" className="gallery-card" onClick={() => setOpen(item)}>
                   <span className="gallery-card__art">
-                    <img src={item.thumb} alt="" loading="lazy" style={{ aspectRatio: `${item.width} / ${item.height}` }} />
+                    <img src={item.thumb} alt="" loading="lazy" width={item.width} height={item.height} />
                   </span>
                   <span className="gallery-card__name">{item.layoutName}</span>
                   <span className="gallery-card__meta">
