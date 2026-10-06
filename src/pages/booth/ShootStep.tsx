@@ -14,12 +14,16 @@ import { useSession, type Timer } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
 import { filterById } from '../../lib/filters'
+import { backdropById } from '../../lib/backdrops'
+import { useSegmenterStatus } from '../../hooks/useSegmenterStatus'
 import { useCamera } from '../../hooks/useCamera'
 import { useFilterThumbs } from '../../hooks/useFilterThumbs'
 import { captureFrame, fileToPhoto, beep, shutterSound } from '../../lib/photos'
 import { useT } from '../../i18n'
 import { LiveView } from '../../components/shoot/LiveView'
 import { FilterPicker } from '../../components/shared/FilterPicker'
+import { BackdropPicker } from '../../components/shared/BackdropPicker'
+import { BeautySlider } from '../../components/shared/BeautySlider'
 import { CompositionCanvas } from '../../components/shared/CompositionCanvas'
 import { Button } from '../../components/ui/Button'
 import { IconButton } from '../../components/ui/IconButton'
@@ -31,6 +35,7 @@ import { toast } from '../../store/toasts'
 const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms))
 
 type Phase = 'idle' | 'countdown' | 'between'
+type Look = 'filter' | 'backdrop' | 'beauty'
 
 export default function ShootStep() {
   const t = useT()
@@ -55,12 +60,14 @@ export default function ShootStep() {
   const filter = filterById(design.filterId)
   const { videoRef, status, start, switchCamera, canSwitch } = useCamera()
   const { thumbs, fromVideo } = useFilterThumbs()
+  const segStatus = useSegmenterStatus()
 
   const [phase, setPhase] = useState<Phase>('idle')
   const [count, setCount] = useState(0)
   const [flash, setFlash] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [current, setCurrent] = useState<number | null>(null)
+  const [look, setLook] = useState<Look>('filter')
   const [confirmRetake, setConfirmRetake] = useState(false)
   const cancelRef = useRef(false)
   const fileRef = useRef<HTMLInputElement>(null)
@@ -71,6 +78,7 @@ export default function ShootStep() {
   const target = selected ?? (firstEmpty >= 0 ? firstEmpty : null)
   const busy = phase !== 'idle'
   const live = status === 'live'
+  const backdropOn = backdropById(design.backdropId).kind !== 'none'
 
   const aspectFor = (photoIndex: number | null) => {
     const slot = layout.slots.find((s) => s.photo === (photoIndex ?? 0)) ?? layout.slots[0]
@@ -195,10 +203,24 @@ export default function ShootStep() {
         <div className="shoot__stage">
           <div className="shoot__camera">
             <video ref={videoRef} className="visually-hidden" playsInline muted aria-hidden="true" />
-            <LiveView videoRef={videoRef} live={live} filter={filter} mirror={mirror} aspect={aspect}>
+            <LiveView
+              videoRef={videoRef}
+              live={live}
+              filter={filter}
+              mirror={mirror}
+              aspect={aspect}
+              beauty={design.beauty}
+              backdropId={design.backdropId}
+            >
               {live && (
                 <span className="liveview__badge" aria-live="polite">
                   {badge}
+                </span>
+              )}
+              {live && backdropOn && segStatus === 'loading' && (
+                <span className="liveview__badge liveview__badge--end">
+                  <span className="btn__spinner" aria-hidden="true" />
+                  {t.shoot.backdropLoading}
                 </span>
               )}
               {phase === 'countdown' && count > 0 && (
@@ -268,7 +290,25 @@ export default function ShootStep() {
             />
           </div>
 
-          <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} variant="rail" idPrefix="shoot-filters" />
+          <div className="shoot__look">
+            <Segmented<Look>
+              label={t.shoot.lookLabel}
+              hideLabel
+              size="sm"
+              value={look}
+              onChange={setLook}
+              options={[
+                { value: 'filter', label: t.shoot.look.filter },
+                { value: 'backdrop', label: t.shoot.look.backdrop },
+                { value: 'beauty', label: t.shoot.look.beauty },
+              ]}
+            />
+            {look === 'filter' && (
+              <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} variant="rail" idPrefix="shoot-filters" />
+            )}
+            {look === 'backdrop' && <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} variant="rail" />}
+            {look === 'beauty' && <BeautySlider value={design.beauty} onChange={(beauty) => update({ beauty }, { history: false })} />}
+          </div>
         </div>
 
         <aside className="shoot__side" aria-label={t.shoot.stripLabel}>

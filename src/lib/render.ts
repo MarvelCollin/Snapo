@@ -3,9 +3,11 @@ import type { Layout, Rect, Slot } from './layouts'
 import { patternTile, heartPath } from './patterns'
 import type { Fill, Frame } from './frames'
 import { filterById } from './filters'
-import { coverCrop, filterToCanvas } from './filterEngine'
+import { coverCrop, filterToCanvas, type Mask } from './filterEngine'
 import { fontById, fontString, captionFonts } from './fonts'
 import { loadImage, stickerArt, wordArt } from './stickers'
+import { backdropById, backdropSource } from './backdrops'
+import { photoMask } from './segment'
 import { getLocale } from '../i18n'
 
 export type RenderInput = {
@@ -20,15 +22,31 @@ export type RenderInput = {
 
 const filteredCache = new Map<string, HTMLCanvasElement>()
 
-async function filteredPhoto(src: string, w: number, h: number, filterId: string, strength: number) {
+function renderPhoto(source: TexImageSource, sw: number, sh: number, W: number, H: number, design: Design, mask: Mask | null) {
+  const backdrop = mask ? backdropSource(design.backdropId, W, H) : null
+  return filterToCanvas(source, filterById(design.filterId), {
+    width: W,
+    height: H,
+    crop: coverCrop(sw, sh, W, H),
+    strength: design.strength,
+    seed: 3.7,
+    smooth: design.beauty ?? 0,
+    mask,
+    backdrop,
+  })
+}
+
+async function filteredPhoto(src: string, w: number, h: number, design: Design) {
   const W = Math.max(1, Math.round(w))
   const H = Math.max(1, Math.round(h))
-  const key = `${src.length}:${src.slice(-48)}|${W}x${H}|${filterId}|${strength.toFixed(2)}`
+  const beauty = design.beauty ?? 0
+  const key = `${src.length}:${src.slice(-48)}|${W}x${H}|${design.filterId}|${design.strength.toFixed(2)}|${beauty.toFixed(2)}|${design.backdropId}`
   const hit = filteredCache.get(key)
   if (hit) return hit
   const img = await loadImage(src)
-  const crop = coverCrop(img.naturalWidth, img.naturalHeight, W, H)
-  const out = filterToCanvas(img, filterById(filterId), { width: W, height: H, crop, strength, seed: 3.7 })
+  const wantsBackdrop = backdropById(design.backdropId).kind !== 'none'
+  const mask = wantsBackdrop ? await photoMask(src) : null
+  const out = renderPhoto(img, img.naturalWidth, img.naturalHeight, W, H, design, mask)
   if (filteredCache.size > 80) filteredCache.delete(filteredCache.keys().next().value!)
   filteredCache.set(key, out)
   return out
@@ -312,7 +330,7 @@ export async function renderComposition(canvas: HTMLCanvasElement, input: Render
     layout.slots.map(async (slot) => {
       const src = photos[slot.photo]
       if (!src) return null
-      return filteredPhoto(src, slot.w * s, slot.h * s, design.filterId, design.strength)
+      return filteredPhoto(src, slot.w * s, slot.h * s, design)
     }),
   )
   const elImages = input.includeElements ? await Promise.all(design.elements.map((e) => elementImage(e).catch(() => null))) : []

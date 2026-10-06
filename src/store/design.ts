@@ -44,11 +44,15 @@ export type Design = {
   dateStyle: DateStyle
   showLogo: boolean
   elements: CanvasEl[]
+  beauty: number
+  backdropId: string
 }
 
 export const defaultDesign = (): Design => ({
   filterId: 'seoul',
   strength: 1,
+  beauty: 0.3,
+  backdropId: 'none',
   frame: { ...frameById('strawberry-milk') },
   photoRadius: 0,
   photoOutline: 'frame',
@@ -151,6 +155,10 @@ export const useDesign = create<DesignState>()(
       name: 'snapo-design',
       storage: createJSONStorage(() => idbStorage(500)),
       partialize: (s) => ({ design: s.design, createdAt: s.createdAt }),
+      merge: (persisted, current) => {
+        const saved = (persisted ?? {}) as Partial<Pick<DesignState, 'design' | 'createdAt'>>
+        return { ...current, ...saved, design: { ...defaultDesign(), ...saved.design } }
+      },
     },
   ),
 )

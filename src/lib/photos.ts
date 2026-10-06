@@ -1,5 +1,7 @@
 const MAX = 1600
 
+export const photoKey = (src: string) => `${src.length}:${src.slice(-40)}`
+
 export function captureFrame(video: HTMLVideoElement, mirror: boolean) {
   const vw = video.videoWidth
   const vh = video.videoHeight

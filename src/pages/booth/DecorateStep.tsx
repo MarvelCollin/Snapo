@@ -13,21 +13,23 @@ import { StickerPanel } from '../../components/decorate/StickerPanel'
 import { TextPanel } from '../../components/decorate/TextPanel'
 import { StylePanel } from '../../components/decorate/StylePanel'
 import { FilterPicker } from '../../components/shared/FilterPicker'
+import { BackdropPicker } from '../../components/shared/BackdropPicker'
+import { BeautySlider } from '../../components/shared/BeautySlider'
 import { Tabs } from '../../components/ui/Tabs'
 import { Button } from '../../components/ui/Button'
 import { Slider } from '../../components/ui/Slider'
 
-type Panel = 'frames' | 'filters' | 'stickers' | 'text' | 'style'
+type Panel = 'frames' | 'look' | 'stickers' | 'text' | 'style'
 
 const icons: Record<Panel, ReactNode> = {
   frames: <FrameCorners weight="bold" size={18} aria-hidden="true" />,
-  filters: <Drop weight="bold" size={18} aria-hidden="true" />,
+  look: <Drop weight="bold" size={18} aria-hidden="true" />,
   stickers: <Smiley weight="bold" size={18} aria-hidden="true" />,
   text: <TextAa weight="bold" size={18} aria-hidden="true" />,
   style: <SlidersHorizontal weight="bold" size={18} aria-hidden="true" />,
 }
 
-const order: Panel[] = ['frames', 'filters', 'stickers', 'text', 'style']
+const order: Panel[] = ['frames', 'look', 'stickers', 'text', 'style']
 
 export default function DecorateStep() {
   const t = useT()
@@ -96,15 +98,32 @@ export default function DecorateStep() {
           <Tabs label={t.decorate.tools} tabs={tabs} active={panel} onChange={setPanel} idPrefix="tools" variant="chunky" />
           <div id="tools-panel" role="tabpanel" aria-labelledby={`tools-tab-${panel}`} className="decorate__body" tabIndex={0}>
             {panel === 'frames' && <FramePanel />}
-            {panel === 'filters' && (
+            {panel === 'look' && (
               <div className="panel-stack">
-                <Slider
-                  label={t.look.strength}
-                  value={Math.round(design.strength * 100)}
-                  onChange={(v) => update({ strength: v / 100 }, { history: false })}
-                  format={(v) => `${v}%`}
-                />
-                <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} idPrefix="deco-filters" />
+                <section className="panel-section" aria-labelledby="look-backdrop">
+                  <h3 id="look-backdrop" className="panel-subtitle">
+                    {t.look.backdrop}
+                  </h3>
+                  <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} />
+                </section>
+                <section className="panel-section" aria-labelledby="look-beauty">
+                  <h3 id="look-beauty" className="visually-hidden">
+                    {t.look.beauty}
+                  </h3>
+                  <BeautySlider value={design.beauty} onChange={(beauty) => update({ beauty }, { history: false })} />
+                </section>
+                <section className="panel-section" aria-labelledby="look-filter">
+                  <h3 id="look-filter" className="panel-subtitle">
+                    {t.look.filter}
+                  </h3>
+                  <Slider
+                    label={t.look.strength}
+                    value={Math.round(design.strength * 100)}
+                    onChange={(v) => update({ strength: v / 100 }, { history: false })}
+                    format={(v) => `${v}%`}
+                  />
+                  <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} idPrefix="deco-filters" />
+                </section>
               </div>
             )}
             {panel === 'stickers' && <StickerPanel />}
