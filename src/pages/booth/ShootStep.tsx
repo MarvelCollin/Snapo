@@ -9,6 +9,8 @@ import {
   UploadSimple,
   Stop,
   ArrowCounterClockwise,
+  GearSix,
+  ImageSquare,
 } from '@phosphor-icons/react'
 import { useSession, type Timer } from '../../store/session'
 import { useDesign } from '../../store/design'
@@ -30,6 +32,7 @@ import { IconButton } from '../../components/ui/IconButton'
 import { Segmented } from '../../components/ui/Segmented'
 import { Switch } from '../../components/ui/Switch'
 import { Dialog } from '../../components/ui/Dialog'
+import { Popover } from '../../components/ui/Popover'
 import { toast } from '../../store/toasts'
 
 const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms))
@@ -285,17 +288,50 @@ export default function ShootStep() {
           </div>
 
           <div className="shoot__controls">
-            <Button
-              variant={busy ? 'danger' : 'primary'}
-              size="lg"
-              className="shutter"
-              icon={busy ? <Stop weight="fill" size={22} /> : <Camera weight="fill" size={22} />}
-              onClick={onShutter}
-              disabled={!live && !busy}
-            >
-              {shotLabel}
-            </Button>
+            {complete && !busy && selected === null ? (
+              <>
+                <Button variant="primary" size="lg" className="shutter" iconEnd={<ArrowRight weight="bold" size={22} />} onClick={() => navigate('/booth/edit')}>
+                  {t.shoot.decorate}
+                </Button>
+                <Button variant="ghost" icon={<ArrowCounterClockwise weight="bold" size={18} />} onClick={() => setConfirmRetake(true)}>
+                  {t.shoot.retakeAll}
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant={busy ? 'danger' : 'primary'}
+                size="lg"
+                className="shutter"
+                icon={busy ? <Stop weight="fill" size={22} /> : <Camera weight="fill" size={22} />}
+                onClick={onShutter}
+                disabled={!live && !busy}
+              >
+                {shotLabel}
+              </Button>
+            )}
             <div className="shoot__quick">
+              <Popover label={t.shoot.backdrop} title={t.look.backdrop} icon={<ImageSquare weight="bold" size={20} aria-hidden="true" />} wide disabled={busy}>
+                <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} variant="rail" />
+              </Popover>
+              <Popover label={t.shoot.settingsShort} title={t.shoot.settings} icon={<GearSix weight="bold" size={20} aria-hidden="true" />} disabled={busy}>
+                <div className="settings">
+                  <Segmented<Timer>
+                    label={t.shoot.timer}
+                    value={timer}
+                    onChange={setTimer}
+                    options={[
+                      { value: 3, label: '3s' },
+                      { value: 5, label: '5s' },
+                      { value: 10, label: '10s' },
+                    ]}
+                  />
+                  <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
+                  <Switch label={t.shoot.poses} hint={t.shoot.posesHint} checked={poses} onChange={setPoses} />
+                  <Switch label={t.shoot.live} hint={t.shoot.liveHint} checked={recordLive} onChange={setLive} />
+                  <Switch label={t.shoot.mirror} hint={t.shoot.mirrorHint} checked={mirror} onChange={setMirror} />
+                  <Switch label={t.shoot.sounds} hint={t.shoot.soundsHint} checked={sound} onChange={setSound} />
+                </div>
+              </Popover>
               <IconButton label={t.shoot.upload} icon={<UploadSimple weight="bold" size={20} />} onClick={() => fileRef.current?.click()} disabled={busy} />
               {canSwitch && <IconButton label={t.shoot.switchCamera} icon={<ArrowsClockwise weight="bold" size={20} />} onClick={switchCamera} disabled={busy} />}
             </div>
@@ -310,10 +346,6 @@ export default function ShootStep() {
               onChange={(e) => onFiles(e.target.files)}
             />
           </div>
-
-          <div className="shoot__look">
-            <BackdropPicker value={design.backdropId} onChange={(id) => update({ backdropId: id })} variant="rail" />
-          </div>
         </div>
 
         <aside className="shoot__side" aria-label={t.shoot.stripLabel}>
@@ -322,27 +354,16 @@ export default function ShootStep() {
               layout={layout}
               design={{ ...design, elements: [], strokes: [] }}
               photos={photos}
-              displayHeight={300}
-              displayWidth={260}
+              displayHeight={240}
+              displayWidth={220}
               label={t.shoot.previewLabel(layout.name, filled, layout.shots)}
             />
           </div>
 
-          <div className="shoot__next">
-            <p className="shoot__status" aria-live="polite">
-              <strong>{complete ? t.shoot.allDone : t.shoot.toGo(remaining)}</strong>
-              <span>{complete ? t.shoot.doneHint : t.shoot.fillHint}</span>
-            </p>
-            <Button
-              variant="primary"
-              block
-              iconEnd={<ArrowRight weight="bold" size={20} />}
-              disabled={!complete || busy}
-              onClick={() => navigate('/booth/edit')}
-            >
-              {t.shoot.decorate}
-            </Button>
-          </div>
+          <p className="shoot__status" aria-live="polite">
+            <strong>{complete ? t.shoot.allDone : t.shoot.toGo(remaining)}</strong>
+            <span>{complete ? t.shoot.doneHint : t.shoot.fillHint}</span>
+          </p>
 
           <div className="tray">
             <div className="tray__head">
@@ -388,24 +409,6 @@ export default function ShootStep() {
             {selected !== null && <p className="tray__hint">{t.shoot.selected(selected + 1, !!photos[selected])}</p>}
           </div>
 
-          <div className="settings">
-            <h2 className="panel-title">{t.shoot.settings}</h2>
-            <Segmented<Timer>
-              label={t.shoot.timer}
-              value={timer}
-              onChange={setTimer}
-              options={[
-                { value: 3, label: '3s' },
-                { value: 5, label: '5s' },
-                { value: 10, label: '10s' },
-              ]}
-            />
-            <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
-            <Switch label={t.shoot.poses} hint={t.shoot.posesHint} checked={poses} onChange={setPoses} />
-            <Switch label={t.shoot.live} hint={t.shoot.liveHint} checked={recordLive} onChange={setLive} />
-            <Switch label={t.shoot.mirror} hint={t.shoot.mirrorHint} checked={mirror} onChange={setMirror} />
-            <Switch label={t.shoot.sounds} hint={t.shoot.soundsHint} checked={sound} onChange={setSound} />
-          </div>
         </aside>
       </div>
 

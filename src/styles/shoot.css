@@ -37,7 +37,7 @@
 .liveview {
   position: relative;
   width: 100%;
-  max-width: min(100%, calc(44dvh * var(--aspect, 1.4)));
+  max-width: min(100%, calc(max(220px, 100dvh - 420px) * var(--aspect, 1.4)));
   border-radius: var(--radius-md);
   overflow: hidden;
   background: oklch(0.2 0.03 10);
@@ -202,11 +202,6 @@
   box-shadow: var(--shadow-float);
 }
 
-.shoot__next {
-  display: grid;
-  gap: var(--space-3);
-}
-
 .shoot__status {
   display: grid;
 }
@@ -222,16 +217,15 @@
   font-size: var(--text-sm);
 }
 
-.tray,
-.settings {
+.tray {
   display: grid;
   gap: var(--space-3);
 }
 
 .settings {
+  display: grid;
   gap: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 2px solid var(--tint);
+  min-width: min(22rem, calc(100vw - 4rem));
 }
 
 .tray__head {
@@ -457,14 +451,6 @@
   .shoot__preview {
     display: none;
   }
-
-  .shoot__next {
-    order: 1;
-  }
-
-  .shoot__side .settings {
-    order: 2;
-  }
 }
 
 @media (max-width: 720px) {
@@ -476,6 +462,39 @@
   .shutter {
     min-width: 0;
     flex: 1;
+  }
+
+  .shoot__controls {
+    gap: var(--space-2);
+  }
+
+  .shoot__quick .popover__trigger {
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .shoot__quick .popover__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .tray__list {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: 72px;
+    overflow-x: auto;
+    padding: var(--space-3) var(--space-1) var(--space-2);
+    scrollbar-width: thin;
+  }
+
+  .step--shoot .step__lede {
+    display: none;
   }
 }
 

@@ -147,6 +147,8 @@ export const id: Dict = {
     slotFilled: (n: number) => `Foto ${n}. Pilih untuk mengulang`,
     slotEmpty: (n: number) => `Foto ${n}, kosong. Pilih untuk diambil berikutnya`,
     selected: (n: number, filled: boolean) => `Foto ${n} dipilih. Tekan tombol besar untuk ${filled ? 'mengulangnya' : 'mengambilnya'}.`,
+    backdrop: 'Background',
+    settingsShort: 'Pengaturan',
     settings: 'Pengaturan kamera',
     timer: 'Timer',
     autoSeq: 'Foto berturut turut',
@@ -231,7 +233,7 @@ export const id: Dict = {
   decorate: {
     title: 'Bikin makin lucu',
     lede: 'Stiker, coretan, frame dan caption. Semua opsional dan tersimpan otomatis.',
-    shots: 'Foto',
+    shots: 'Edit foto',
     finish: 'Selesai',
     tools: 'Alat hias',
     tabs: { frames: 'Frame', stickers: 'Stiker', text: 'Teks', draw: 'Gambar', style: 'Caption' },

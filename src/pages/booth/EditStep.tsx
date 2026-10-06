@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CaretLeft, CaretRight, Check, PencilSimple, Sparkle } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
@@ -38,6 +38,13 @@ export default function EditStep() {
   const src = selected !== null ? photos[selected] : null
   const thumbs = useImageThumbs(src ?? photos[0] ?? null)
   const fit = useFitBox(layout.size.w / layout.size.h)
+  const panelRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (selected === null || !window.matchMedia('(max-width: 960px)').matches) return
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    panelRef.current?.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' })
+  }, [selected])
 
   if (!complete) return <Navigate to="/booth/shoot" replace />
 
@@ -98,7 +105,7 @@ export default function EditStep() {
           </div>
         </div>
 
-        <aside className="edit__panel" aria-label={src ? t.edit.photo((selected ?? 0) + 1) : t.edit.all}>
+        <aside ref={panelRef} className="edit__panel" aria-label={src ? t.edit.photo((selected ?? 0) + 1) : t.edit.all}>
           {src && selected !== null && key ? (
             <div className="panel-stack">
               <div className="edit__panel-head">

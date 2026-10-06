@@ -465,3 +465,36 @@
     white-space: nowrap;
   }
 }
+
+@media (max-width: 720px) {
+  .step__head--row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .step__actions {
+    flex-wrap: wrap;
+  }
+
+  .step__actions .btn--primary {
+    flex: 1 1 100%;
+  }
+
+  .stepper__list {
+    flex-wrap: nowrap;
+    gap: 2px;
+  }
+
+  .stepper__item {
+    gap: 2px;
+  }
+
+  .stepper__item + .stepper__item::before {
+    width: 8px;
+  }
+
+  .stepper__link {
+    padding: 0 var(--space-2) 0 2px;
+  }
+}

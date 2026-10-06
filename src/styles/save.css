@@ -259,3 +259,13 @@
 .save__live .save__grid {
   margin-top: var(--space-1);
 }
+
+@media (max-width: 720px) {
+  .save__preview {
+    padding: var(--space-3);
+  }
+
+  .save__frame {
+    width: min(100%, calc(40dvh * var(--ratio)));
+  }
+}

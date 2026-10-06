@@ -157,9 +157,9 @@
 }
 
 .el-toolbar__hint {
+  min-width: 0;
   font-size: var(--text-sm);
   color: var(--ink-muted);
-  white-space: nowrap;
 }
 
 .decorate__panel {

@@ -67,6 +67,7 @@
 }
 
 .edit__panel {
+  scroll-margin-top: calc(var(--header-h) + var(--space-3));
   display: grid;
   align-content: start;
   max-height: clamp(380px, calc(100dvh - 300px), 960px);
@@ -148,11 +149,12 @@
 
 @media (max-width: 960px) {
   .edit {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .edit__stage {
-    height: min(56dvh, 560px);
+    min-width: 0;
+    height: min(46dvh, 520px);
     padding: var(--space-3);
   }
 

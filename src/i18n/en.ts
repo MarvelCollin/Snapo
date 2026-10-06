@@ -147,6 +147,8 @@ export const en = {
     slotFilled: (n: number) => `Shot ${n}. Select to retake`,
     slotEmpty: (n: number) => `Shot ${n}, empty. Select to shoot this one next`,
     selected: (n: number, filled: boolean) => `Shot ${n} selected. Press the big button to ${filled ? 'retake it' : 'shoot it'}.`,
+    backdrop: 'Backdrop',
+    settingsShort: 'Settings',
     settings: 'Camera settings',
     timer: 'Timer',
     autoSeq: 'Shoot all in a row',
@@ -231,7 +233,7 @@ export const en = {
   decorate: {
     title: 'Make it cute',
     lede: 'Stickers, doodles, frames and a caption. All optional, everything saves as you go.',
-    shots: 'Shots',
+    shots: 'Edit photos',
     finish: 'Finish',
     tools: 'Decorate tools',
     tabs: { frames: 'Frames', stickers: 'Stickers', text: 'Text', draw: 'Draw', style: 'Caption' },
