@@ -820,6 +820,146 @@
     "pack": "party"
   },
   {
+    "id": "mosque",
+    "name": "Mosque",
+    "pack": "fest"
+  },
+  {
+    "id": "star-and-crescent",
+    "name": "Star and crescent",
+    "pack": "fest"
+  },
+  {
+    "id": "kaaba",
+    "name": "Kaaba",
+    "pack": "fest"
+  },
+  {
+    "id": "prayer-beads",
+    "name": "Prayer beads",
+    "pack": "fest"
+  },
+  {
+    "id": "red-envelope",
+    "name": "Red envelope",
+    "pack": "fest"
+  },
+  {
+    "id": "red-paper-lantern",
+    "name": "Red paper lantern",
+    "pack": "fest"
+  },
+  {
+    "id": "firecracker",
+    "name": "Firecracker",
+    "pack": "fest"
+  },
+  {
+    "id": "moon-cake",
+    "name": "Moon cake",
+    "pack": "fest"
+  },
+  {
+    "id": "dragon-face",
+    "name": "Dragon face",
+    "pack": "fest"
+  },
+  {
+    "id": "diya-lamp",
+    "name": "Diya lamp",
+    "pack": "fest"
+  },
+  {
+    "id": "christmas-tree",
+    "name": "Christmas tree",
+    "pack": "fest"
+  },
+  {
+    "id": "snowman",
+    "name": "Snowman",
+    "pack": "fest"
+  },
+  {
+    "id": "pine-decoration",
+    "name": "Pine decoration",
+    "pack": "fest"
+  },
+  {
+    "id": "bell",
+    "name": "Bell",
+    "pack": "fest"
+  },
+  {
+    "id": "jack-o-lantern",
+    "name": "Jack-o-lantern",
+    "pack": "fest"
+  },
+  {
+    "id": "scroll",
+    "name": "Scroll",
+    "pack": "fest"
+  },
+  {
+    "id": "open-book",
+    "name": "Open book",
+    "pack": "fest"
+  },
+  {
+    "id": "spiral-calendar",
+    "name": "Spiral calendar",
+    "pack": "fest"
+  },
+  {
+    "id": "coconut",
+    "name": "Coconut",
+    "pack": "fest"
+  },
+  {
+    "id": "mango",
+    "name": "Mango",
+    "pack": "fest"
+  },
+  {
+    "id": "pineapple",
+    "name": "Pineapple",
+    "pack": "fest"
+  },
+  {
+    "id": "palm-tree",
+    "name": "Palm tree",
+    "pack": "fest"
+  },
+  {
+    "id": "desert-island",
+    "name": "Desert island",
+    "pack": "fest"
+  },
+  {
+    "id": "volcano",
+    "name": "Volcano",
+    "pack": "fest"
+  },
+  {
+    "id": "hot-pepper",
+    "name": "Hot pepper",
+    "pack": "fest"
+  },
+  {
+    "id": "cooked-rice",
+    "name": "Cooked rice",
+    "pack": "fest"
+  },
+  {
+    "id": "lotus",
+    "name": "Lotus",
+    "pack": "fest"
+  },
+  {
+    "id": "wind-chime",
+    "name": "Wind chime",
+    "pack": "fest"
+  },
+  {
     "id": "victory-hand",
     "name": "Victory hand",
     "pack": "hands"

@@ -23,6 +23,12 @@ export type PatternId =
   | 'snow'
   | 'petals'
   | 'zigzag'
+  | 'kawung'
+  | 'parang'
+  | 'ketupat'
+  | 'bunting'
+  | 'lantern'
+  | 'moons'
 
 export const patternList: PatternId[] = [
   'dots',
@@ -49,6 +55,12 @@ export const patternList: PatternId[] = [
   'leopard',
   'cow',
   'terrazzo',
+  'kawung',
+  'parang',
+  'ketupat',
+  'bunting',
+  'lantern',
+  'moons',
 ]
 
 const rng = (seed: number) => () => {
@@ -495,6 +507,246 @@ const draws: Record<PatternId, { tile: number; draw: Draw }> = {
           else c.lineTo(px, py)
         }
         c.closePath()
+        c.fill()
+      }
+    },
+  },
+  kawung: {
+    tile: 120,
+    draw: (c, s, ink, _b, extra) => {
+      const bloom = (cx: number, cy: number) => {
+        for (let k = 0; k < 4; k++) {
+          const a = (Math.PI / 2) * k + Math.PI / 4
+          const px = cx + Math.cos(a) * s * 0.18
+          const py = cy + Math.sin(a) * s * 0.18
+          c.fillStyle = ink
+          c.beginPath()
+          c.ellipse(px, py, s * 0.17, s * 0.1, a, 0, Math.PI * 2)
+          c.fill()
+          c.fillStyle = extra
+          c.beginPath()
+          c.ellipse(px, py, s * 0.06, s * 0.024, a, 0, Math.PI * 2)
+          c.fill()
+        }
+        c.fillStyle = extra
+        c.beginPath()
+        c.arc(cx, cy, s * 0.03, 0, Math.PI * 2)
+        c.fill()
+      }
+      for (const [x, y] of [
+        [0, 0],
+        [s, 0],
+        [0, s],
+        [s, s],
+        [s / 2, s / 2],
+      ])
+        bloom(x, y)
+    },
+  },
+  parang: {
+    tile: 96,
+    draw: (c, s, ink, _b, extra) => {
+      const n = Math.SQRT1_2
+      c.strokeStyle = ink
+      c.lineCap = 'round'
+      for (const ox of [-s, 0, s]) {
+        c.lineWidth = s * 0.035
+        for (const shift of [0, s / 2]) {
+          c.beginPath()
+          c.moveTo(ox + shift - s * 0.2, s + s * 0.2)
+          c.lineTo(ox + shift + s * 1.2, -s * 0.2)
+          c.stroke()
+        }
+        c.lineWidth = s * 0.06
+        c.beginPath()
+        for (let t = -0.2; t <= 1.2001; t += 0.02) {
+          const off = s * (0.177 + 0.1 * Math.sin(Math.PI * 4 * t))
+          const x = ox + t * s + off * n
+          const y = s - t * s + off * n
+          if (t === -0.2) c.moveTo(x, y)
+          else c.lineTo(x, y)
+        }
+        c.stroke()
+        c.fillStyle = extra
+        for (const t of [0.125, 0.375, 0.625, 0.875]) {
+          const off = s * 0.53
+          c.beginPath()
+          c.arc(ox + t * s + off * n, s - t * s + off * n, s * 0.035, 0, Math.PI * 2)
+          c.fill()
+        }
+      }
+    },
+  },
+  ketupat: {
+    tile: 110,
+    draw: (c, s, ink, base, extra) => {
+      const diamond = (cx: number, cy: number, r: number) => {
+        c.beginPath()
+        c.moveTo(cx, cy - r)
+        c.lineTo(cx + r, cy)
+        c.lineTo(cx, cy + r)
+        c.lineTo(cx - r, cy)
+        c.closePath()
+      }
+      const cx = s / 2
+      const cy = s / 2
+      const r = s * 0.3
+      c.fillStyle = ink
+      diamond(cx, cy, r)
+      c.fill()
+      c.save()
+      diamond(cx, cy, r)
+      c.clip()
+      c.strokeStyle = base
+      c.lineWidth = s * 0.024
+      const h = r / Math.SQRT2
+      const k = Math.SQRT1_2
+      for (const o of [-h / 3, h / 3]) {
+        c.beginPath()
+        c.moveTo(cx + (o - h) * k, cy + (-o - h) * k)
+        c.lineTo(cx + (o + h) * k, cy + (-o + h) * k)
+        c.moveTo(cx + (o - h) * k, cy + (o + h) * k)
+        c.lineTo(cx + (o + h) * k, cy + (o - h) * k)
+        c.stroke()
+      }
+      c.restore()
+      c.strokeStyle = ink
+      c.lineWidth = s * 0.02
+      c.lineCap = 'round'
+      c.beginPath()
+      c.moveTo(cx, cy + r)
+      c.quadraticCurveTo(cx - s * 0.06, cy + r + s * 0.08, cx - s * 0.1, cy + r + s * 0.1)
+      c.moveTo(cx, cy + r)
+      c.quadraticCurveTo(cx + s * 0.05, cy + r + s * 0.09, cx + s * 0.06, cy + r + s * 0.13)
+      c.stroke()
+      c.fillStyle = extra
+      for (const [x, y] of [
+        [0, 0],
+        [s, 0],
+        [0, s],
+        [s, s],
+      ]) {
+        diamond(x, y, s * 0.07)
+        c.fill()
+      }
+    },
+  },
+  bunting: {
+    tile: 140,
+    draw: (c, s, ink, _b, extra) => {
+      for (const [row, phase] of [
+        [0.06, 0],
+        [0.56, 0.5],
+      ]) {
+        const y0 = row * s
+        const sag = s * 0.12
+        const at = (u: number) => {
+          const t = (((u + phase) % 1) + 1) % 1
+          return y0 + sag * 4 * t * (1 - t)
+        }
+        c.strokeStyle = ink
+        c.lineWidth = Math.max(1.5, s * 0.012)
+        c.beginPath()
+        for (let u = 0; u <= 1.0001; u += 0.02) {
+          if (u === 0) c.moveTo(u * s, at(u))
+          else c.lineTo(u * s, at(u))
+        }
+        c.stroke()
+        for (let i = 0; i < 4; i++) {
+          const u0 = (i + 0.12 - phase) / 4
+          const u1 = (i + 0.88 - phase) / 4
+          for (const shift of [0, 1]) {
+            const a = u0 + shift
+            const b = u1 + shift
+            if (b < 0 || a > 1) continue
+            const mid = (a + b) / 2
+            c.beginPath()
+            c.moveTo(a * s, at(a))
+            c.lineTo(b * s, at(b))
+            c.lineTo(mid * s, at(mid) + s * 0.16)
+            c.closePath()
+            c.fillStyle = i % 2 ? extra : ink
+            c.fill()
+            if (i % 2) {
+              c.lineWidth = Math.max(1, s * 0.01)
+              c.stroke()
+            }
+          }
+        }
+      }
+    },
+  },
+  lantern: {
+    tile: 150,
+    draw: (c, s, ink, _b, extra) => {
+      const lantern = (x: number, y: number, r: number) => {
+        c.strokeStyle = extra
+        c.lineWidth = Math.max(1.5, r * 0.08)
+        c.beginPath()
+        c.moveTo(x, y - r * 1.9)
+        c.lineTo(x, y - r * 0.9)
+        c.stroke()
+        c.fillStyle = ink
+        c.beginPath()
+        c.ellipse(x, y, r * 1.15, r * 0.95, 0, 0, Math.PI * 2)
+        c.fill()
+        c.strokeStyle = alpha('#000000', 0.18)
+        c.lineWidth = Math.max(1, r * 0.06)
+        c.beginPath()
+        c.ellipse(x, y, r * 0.6, r * 0.95, 0, 0, Math.PI * 2)
+        c.moveTo(x, y - r * 0.95)
+        c.lineTo(x, y + r * 0.95)
+        c.stroke()
+        c.fillStyle = extra
+        c.fillRect(x - r * 0.5, y - r * 1.08, r, r * 0.24)
+        c.fillRect(x - r * 0.5, y + r * 0.84, r, r * 0.24)
+        c.strokeStyle = extra
+        c.lineWidth = Math.max(1.5, r * 0.1)
+        c.beginPath()
+        for (const dx of [-0.18, 0, 0.18]) {
+          c.moveTo(x + dx * r, y + r * 1.08)
+          c.lineTo(x + dx * r * 1.4, y + r * 1.75)
+        }
+        c.stroke()
+      }
+      lantern(s * 0.27, s * 0.3, s * 0.11)
+      lantern(s * 0.77, s * 0.78, s * 0.09)
+      c.fillStyle = extra
+      for (const [x, y] of [
+        [0.72, 0.18],
+        [0.2, 0.8],
+        [0.5, 0.55],
+      ]) {
+        c.beginPath()
+        roundedStar(c, x * s, y * s, s * 0.03)
+        c.fill()
+      }
+    },
+  },
+  moons: {
+    tile: 130,
+    draw: (c, s, ink, base, extra) => {
+      const moon = (x: number, y: number, r: number) => {
+        c.fillStyle = ink
+        c.beginPath()
+        c.arc(x, y, r, 0, Math.PI * 2)
+        c.fill()
+        c.fillStyle = base
+        c.beginPath()
+        c.arc(x + r * 0.4, y - r * 0.2, r * 0.86, 0, Math.PI * 2)
+        c.fill()
+      }
+      moon(s * 0.28, s * 0.3, s * 0.13)
+      moon(s * 0.78, s * 0.78, s * 0.08)
+      c.fillStyle = extra
+      for (const [x, y, r] of [
+        [0.72, 0.22, 0.045],
+        [0.2, 0.78, 0.035],
+        [0.52, 0.56, 0.025],
+        [0.92, 0.5, 0.02],
+      ]) {
+        c.beginPath()
+        starPath(c, x * s, y * s, r * s)
         c.fill()
       }
     },

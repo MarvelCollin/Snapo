@@ -1,7 +1,7 @@
 import manifest from '../data/stickerManifest.json'
 import { fontById, fontString } from './fonts'
 
-export type StickerPack = 'love' | 'faces' | 'critters' | 'sweets' | 'sky' | 'party' | 'hands' | 'words'
+export type StickerPack = 'love' | 'faces' | 'critters' | 'sweets' | 'sky' | 'party' | 'fest' | 'hands' | 'words'
 
 export type StickerMeta = { id: string; name: string; pack: Exclude<StickerPack, 'words'> }
 
@@ -14,6 +14,7 @@ export const stickerPacks: { id: StickerPack; cover: string }[] = [
   { id: 'sweets', cover: 'strawberry' },
   { id: 'sky', cover: 'rainbow' },
   { id: 'party', cover: 'ribbon' },
+  { id: 'fest', cover: 'red-paper-lantern' },
   { id: 'hands', cover: 'victory-hand' },
   { id: 'words', cover: 'speech-balloon' },
 ]
@@ -58,6 +59,20 @@ export const wordPresets: WordSpec[] = [
   { text: 'squad', style: 'bubble', color: '#9bdcfd' },
   { text: 'forever', style: 'script', color: '#e2445c' },
   { text: 'snap!', style: 'label', color: '#cdeac0' },
+  { text: 'gemoy', style: 'bubble', color: '#ff9fb5' },
+  { text: 'kece', style: 'outline', color: '#62c6e8' },
+  { text: 'bestie', style: 'script', color: '#ff6f91' },
+  { text: 'santuy', style: 'hand', color: '#7bdcb5' },
+  { text: 'sayang', style: 'script', color: '#e2445c' },
+  { text: 'cakep!', style: 'bubble', color: '#ffd166' },
+  { text: 'MANTUL', style: 'pixel', color: '#ffb385' },
+  { text: 'Merdeka!', style: 'label', color: '#ff8a80' },
+  { text: 'Selamat Lebaran', style: 'label', color: '#b9e4c9' },
+  { text: 'Minal Aidin', style: 'script', color: '#2f8f4e' },
+  { text: 'Gong Xi Fa Cai', style: 'label', color: '#ffd166' },
+  { text: 'Wisuda!', style: 'bubble', color: '#f2d48a' },
+  { text: 'Selamat Natal', style: 'script', color: '#e2445c' },
+  { text: 'HBD!', style: 'outline', color: '#c08bff' },
 ]
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>()

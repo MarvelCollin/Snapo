@@ -5,7 +5,7 @@ export type Fill =
   | { kind: 'gradient'; colors: string[]; angle: number }
   | { kind: 'pattern'; base: string; ink: string; extra: string; pattern: PatternId; scale: number }
 
-export type FrameGroup = 'classic' | 'pastel' | 'pattern' | 'gradient' | 'season'
+export type FrameGroup = 'classic' | 'pastel' | 'pattern' | 'gradient' | 'season' | 'local'
 
 export type Frame = {
   id: string
@@ -86,9 +86,19 @@ export const frames: Frame[] = [
   { id: 'autumn', name: 'Pumpkin Spice', group: 'season', fill: pat('plaid', '#f4c48f', '#a14d1e', '#3d5e2f', 0.9), text: '#5a2a0e', accent: '#e9b57d', photoOutline: '#fff3e2' },
   { id: 'winter', name: 'First Snow', group: 'season', fill: pat('snow', '#c9e2f7', '#ffffff', '#ffffff', 0.9), text: '#24487f', accent: '#b4d4ef', photoOutline: '#ffffff' },
   { id: 'xmas', name: 'Holly Jolly', group: 'season', fill: pat('snow', '#2f6b48', '#ffffff', '#ffffff', 0.9), text: '#fff3d6', accent: '#3d7f58', photoOutline: '#fff3d6' },
+
+  { id: 'batik-kawung', name: 'Batik Kawung', group: 'local', fill: pat('kawung', '#f3e3c3', '#6b3e1f', '#c8963e', 0.8), text: '#4a2a12', accent: '#e7d2ab', photoOutline: '#fff8ea', paper: true },
+  { id: 'batik-parang', name: 'Batik Parang', group: 'local', fill: pat('parang', '#1f2f5a', '#e9dcc0', '#c8963e', 0.9), text: '#f6ecd6', accent: '#2c3f72', photoOutline: '#f6ecd6' },
+  { id: 'merdeka', name: '17 Agustus', group: 'local', fill: pat('bunting', '#fff7f0', '#e2231a', '#ffffff', 0.8), text: '#c4161c', accent: '#ffe1dc', photoOutline: '#e2231a' },
+  { id: 'lebaran', name: 'Lebaran', group: 'local', fill: pat('ketupat', '#e6f4e3', '#2f8f4e', '#e8b53a', 0.8), text: '#1f5e34', accent: '#cfe9cb', photoOutline: '#ffffff' },
+  { id: 'ramadan', name: 'Ramadan Night', group: 'local', fill: pat('moons', '#1d2b53', '#f5c451', '#fff4cf', 0.8), text: '#f5d77a', accent: '#2a3a6b', photoOutline: '#f5d77a' },
+  { id: 'imlek', name: 'Imlek', group: 'local', fill: pat('lantern', '#fff1d6', '#d7261e', '#e8a317', 0.8), text: '#a3161a', accent: '#ffe1a8', photoOutline: '#ffffff' },
+  { id: 'angpao', name: 'Angpao', group: 'local', fill: solid('#c8102e'), text: '#f7d36b', accent: '#a50d25', photoOutline: '#f7d36b' },
+  { id: 'wisuda', name: 'Wisuda', group: 'local', fill: pat('confetti', '#1b2a55', '#e8c063', '#ffffff', 0.9), text: '#f2d48a', accent: '#2a3b70', photoOutline: '#f2d48a' },
+  { id: 'bali', name: 'Bali Tropis', group: 'local', fill: pat('flowers', '#d8f3ee', '#ff8fa3', '#ffd45c', 0.8), text: '#1f6b5e', accent: '#c2ebe3', photoOutline: '#ffffff' },
 ]
 
-export const frameGroups: (FrameGroup | 'all')[] = ['all', 'classic', 'pastel', 'pattern', 'gradient', 'season']
+export const frameGroups: (FrameGroup | 'all')[] = ['all', 'classic', 'pastel', 'pattern', 'gradient', 'season', 'local']
 
 export const frameById = (id: string) => frames.find((f) => f.id === id) ?? frames[0]
 

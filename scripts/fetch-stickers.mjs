@@ -9,11 +9,19 @@ const packs = {
   sweets: ['Strawberry', 'Cherries', 'Peach', 'Shortcake', 'Birthday cake', 'Cupcake', 'Doughnut', 'Cookie', 'Lollipop', 'Candy', 'Ice cream', 'Soft ice cream', 'Shaved ice', 'Bubble tea', 'Hot beverage', 'Watermelon', 'Lemon', 'Tangerine', 'Grapes', 'Pancakes', 'Custard', 'Dango', 'Rice ball', 'Sushi', 'Popcorn', 'Chocolate bar', 'Honey pot', 'Glass of milk', 'Beverage box', 'Tropical drink', 'Teacup without handle'],
   sky: ['Sparkles', 'Star', 'Glowing star', 'Dizzy', 'Shooting star', 'Rainbow', 'Cloud', 'Sun with face', 'Crescent moon', 'Full moon face', 'Ringed planet', 'Comet', 'Milky way', 'Snowflake', 'Cherry blossom', 'Tulip', 'Sunflower', 'Hibiscus', 'Blossom', 'Rose', 'Bouquet', 'Four leaf clover', 'Mushroom', 'Herb', 'Cactus', 'Bubbles', 'Droplet', 'Umbrella'],
   party: ['Ribbon', 'Wrapped gift', 'Balloon', 'Party popper', 'Confetti ball', 'Crown', 'Gem stone', 'Ring', 'Magic wand', 'Crystal ball', 'Mirror ball', 'Camera with flash', 'Musical notes', 'Microphone', 'Headphone', 'Lipstick', 'Nail polish', 'Sunglasses', 'Glasses', 'Top hat', 'Womans hat', 'Graduation cap', 'Trophy', 'Fireworks', 'Sparkler', 'Video game', 'Game die', 'Kite', 'Artist palette'],
+  fest: ['Mosque', 'Star and crescent', 'Kaaba', 'Prayer beads', 'Red envelope', 'Red paper lantern', 'Firecracker', 'Moon cake', 'Dragon face', 'Diya lamp', 'Christmas tree', 'Snowman', 'Pine decoration', 'Bell', 'Jack-o-lantern', 'Scroll', 'Open book', 'Spiral calendar', 'Coconut', 'Mango', 'Pineapple', 'Palm tree', 'Desert island', 'Volcano', 'Hot pepper', 'Cooked rice', 'Lotus', 'Wind chime'],
   hands: ['Victory hand', 'Heart hands', 'Love-you gesture', 'Hand with index finger and thumb crossed', 'Thumbs up', 'Waving hand', 'Ok hand', 'Speech balloon', 'Thought balloon', 'Hundred points', 'Collision', 'Zzz', 'Sweat droplets', 'Anger symbol', 'Dashing away'],
 }
 
 const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')
-const list = (await readFile(join(root, 'scripts', '.fluent3d.txt'), 'utf8')).split('\n').filter(Boolean)
+const listFile = join(root, 'scripts', '.fluent3d.txt')
+if (!(await access(listFile).then(() => true, () => false))) {
+  const res = await fetch('https://api.github.com/repos/microsoft/fluentui-emoji/git/trees/main?recursive=1')
+  if (!res.ok) throw new Error(`Could not list Fluent Emoji files: ${res.status}`)
+  const tree = await res.json()
+  await writeFile(listFile, tree.tree.map((t) => t.path).filter((p) => /\/3D\/[^/]+\.png$/.test(p)).join('\n'))
+}
+const list = (await readFile(listFile, 'utf8')).split('\n').filter(Boolean)
 const outDir = join(root, 'public', 'stickers')
 await mkdir(outDir, { recursive: true })
 
