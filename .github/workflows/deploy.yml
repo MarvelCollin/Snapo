@@ -6,118 +6,77 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: deploy-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      TARGET: ${{ github.ref_name == 'main' && '.' || github.ref_name }}
     steps:
-      - name: Check out main
+      - name: Check out
         uses: actions/checkout@v7
-        with:
-          ref: main
-          path: main
-
-      - name: Check out dev
-        uses: actions/checkout@v7
-        with:
-          ref: dev
-          path: dev
 
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
           node-version: 22
 
-      - name: Restore main dependencies
-        id: main-modules
+      - name: Restore dependencies
+        id: modules
         uses: actions/cache@v6
         with:
-          path: main/node_modules
-          key: modules-${{ runner.os }}-node22-${{ hashFiles('main/package-lock.json') }}
+          path: node_modules
+          key: modules-${{ runner.os }}-node22-${{ hashFiles('package-lock.json') }}
 
-      - name: Restore dev dependencies
-        id: dev-modules
-        uses: actions/cache@v6
-        with:
-          path: dev/node_modules
-          key: modules-${{ runner.os }}-node22-${{ hashFiles('dev/package-lock.json') }}
-
-      - name: Install main dependencies
-        if: steps.main-modules.outputs.cache-hit != 'true'
-        working-directory: main
+      - name: Install dependencies
+        if: steps.modules.outputs.cache-hit != 'true'
         run: npm ci --no-audit --no-fund --prefer-offline
 
-      - name: Install dev dependencies
-        if: steps.dev-modules.outputs.cache-hit != 'true'
-        working-directory: dev
-        run: npm ci --no-audit --no-fund --prefer-offline
-
-      - name: Build main
-        working-directory: main
+      - name: Build
         run: npm run build
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
+          BASE_PATH: /${{ github.event.repository.name }}/${{ github.ref_name != 'main' && format('{0}/', github.ref_name) || '' }}
 
-      - name: Build dev
-        working-directory: dev
-        run: npm run build
+      - name: Publish to gh-pages
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/dev/
-
-      - name: Assemble site
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p site
-          cp -r main/dist/. site/
-          mkdir -p site/dev
-          cp -r dev/dist/. site/dev/
-          if [ ! -f site/404.html ]; then cp dev/dist/404.html site/404.html; fi
-          rm -f site/dev/404.html
-          touch site/.nojekyll
-          du -sh site
-
-      - name: Upload site
-        id: upload
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: site
-
-      - name: Publish
-        id: deployment
-        uses: actions/github-script@v9
-        env:
-          ARTIFACT_ID: ${{ steps.upload.outputs.artifact_id }}
-        with:
-          script: |
-            const { owner, repo } = context.repo
-            const { createHash } = require('node:crypto')
-            const version = createHash('sha1').update(`${context.sha}:${context.runId}:${process.env.GITHUB_RUN_ATTEMPT}`).digest('hex')
-            const { data } = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
-              owner,
-              repo,
-              artifact_id: Number(process.env.ARTIFACT_ID),
-              pages_build_version: version,
-              oidc_token: await core.getIDToken(),
-            })
-            core.setOutput('page_url', data.page_url)
-            const id = data.id ?? data.status_url.split('/').pop()
-            const done = ['succeed']
-            const failed = ['deployment_failed', 'deployment_content_failed', 'deployment_cancelled', 'deployment_lost', 'deployment_perms_error', 'deployment_attempt_error']
-            for (let i = 0; i < 120; i++) {
-              const { data: state } = await github.request('GET /repos/{owner}/{repo}/pages/deployments/{id}', { owner, repo, id })
-              core.info(`${version}: ${state.status}`)
-              if (done.includes(state.status)) return
-              if (failed.includes(state.status)) throw new Error(`Pages deployment ${state.status}`)
-              await new Promise((resolve) => setTimeout(resolve, 3000))
-            }
-            throw new Error('Pages deployment timed out')
+          set -e
+          remote="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          for attempt in 1 2 3 4 5; do
+            rm -rf "$RUNNER_TEMP/pages"
+            if git clone -q --depth 1 --branch gh-pages "$remote" "$RUNNER_TEMP/pages" 2>/dev/null; then
+              lease=$(git -C "$RUNNER_TEMP/pages" rev-parse HEAD)
+            else
+              git init -q -b gh-pages "$RUNNER_TEMP/pages"
+              git -C "$RUNNER_TEMP/pages" remote add origin "$remote"
+              lease=""
+            fi
+            cd "$RUNNER_TEMP/pages"
+            if [ "$TARGET" = "." ]; then
+              find . -mindepth 1 -maxdepth 1 ! -name .git ! -name dev -exec rm -rf {} +
+            else
+              rm -rf "$TARGET"
+              mkdir -p "$TARGET"
+            fi
+            cp -r "$GITHUB_WORKSPACE/dist/." "$TARGET/"
+            if [ "$TARGET" != "." ]; then rm -f "$TARGET/404.html"; fi
+            if [ ! -f 404.html ]; then cp "$GITHUB_WORKSPACE/dist/404.html" 404.html; fi
+            touch .nojekyll
+            git checkout -q --orphan publish
+            git add -A
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -q -m "feat: publish ${GITHUB_REF_NAME} at ${GITHUB_SHA::7}"
+            if git push -q --force-with-lease="gh-pages:${lease}" origin publish:gh-pages; then
+              du -sh --exclude=.git .
+              exit 0
+            fi
+            cd "$GITHUB_WORKSPACE"
+            sleep $((attempt * 3))
+          done
+          exit 1

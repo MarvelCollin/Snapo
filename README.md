@@ -41,12 +41,13 @@ The camera needs `localhost` or https.
 
 ## Deploy
 
-`.github/workflows/deploy.yml` publishes to GitHub Pages on every push to `main` or `dev`. One job checks out both branches, builds `main` for the site root and `dev` for `/dev/`, and publishes them together, so a push to either branch keeps both up to date.
+`.github/workflows/deploy.yml` publishes to GitHub Pages on every push to `main` or `dev`. Each run builds only the branch that was pushed and writes it into the `gh-pages` branch, `main` at the root and `dev` under `/dev/`, leaving the other one untouched. Every publish is a new commit, so a fast forwarded `main` is always picked up.
 
-- Set **Settings > Pages > Source** to **GitHub Actions**, and allow the `dev` branch in the `github-pages` environment
+- Set **Settings > Pages > Source** to **Deploy from a branch**, branch `gh-pages`, folder `/`
 - The build reads `BASE_PATH` (for example `/Snapo/dev/`) and the router uses it as its basename
 - `public/404.html` sends deep links such as `/Snapo/booth/shoot` back to the app, and a small script in `index.html` restores the address
 - `node_modules` is cached by lockfile hash, so a deploy without dependency changes skips `npm ci`
+- `gh-pages` is pushed with a lease and retried, so a `main` and a `dev` deploy running together cannot overwrite each other
 - Only the SIMD build of the segmenter is bundled. Browsers without wasm SIMD (Safari before 16.4) load the fallback from jsDelivr, pinned to the installed MediaPipe version
 
 ## Project structure
