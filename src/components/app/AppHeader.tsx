@@ -2,6 +2,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { Camera, ImagesSquare } from '@phosphor-icons/react'
 import { languages, useLang, useT, type Lang } from '../../i18n'
 import { Segmented } from '../ui/Segmented'
+import { stickerSrc } from '../../lib/stickers'
 
 export function AppHeader() {
   const t = useT()
@@ -11,7 +12,7 @@ export function AppHeader() {
     <header className="app-header">
       <div className="app-header__inner">
         <Link to="/" className="brand" aria-label={t.header.home}>
-          <img src="/stickers/camera-with-flash.webp" alt="" width={36} height={36} className="brand__mark" />
+          <img src={stickerSrc('camera-with-flash')} alt="" width={36} height={36} className="brand__mark" />
           <span className="brand__word">snapo</span>
         </Link>
         <nav aria-label={t.header.nav} className="main-nav">

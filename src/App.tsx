@@ -37,7 +37,7 @@ function PageFallback() {
 export default function App() {
   const t = useT()
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '') || undefined}>
       <a href="#main" className="skip-link">
         {t.header.skip}
       </a>

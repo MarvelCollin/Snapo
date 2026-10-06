@@ -19,7 +19,7 @@ export const stickerPacks: { id: StickerPack; cover: string }[] = [
   { id: 'words', cover: 'speech-balloon' },
 ]
 
-export const stickerSrc = (id: string) => `/stickers/${id}.webp`
+export const stickerSrc = (id: string) => `${import.meta.env.BASE_URL}stickers/${id}.webp`
 
 export type WordStyle = 'bubble' | 'script' | 'label' | 'pixel' | 'hand' | 'outline'
 

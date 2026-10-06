@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Snapo</title>
+    <script>
+      ;(function (l) {
+        var parts = l.pathname.split('/')
+        var base = '/' + parts[1] + '/' + (parts[2] === 'dev' ? 'dev/' : '')
+        var rest = l.pathname.slice(base.length).replace(/&/g, '~and~')
+        var query = l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : ''
+        l.replace(l.protocol + '//' + l.host + base + '?/' + rest + query + l.hash)
+      })(window.location)
+    </script>
+  </head>
+  <body></body>
+</html>

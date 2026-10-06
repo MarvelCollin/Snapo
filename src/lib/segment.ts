@@ -1,8 +1,6 @@
 import type { ImageSegmenter } from '@mediapipe/tasks-vision'
 import wasmLoader from '@mediapipe/tasks-vision/vision_wasm_internal.js?url'
 import wasmBinary from '@mediapipe/tasks-vision/vision_wasm_internal.wasm?url'
-import wasmLoaderNoSimd from '@mediapipe/tasks-vision/vision_wasm_nosimd_internal.js?url'
-import wasmBinaryNoSimd from '@mediapipe/tasks-vision/vision_wasm_nosimd_internal.wasm?url'
 import type { Mask } from './filterEngine'
 import { loadImage } from './stickers'
 import { photoKey } from './photos'
@@ -26,6 +24,8 @@ export function onSegmenterStatus(fn: () => void) {
   }
 }
 
+const LEGACY = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${import.meta.env.VITE_MEDIAPIPE_VERSION}/wasm`
+
 const MODEL = `${import.meta.env.BASE_URL}models/selfie-segmenter.tflite`
 
 let segmenter: ImageSegmenter | null = null
@@ -40,7 +40,9 @@ export function loadSegmenter() {
       const { ImageSegmenter, FilesetResolver } = await import('@mediapipe/tasks-vision')
       const simd = await FilesetResolver.isSimdSupported()
       segmenter = await ImageSegmenter.createFromOptions(
-        simd ? { wasmLoaderPath: wasmLoader, wasmBinaryPath: wasmBinary } : { wasmLoaderPath: wasmLoaderNoSimd, wasmBinaryPath: wasmBinaryNoSimd },
+        simd
+          ? { wasmLoaderPath: wasmLoader, wasmBinaryPath: wasmBinary }
+          : { wasmLoaderPath: `${LEGACY}/vision_wasm_nosimd_internal.js`, wasmBinaryPath: `${LEGACY}/vision_wasm_nosimd_internal.wasm` },
         {
           baseOptions: { modelAssetPath: MODEL, delegate: 'CPU' },
           runningMode: 'VIDEO',

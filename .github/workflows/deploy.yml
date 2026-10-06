@@ -1,0 +1,95 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Check out dev
+        uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: dev
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Restore main dependencies
+        id: main-modules
+        uses: actions/cache@v4
+        with:
+          path: main/node_modules
+          key: modules-${{ runner.os }}-node22-${{ hashFiles('main/package-lock.json') }}
+
+      - name: Restore dev dependencies
+        id: dev-modules
+        uses: actions/cache@v4
+        with:
+          path: dev/node_modules
+          key: modules-${{ runner.os }}-node22-${{ hashFiles('dev/package-lock.json') }}
+
+      - name: Install main dependencies
+        if: steps.main-modules.outputs.cache-hit != 'true'
+        working-directory: main
+        run: npm ci --no-audit --no-fund --prefer-offline
+
+      - name: Install dev dependencies
+        if: steps.dev-modules.outputs.cache-hit != 'true'
+        working-directory: dev
+        run: npm ci --no-audit --no-fund --prefer-offline
+
+      - name: Build main
+        working-directory: main
+        run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+
+      - name: Build dev
+        working-directory: dev
+        run: npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/dev/
+
+      - name: Assemble site
+        run: |
+          mkdir -p site
+          cp -r main/dist/. site/
+          mkdir -p site/dev
+          cp -r dev/dist/. site/dev/
+          rm -f site/dev/404.html
+          touch site/.nojekyll
+          du -sh site
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4

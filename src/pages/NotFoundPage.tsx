@@ -1,12 +1,13 @@
 import { Camera, House } from '@phosphor-icons/react'
 import { LinkButton } from '../components/ui/LinkButton'
 import { useT } from '../i18n'
+import { stickerSrc } from '../lib/stickers'
 
 export default function NotFoundPage() {
   const t = useT()
   return (
     <section className="empty" aria-labelledby="nf-title">
-      <img src="/stickers/ghost.webp" alt="" width={120} height={120} className="nf__ghost" />
+      <img src={stickerSrc('ghost')} alt="" width={120} height={120} className="nf__ghost" />
       <h1 id="nf-title">{t.notFound.title}</h1>
       <p>{t.notFound.text}</p>
       <div className="hero__ctas">

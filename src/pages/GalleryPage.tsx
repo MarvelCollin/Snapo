@@ -7,6 +7,7 @@ import { LinkButton } from '../components/ui/LinkButton'
 import { Dialog } from '../components/ui/Dialog'
 import { toast } from '../store/toasts'
 import { getLocale, useT } from '../i18n'
+import { stickerSrc } from '../lib/stickers'
 
 const PAGE = 24
 
@@ -100,7 +101,7 @@ export default function GalleryPage() {
 
       {items?.length === 0 && (
         <div className="empty">
-          <img src="/stickers/camera-with-flash.webp" alt="" width={96} height={96} />
+          <img src={stickerSrc('camera-with-flash')} alt="" width={96} height={96} />
           <h2>{t.gallery.emptyTitle}</h2>
           <p>{t.gallery.emptyText}</p>
           <LinkButton to="/booth" variant="primary" size="lg" icon={<Camera weight="bold" size={20} />}>
