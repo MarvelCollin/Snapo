@@ -96,6 +96,11 @@
   transform: translateY(5px);
 }
 
+.btn--ghost.btn--lg,
+.btn--ghost.btn--sm {
+  box-shadow: none;
+}
+
 .btn--block {
   width: 100%;
 }

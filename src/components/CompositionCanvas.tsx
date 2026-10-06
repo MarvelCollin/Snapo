@@ -47,7 +47,7 @@ export function CompositionCanvas({ displayWidth, displayHeight, className, labe
 
   return (
     <div className={`composition ${ready ? 'is-ready' : ''} ${className ?? ''}`} style={{ width: w, height: h }}>
-      <canvas ref={ref} role="img" aria-label={label} style={{ width: w, height: h }} />
+      <canvas ref={ref} role={label ? 'img' : undefined} aria-label={label || undefined} aria-hidden={label ? undefined : true} style={{ width: w, height: h }} />
     </div>
   )
 }
