@@ -9,8 +9,9 @@ import {
   UploadSimple,
   Stop,
   ArrowCounterClockwise,
+  SquaresFour,
 } from '@phosphor-icons/react'
-import { useSession, type Timer } from '../../store/session'
+import { useSession, type Bonus, type Timer } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
 import { filterById } from '../../lib/filters'
@@ -26,6 +27,7 @@ import { LiveView } from '../../components/shoot/LiveView'
 import { FilterPicker } from '../../components/shared/FilterPicker'
 import { BackdropPicker } from '../../components/shared/BackdropPicker'
 import { BeautySlider } from '../../components/shared/BeautySlider'
+import { PickDialog } from '../../components/shoot/PickDialog'
 import { CompositionCanvas } from '../../components/shared/CompositionCanvas'
 import { Button } from '../../components/ui/Button'
 import { IconButton } from '../../components/ui/IconButton'
@@ -45,17 +47,21 @@ export default function ShootStep() {
   const {
     layoutId,
     photos,
+    takes,
     timer,
     mirror,
     autoSequence,
     sound,
+    bonus,
     poses,
     setPhoto,
+    addTake,
     setTimer,
     setMirror,
     setAutoSequence,
     setSound,
     setPhotos,
+    setBonus,
     setPoses,
   } = useSession()
   const design = useDesign((s) => s.design)
@@ -71,9 +77,11 @@ export default function ShootStep() {
   const [flash, setFlash] = useState(0)
   const [selected, setSelected] = useState<number | null>(null)
   const [current, setCurrent] = useState<number | null>(null)
+  const [run, setRun] = useState<{ index: number; total: number } | null>(null)
   const [pose, setPose] = useState<PoseId | null>(null)
   const [look, setLook] = useState<Look>('filter')
   const [confirmRetake, setConfirmRetake] = useState(false)
+  const [pickOpen, setPickOpen] = useState(false)
   const cancelRef = useRef(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -83,6 +91,7 @@ export default function ShootStep() {
   const target = selected ?? (firstEmpty >= 0 ? firstEmpty : null)
   const busy = phase !== 'idle'
   const live = status === 'live'
+  const spare = takes.filter((tk) => !photos.includes(tk.photo)).length
   const backdropOn = backdropById(design.backdropId).kind !== 'none'
 
   const aspectFor = (photoIndex: number | null) => {
@@ -103,14 +112,16 @@ export default function ShootStep() {
     }
   }, [live, mirror, phase, fromVideo, videoRef])
 
-  const shoot = async (targets: number[]) => {
-    if (!videoRef.current || !targets.length) return
+  const shoot = async (plan: (number | null)[], pickAfter = false) => {
+    if (!videoRef.current || !plan.length) return
     cancelRef.current = false
     const posePlan: PoseId[] = []
-    for (let k = 0; k < targets.length; k++) posePlan.push(nextPose(posePlan[k - 1] ?? null))
-    for (let k = 0; k < targets.length; k++) {
-      const slot = targets[k]
+    for (let k = 0; k < plan.length; k++) posePlan.push(nextPose(posePlan[k - 1] ?? null))
+    let taken = 0
+    for (let k = 0; k < plan.length; k++) {
+      const slot = plan[k]
       setCurrent(slot)
+      setRun({ index: k, total: plan.length })
       setPose(poses ? posePlan[k] : null)
       setPhase('countdown')
       for (let n: number = timer; n > 0; n--) {
@@ -124,8 +135,13 @@ export default function ShootStep() {
       setFlash((f) => f + 1)
       if (sound) shutterSound()
       const video = videoRef.current
-      if (video && video.readyState >= 2) setPhoto(slot, captureFrame(video, mirror))
-      if (k < targets.length - 1) {
+      if (video && video.readyState >= 2) {
+        const photo = captureFrame(video, mirror)
+        addTake(photo)
+        if (slot !== null) setPhoto(slot, photo)
+        taken++
+      }
+      if (k < plan.length - 1) {
         setPose(poses ? posePlan[k + 1] : null)
         setPhase('between')
         await sleep(1100)
@@ -134,8 +150,12 @@ export default function ShootStep() {
     setPhase('idle')
     setCurrent(null)
     setSelected(null)
+    setRun(null)
     setPose(null)
+    if (pickAfter && taken === plan.length) setPickOpen(true)
   }
+
+  const extra = () => Array.from({ length: bonus }, () => null)
 
   const onShutter = () => {
     if (busy) {
@@ -151,7 +171,12 @@ export default function ShootStep() {
       return
     }
     const empties = photos.map((p, i) => (p ? -1 : i)).filter((i) => i >= 0)
-    shoot(autoSequence ? empties : empties.slice(0, 1))
+    if (!autoSequence) {
+      shoot(empties.slice(0, 1))
+      return
+    }
+    const fresh = filled === 0 && bonus > 0
+    shoot(fresh ? [...empties, ...extra()] : empties, fresh)
   }
 
   useEffect(() => {
@@ -170,9 +195,11 @@ export default function ShootStep() {
     const empties = all.filter((i) => !photos[i])
     const targets = (selected !== null ? all.slice(selected) : empties.length ? empties : all).slice(0, list.length)
     let added = 0
-    for (let k = 0; k < targets.length; k++) {
+    for (let k = 0; k < list.length; k++) {
       try {
-        next[targets[k]] = await fileToPhoto(list[k])
+        const photo = await fileToPhoto(list[k])
+        addTake(photo)
+        if (k < targets.length) next[targets[k]] = photo
         added++
       } catch {
         toast(t.shoot.couldNotRead(list[k].name), { tone: 'error' })
@@ -194,11 +221,13 @@ export default function ShootStep() {
           ? t.shoot.takeShot((target ?? 0) + 1)
           : filled
             ? t.shoot.shootMore(layout.shots - filled)
-            : t.shoot.start(layout.shots)
+            : bonus
+              ? t.shoot.startBonus(layout.shots + bonus, layout.shots)
+              : t.shoot.start(layout.shots)
 
   const remaining = layout.shots - filled
   const shotNumber = (current ?? target ?? 0) + 1
-  const badge = t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
+  const badge = run ? t.shoot.shotOf(run.index + 1, run.total) : t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
 
   return (
     <section className="step step--shoot" aria-labelledby="shoot-title">
@@ -400,6 +429,11 @@ export default function ShootStep() {
               })}
             </ol>
             {selected !== null && <p className="tray__hint">{t.shoot.selected(selected + 1, !!photos[selected])}</p>}
+            {spare > 0 && (
+              <Button icon={<SquaresFour weight="bold" size={18} />} onClick={() => setPickOpen(true)} disabled={busy} block>
+                {t.shoot.pickBest(takes.length)}
+              </Button>
+            )}
           </div>
 
           <div className="settings">
@@ -414,6 +448,19 @@ export default function ShootStep() {
                 { value: 10, label: '10s' },
               ]}
             />
+            <div className="panel-stack panel-stack--tight">
+              <Segmented<Bonus>
+                label={t.shoot.bonus}
+                value={bonus}
+                onChange={setBonus}
+                options={[
+                  { value: 0, label: t.shoot.off },
+                  { value: 2, label: '+2' },
+                  { value: 4, label: '+4' },
+                ]}
+              />
+              <p className="field__hint">{t.shoot.bonusHint}</p>
+            </div>
             <Switch label={t.shoot.autoSeq} hint={t.shoot.autoSeqHint} checked={autoSequence} onChange={setAutoSequence} />
             <Switch label={t.shoot.poses} hint={t.shoot.posesHint} checked={poses} onChange={setPoses} />
             <Switch label={t.shoot.mirror} hint={t.shoot.mirrorHint} checked={mirror} onChange={setMirror} />
@@ -435,7 +482,7 @@ export default function ShootStep() {
               icon={<ArrowCounterClockwise weight="bold" size={18} />}
               onClick={() => {
                 setConfirmRetake(false)
-                shoot(photos.map((_, i) => i))
+                shoot([...photos.map((_, i) => i), ...extra()], bonus > 0)
               }}
             >
               {t.shoot.retakeAll}
@@ -445,6 +492,8 @@ export default function ShootStep() {
       >
         <p>{t.shoot.retakeBody}</p>
       </Dialog>
+
+      <PickDialog open={pickOpen} onClose={() => setPickOpen(false)} />
     </section>
   )
 }
