@@ -1,3 +1,389 @@
-export default function Page() {
-  return <section className="step"><p>Coming together. Refresh in a bit.</p></section>
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  ArrowRight,
+  ArrowsClockwise,
+  Camera,
+  CameraSlash,
+  Trash,
+  UploadSimple,
+  Stop,
+  ArrowCounterClockwise,
+} from '@phosphor-icons/react'
+import { useSession, type Timer } from '../../store/session'
+import { useDesign } from '../../store/design'
+import { layoutById } from '../../lib/layouts'
+import { filterById } from '../../lib/filters'
+import { useCamera } from '../../hooks/useCamera'
+import { useFilterThumbs } from '../../hooks/useFilterThumbs'
+import { captureFrame, fileToPhoto, beep, shutterSound } from '../../lib/photos'
+import { LiveView } from '../../components/LiveView'
+import { FilterPicker } from '../../components/FilterPicker'
+import { CompositionCanvas } from '../../components/CompositionCanvas'
+import { Button } from '../../components/ui/Button'
+import { IconButton } from '../../components/ui/IconButton'
+import { Segmented } from '../../components/ui/Segmented'
+import { Switch } from '../../components/ui/Switch'
+import { Dialog } from '../../components/ui/Dialog'
+import { toast } from '../../components/ui/Toast'
+
+const sleep = (ms: number) => new Promise((r) => window.setTimeout(r, ms))
+
+type Phase = 'idle' | 'countdown' | 'between'
+
+export default function ShootStep() {
+  const navigate = useNavigate()
+  const { layoutId, photos, timer, mirror, autoSequence, sound, setPhoto, setTimer, setMirror, setAutoSequence, setSound, setPhotos } =
+    useSession()
+  const design = useDesign((s) => s.design)
+  const update = useDesign((s) => s.update)
+  const layout = layoutById(layoutId)
+  const filter = filterById(design.filterId)
+  const { videoRef, status, start, switchCamera, canSwitch } = useCamera()
+  const { thumbs, fromVideo } = useFilterThumbs()
+
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [count, setCount] = useState(0)
+  const [flash, setFlash] = useState(0)
+  const [selected, setSelected] = useState<number | null>(null)
+  const [current, setCurrent] = useState<number | null>(null)
+  const [confirmRetake, setConfirmRetake] = useState(false)
+  const cancelRef = useRef(false)
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const filled = photos.filter(Boolean).length
+  const complete = filled === layout.shots
+  const firstEmpty = photos.findIndex((p) => !p)
+  const target = selected ?? (firstEmpty >= 0 ? firstEmpty : null)
+  const busy = phase !== 'idle'
+  const live = status === 'live'
+
+  const aspectFor = (photoIndex: number | null) => {
+    const slot = layout.slots.find((s) => s.photo === (photoIndex ?? 0)) ?? layout.slots[0]
+    return slot.w / slot.h
+  }
+  const aspect = aspectFor(current ?? target)
+
+  useEffect(() => {
+    if (!live) return
+    const first = window.setTimeout(() => fromVideo(videoRef.current, mirror), 700)
+    const id = window.setInterval(() => {
+      if (phase === 'idle') fromVideo(videoRef.current, mirror)
+    }, 6000)
+    return () => {
+      window.clearTimeout(first)
+      window.clearInterval(id)
+    }
+  }, [live, mirror, phase, fromVideo, videoRef])
+
+  const shoot = useCallback(
+    async (targets: number[]) => {
+      if (!videoRef.current || !targets.length) return
+      cancelRef.current = false
+      for (let k = 0; k < targets.length; k++) {
+        const t = targets[k]
+        setCurrent(t)
+        setPhase('countdown')
+        for (let n: number = timer; n > 0; n--) {
+          if (cancelRef.current) break
+          setCount(n)
+          if (sound) beep(n === 1 ? 1040 : 780)
+          await sleep(1000)
+        }
+        if (cancelRef.current) break
+        setCount(0)
+        setFlash((f) => f + 1)
+        if (sound) shutterSound()
+        const video = videoRef.current
+        if (video && video.readyState >= 2) setPhoto(t, captureFrame(video, mirror))
+        if (k < targets.length - 1) {
+          setPhase('between')
+          await sleep(1100)
+        }
+      }
+      setPhase('idle')
+      setCurrent(null)
+      setSelected(null)
+    },
+    [timer, sound, mirror, setPhoto, videoRef],
+  )
+
+  const onShutter = () => {
+    if (busy) {
+      cancelRef.current = true
+      return
+    }
+    if (selected !== null) {
+      shoot([selected])
+      return
+    }
+    if (complete) {
+      setConfirmRetake(true)
+      return
+    }
+    const empties = photos.map((p, i) => (p ? -1 : i)).filter((i) => i >= 0)
+    shoot(autoSequence ? empties : empties.slice(0, 1))
+  }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && busy) cancelRef.current = true
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [busy])
+
+  const onFiles = async (files: FileList | null) => {
+    if (!files?.length) return
+    const list = Array.from(files).filter((f) => f.type.startsWith('image/'))
+    const next = [...photos]
+    const all = photos.map((_, i) => i)
+    const empties = all.filter((i) => !photos[i])
+    const targets = (selected !== null ? all.slice(selected) : empties.length ? empties : all).slice(0, list.length)
+    let added = 0
+    for (let k = 0; k < targets.length; k++) {
+      try {
+        next[targets[k]] = await fileToPhoto(list[k])
+        added++
+      } catch {
+        toast(`Could not read ${list[k].name}. Try a JPG or PNG.`, { tone: 'error' })
+      }
+    }
+    setPhotos(next)
+    setSelected(null)
+    if (added) toast(`Added ${added} ${added === 1 ? 'photo' : 'photos'}`)
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  const shotLabel = useMemo(() => {
+    if (busy) return 'Stop'
+    if (selected !== null) return `Retake shot ${selected + 1}`
+    if (complete) return 'Retake all'
+    if (!autoSequence) return `Take shot ${(target ?? 0) + 1}`
+    return filled ? `Shoot ${layout.shots - filled} more` : `Start ${layout.shots} shots`
+  }, [busy, selected, complete, autoSequence, target, filled, layout.shots])
+
+  const remaining = layout.shots - filled
+  const shotNumber = (current ?? target ?? 0) + 1
+
+  return (
+    <section className="step step--shoot" aria-labelledby="shoot-title">
+      <header className="step__head step__head--row">
+        <div>
+          <h1 id="shoot-title">Strike a pose</h1>
+          <p className="step__lede">
+            {layout.name}, {layout.shots} {layout.shots === 1 ? 'shot' : 'shots'}. Pick a filter now, you can change it later.
+          </p>
+        </div>
+      </header>
+
+      <div className="shoot">
+        <div className="shoot__stage">
+          <div className="shoot__camera">
+            <video ref={videoRef} className="visually-hidden" playsInline muted aria-hidden="true" />
+            <LiveView videoRef={videoRef} live={live} filter={filter} mirror={mirror} aspect={aspect}>
+              {live && (
+                <span className="liveview__badge" aria-live="polite">
+                  Shot {Math.min(shotNumber, layout.shots)} of {layout.shots}
+                </span>
+              )}
+              {phase === 'countdown' && count > 0 && (
+                <span key={`count-${count}`} className="liveview__count" aria-live="assertive">
+                  {count}
+                </span>
+              )}
+              {phase === 'between' && <span className="liveview__note">Next pose</span>}
+              {flash > 0 && <span key={`flash-${flash}`} className="liveview__flash" aria-hidden="true" />}
+              {status !== 'live' && (
+                <div className="liveview__state">
+                  {status === 'requesting' || status === 'idle' ? (
+                    <>
+                      <div className="skeleton liveview__skeleton" />
+                      <p className="liveview__state-text">Waiting for your camera. Allow access when the browser asks.</p>
+                    </>
+                  ) : (
+                    <>
+                      <CameraSlash size={40} weight="bold" aria-hidden="true" />
+                      <h2 className="liveview__state-title">
+                        {status === 'denied' ? 'Camera is blocked' : status === 'unavailable' ? 'No camera found' : 'Camera could not start'}
+                      </h2>
+                      <p className="liveview__state-text">
+                        {status === 'denied'
+                          ? 'Allow camera access from the icon in your address bar, then try again. You can also upload photos instead.'
+                          : status === 'unavailable'
+                            ? 'Snapo needs a camera and a secure page (https or localhost). Upload photos from your device instead.'
+                            : 'Another app might be using it. Close it and try again, or upload photos.'}
+                      </p>
+                      <div className="liveview__state-actions">
+                        {status !== 'unavailable' && (
+                          <Button variant="primary" icon={<ArrowsClockwise weight="bold" size={18} />} onClick={() => start()}>
+                            Try again
+                          </Button>
+                        )}
+                        <Button icon={<UploadSimple weight="bold" size={18} />} onClick={() => fileRef.current?.click()}>
+                          Upload photos
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </LiveView>
+          </div>
+
+          <div className="shoot__controls">
+            <Button
+              variant={busy ? 'danger' : 'primary'}
+              size="lg"
+              className="shutter"
+              icon={busy ? <Stop weight="fill" size={22} /> : <Camera weight="fill" size={22} />}
+              onClick={onShutter}
+              disabled={!live && !busy}
+            >
+              {shotLabel}
+            </Button>
+            <div className="shoot__quick">
+              <IconButton
+                label="Upload photos"
+                icon={<UploadSimple weight="bold" size={20} />}
+                onClick={() => fileRef.current?.click()}
+                disabled={busy}
+              />
+              {canSwitch && <IconButton label="Switch camera" icon={<ArrowsClockwise weight="bold" size={20} />} onClick={switchCamera} disabled={busy} />}
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="visually-hidden"
+              tabIndex={-1}
+              aria-hidden="true"
+              onChange={(e) => onFiles(e.target.files)}
+            />
+          </div>
+
+          <FilterPicker value={design.filterId} onChange={(id) => update({ filterId: id })} thumbs={thumbs} variant="rail" idPrefix="shoot-filters" />
+        </div>
+
+        <aside className="shoot__side" aria-label="Your strip">
+          <div className="shoot__preview">
+            <CompositionCanvas
+              layout={layout}
+              design={{ ...design, elements: [] }}
+              photos={photos}
+              displayHeight={300}
+              displayWidth={260}
+              label={`${layout.name} preview with ${filled} of ${layout.shots} photos`}
+            />
+          </div>
+
+          <div className="shoot__next">
+            <p className="shoot__status" aria-live="polite">
+              <strong>{complete ? 'All shots done' : `${remaining} ${remaining === 1 ? 'shot' : 'shots'} to go`}</strong>
+              <span>{complete ? 'Time to add frames and stickers.' : 'Fill every shot to start decorating.'}</span>
+            </p>
+            <Button
+              variant="primary"
+              block
+              iconEnd={<ArrowRight weight="bold" size={20} />}
+              disabled={!complete || busy}
+              onClick={() => navigate('/booth/decorate')}
+            >
+              Decorate
+            </Button>
+          </div>
+
+          <div className="tray">
+            <div className="tray__head">
+              <h2 className="panel-title">Shots</h2>
+              <span className="tray__count">
+                {filled} of {layout.shots}
+              </span>
+            </div>
+            <ol className="tray__list">
+              {photos.map((p, i) => {
+                const isSel = selected === i
+                const isNext = selected === null && target === i && !busy
+                return (
+                  <li key={i} className={`tray__item ${isSel ? 'is-selected' : ''} ${isNext ? 'is-next' : ''} ${current === i ? 'is-shooting' : ''}`}>
+                    <button
+                      type="button"
+                      className="tray__thumb"
+                      aria-pressed={isSel}
+                      aria-label={p ? `Shot ${i + 1}. Select to retake` : `Shot ${i + 1}, empty. Select to shoot this one next`}
+                      onClick={() => setSelected(isSel ? null : i)}
+                      disabled={busy}
+                      style={{ aspectRatio: String(aspectFor(i)) }}
+                    >
+                      {p ? <img src={p} alt="" /> : <span className="tray__num">{i + 1}</span>}
+                    </button>
+                    {p && (
+                      <IconButton
+                        label={`Remove shot ${i + 1}`}
+                        tone="plain"
+                        size="sm"
+                        icon={<Trash weight="bold" size={16} />}
+                        onClick={() => {
+                          setPhoto(i, null)
+                          toast(`Removed shot ${i + 1}`, { actionLabel: 'Undo', onAction: () => setPhoto(i, p) })
+                        }}
+                        disabled={busy}
+                      />
+                    )}
+                  </li>
+                )
+              })}
+            </ol>
+            {selected !== null && (
+              <p className="tray__hint">
+                Shot {selected + 1} selected. Press the big button to {photos[selected] ? 'retake it' : 'shoot it'}.
+              </p>
+            )}
+          </div>
+
+          <div className="settings">
+            <h2 className="panel-title">Camera settings</h2>
+            <Segmented<Timer>
+              label="Timer"
+              value={timer}
+              onChange={setTimer}
+              options={[
+                { value: 3, label: '3s' },
+                { value: 5, label: '5s' },
+                { value: 10, label: '10s' },
+              ]}
+            />
+            <Switch label="Shoot all in a row" hint="Takes every empty shot back to back" checked={autoSequence} onChange={setAutoSequence} />
+            <Switch label="Mirror" hint="Flip like a selfie" checked={mirror} onChange={setMirror} />
+            <Switch label="Sounds" hint="Beeps on countdown" checked={sound} onChange={setSound} />
+          </div>
+        </aside>
+      </div>
+
+      <Dialog
+        open={confirmRetake}
+        onClose={() => setConfirmRetake(false)}
+        title={`Retake all ${layout.shots} shots?`}
+        size="confirm"
+        footer={
+          <>
+            <Button onClick={() => setConfirmRetake(false)}>Keep my shots</Button>
+            <Button
+              variant="danger"
+              icon={<ArrowCounterClockwise weight="bold" size={18} />}
+              onClick={() => {
+                setConfirmRetake(false)
+                shoot(photos.map((_, i) => i))
+              }}
+            >
+              Retake all
+            </Button>
+          </>
+        }
+      >
+        <p>Each new shot replaces the old one as you go. To redo just one, pick it in the Shots list instead.</p>
+      </Dialog>
+    </section>
+  )
 }
