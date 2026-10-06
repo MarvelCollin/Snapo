@@ -1,20 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { filters } from '../lib/filters'
-import { coverCrop, sharedEngine } from '../lib/filterEngine'
-
-const W = 96
-const H = 112
-
-export function makeThumbs(source: TexImageSource & { width?: number; height?: number }, srcW: number, srcH: number, mirror = false) {
-  const engine = sharedEngine()
-  const crop = coverCrop(srcW, srcH, W, H)
-  const out: Record<string, string> = {}
-  for (const f of filters) {
-    engine.render(source, f, { width: W, height: H, crop, mirror, seed: 1.3 })
-    out[f.id] = engine.canvas.toDataURL('image/jpeg', 0.82)
-  }
-  return out
-}
+import { makeThumbs } from '../lib/filterThumbs'
 
 export function useFilterThumbs() {
   const [thumbs, setThumbs] = useState<Record<string, string>>({})

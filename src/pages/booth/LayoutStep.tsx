@@ -6,7 +6,7 @@ import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { Tabs } from '../../components/ui/Tabs'
 import { Button } from '../../components/ui/Button'
-import { CompositionCanvas } from '../../components/CompositionCanvas'
+import { CompositionCanvas } from '../../components/shared/CompositionCanvas'
 
 export default function LayoutStep() {
   const navigate = useNavigate()

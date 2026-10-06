@@ -1,34 +1,19 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useRef, type KeyboardEvent, type PointerEvent, type RefObject } from 'react'
 import { ArrowsClockwise, X } from '@phosphor-icons/react'
 import { useDesign, type CanvasEl } from '../../store/design'
-import { stickerArt, stickers, wordArt } from '../../lib/stickers'
+import { useElementArt } from '../../hooks/useElementArt'
+import { useElementName } from '../../hooks/useElementName'
 
 type Props = {
   el: CanvasEl
-  stageRef: React.RefObject<HTMLDivElement | null>
+  stageRef: RefObject<HTMLDivElement | null>
   selected: boolean
 }
-
-export function useElementArt(el: CanvasEl) {
-  const [src, setSrc] = useState<string | null>(() => (el.kind === 'word' ? wordArt(el.spec) : null))
-  const key = el.kind === 'sticker' ? `${el.ref}|${el.outline}` : JSON.stringify(el.spec)
-  useEffect(() => {
-    let alive = true
-    if (el.kind === 'word') setSrc(wordArt(el.spec))
-    else stickerArt(el.ref, el.outline).then((s) => alive && setSrc(s))
-    return () => {
-      alive = false
-    }
-  }, [key])
-  return src
-}
-
-export const elementName = (el: CanvasEl) =>
-  el.kind === 'word' ? `Text "${el.spec.text}"` : `Sticker ${stickers.find((s) => s.id === el.ref)?.name ?? el.ref}`
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v))
 
 export function ElementView({ el, stageRef, selected }: Props) {
+  const elementName = useElementName()
   const { select, updateElement, checkpoint, removeElement, duplicateElement } = useDesign()
   const src = useElementArt(el)
   const drag = useRef<{ px: number; py: number; x: number; y: number; moved: boolean } | null>(null)

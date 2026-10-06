@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { filters, filterGroups, type FilterGroup } from '../lib/filters'
-import { Tabs } from './ui/Tabs'
+import { filters, filterGroups, type FilterGroup } from '../../lib/filters'
+import { Tabs } from '../ui/Tabs'
 
 type Props = {
   value: string

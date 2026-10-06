@@ -5,7 +5,7 @@ import { exportScale, fillStyleFor, formatDate, renderComposition } from './rend
 import { filterById } from './filters'
 import { coverCrop, filterToCanvas } from './filterEngine'
 import { loadImage } from './stickers'
-import { fontById, fontString } from '../fonts'
+import { fontById, fontString } from './fonts'
 
 export const fileStamp = (d = new Date()) => {
   const p = (n: number) => String(n).padStart(2, '0')

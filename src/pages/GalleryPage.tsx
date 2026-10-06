@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { Camera, DownloadSimple, Trash } from '@phosphor-icons/react'
 import { getGalleryFile, listGallery, removeFromGallery, saveToGallery, type GalleryItem } from '../lib/gallery'
 import { download } from '../lib/export'
-import { LinkButton, Button } from '../components/ui/Button'
+import { Button } from '../components/ui/Button'
+import { LinkButton } from '../components/ui/LinkButton'
 import { Dialog } from '../components/ui/Dialog'
-import { toast } from '../components/ui/Toast'
+import { toast } from '../store/toasts'
 
 const PAGE = 24
 

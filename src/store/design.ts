@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { frameById, type Frame } from '../lib/frames'
 import type { WordSpec } from '../lib/stickers'
-import { idbStorage } from './idbStorage'
+import { idbStorage } from '../lib/idbStorage'
 
 export type StickerEl = {
   id: string

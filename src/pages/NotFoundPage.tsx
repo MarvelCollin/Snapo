@@ -1,5 +1,5 @@
 import { Camera, House } from '@phosphor-icons/react'
-import { LinkButton } from '../components/ui/Button'
+import { LinkButton } from '../components/ui/LinkButton'
 
 export default function NotFoundPage() {
   return (

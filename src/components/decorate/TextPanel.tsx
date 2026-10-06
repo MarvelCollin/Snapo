@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Plus, Check } from '@phosphor-icons/react'
 import { wordArt, wordStyles, type WordSpec, type WordStyle } from '../../lib/stickers'
-import { captionFonts } from '../../fonts'
+import { captionFonts } from '../../lib/fonts'
 import { useDesign } from '../../store/design'
 import { TextField } from '../ui/TextField'
 import { Button } from '../ui/Button'
 import { SwatchPicker } from '../ui/SwatchPicker'
-import { useAddElement } from './StickerPanel'
+import { useAddElement } from '../../hooks/useAddElement'
 
 const textColors = ['#ff8fab', '#ff6f91', '#e2445c', '#ffb385', '#ffd166', '#7bdcb5', '#62c6e8', '#8ec5ff', '#c08bff', '#ffffff', '#3b2230', '#bde0fe']
 

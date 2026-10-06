@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowRight, Camera, ImagesSquare, LockSimple } from '@phosphor-icons/react'
-import { LinkButton } from '../components/ui/Button'
-import { CompositionCanvas } from '../components/CompositionCanvas'
+import { LinkButton } from '../components/ui/LinkButton'
+import { CompositionCanvas } from '../components/shared/CompositionCanvas'
 import { layoutById, layouts } from '../lib/layouts'
 import { frameById, frames } from '../lib/frames'
 import { filters } from '../lib/filters'
 import { stickers, stickerSrc, wordPresets } from '../lib/stickers'
 import { samplePhoto, samplePhotos } from '../lib/samples'
-import { makeThumbs } from '../hooks/useFilterThumbs'
+import { makeThumbs } from '../lib/filterThumbs'
 import { defaultDesign, type CanvasEl, type Design } from '../store/design'
 import { useSession } from '../store/session'
 
@@ -53,7 +53,7 @@ const quickLayouts = ['classic-4', 'twin-4', 'hearts', 'bubbles', 'polaroid', 'f
 const demoFilters = ['original', 'seoul', 'strawberry-milk', 'golden-hour', 'life4', 'cotton-candy', 'pink-duo', 'y2k']
 const wall = ['sparkling-heart', 'rabbit-face', 'strawberry', 'ribbon', 'rainbow', 'cat-face', 'bubble-tea', 'sparkles', 'cherry-blossom', 'teddy-bear', 'shortcake', 'victory-hand', 'crown', 'butterfly', 'star-struck', 'cherries', 'hamster', 'love-letter', 'four-leaf-clover', 'unicorn', 'balloon', 'heart-hands', 'soft-ice-cream', 'ghost']
 
-export function HomePage() {
+export default function HomePage() {
   const navigate = useNavigate()
   const setLayout = useSession((s) => s.setLayout)
   const [photos, setPhotos] = useState<string[] | null>(null)

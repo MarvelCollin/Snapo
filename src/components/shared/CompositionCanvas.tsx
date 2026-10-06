@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { renderComposition, type RenderInput } from '../lib/render'
+import { renderComposition, type RenderInput } from '../../lib/render'
 
 type Props = Omit<RenderInput, 'scale'> & {
   displayWidth?: number

@@ -1,4 +1,4 @@
-import { captionFonts } from '../../fonts'
+import { captionFonts } from '../../lib/fonts'
 import { swatches } from '../../lib/frames'
 import { formatDate } from '../../lib/render'
 import { useDesign, type DateStyle, type Design } from '../../store/design'

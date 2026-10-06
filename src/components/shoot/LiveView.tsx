@@ -1,6 +1,6 @@
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react'
-import { FilterEngine, coverCrop } from '../lib/filterEngine'
-import type { FilterDef } from '../lib/filters'
+import { FilterEngine, coverCrop } from '../../lib/filterEngine'
+import type { FilterDef } from '../../lib/filters'
 
 type Props = {
   videoRef: RefObject<HTMLVideoElement | null>

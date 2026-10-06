@@ -10,7 +10,7 @@ const steps = [
   { path: 'save', label: 'Save' },
 ]
 
-export function BoothLayout() {
+export default function BoothShell() {
   const { pathname } = useLocation()
   const hydrated = useSession((s) => s.hydrated)
   const photos = useSession((s) => s.photos)

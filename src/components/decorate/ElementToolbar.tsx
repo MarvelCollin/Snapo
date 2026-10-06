@@ -14,9 +14,10 @@ import {
 } from '@phosphor-icons/react'
 import { useDesign } from '../../store/design'
 import { IconButton } from '../ui/IconButton'
-import { elementName } from './ElementView'
+import { useElementName } from '../../hooks/useElementName'
 
 export function ElementToolbar() {
+  const elementName = useElementName()
   const { design, selectedId, updateElement, removeElement, duplicateElement, reorderElement, undo, redo, past, future } = useDesign()
   const el = design.elements.find((e) => e.id === selectedId)
 

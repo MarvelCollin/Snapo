@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { layoutById } from '../lib/layouts'
-import { idbStorage } from './idbStorage'
+import { idbStorage } from '../lib/idbStorage'
 
 export type Timer = 3 | 5 | 10
 

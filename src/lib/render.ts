@@ -4,7 +4,7 @@ import { patternTile, heartPath } from './patterns'
 import type { Fill, Frame } from './frames'
 import { filterById } from './filters'
 import { coverCrop, filterToCanvas } from './filterEngine'
-import { fontById, fontString, captionFonts } from '../fonts'
+import { fontById, fontString, captionFonts } from './fonts'
 import { loadImage, stickerArt, wordArt } from './stickers'
 
 export type RenderInput = {

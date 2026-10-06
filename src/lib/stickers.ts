@@ -1,5 +1,5 @@
 import manifest from '../data/stickerManifest.json'
-import { fontById, fontString } from '../fonts'
+import { fontById, fontString } from './fonts'
 
 export type StickerPack = 'love' | 'faces' | 'critters' | 'sweets' | 'sky' | 'party' | 'hands' | 'words'
 

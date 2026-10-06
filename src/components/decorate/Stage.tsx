@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Layout } from '../../lib/layouts'
 import { useDesign } from '../../store/design'
-import { CompositionCanvas } from '../CompositionCanvas'
+import { CompositionCanvas } from '../shared/CompositionCanvas'
 import { ElementView } from './ElementView'
 
 type Props = {

@@ -17,7 +17,7 @@ import { layoutById } from '../../lib/layouts'
 import { canShareFiles, canvasToBlob, download, fileStamp, makeGif, printImage, renderFinal, shareImage, thumbnailOf, toJpeg } from '../../lib/export'
 import { saveToGallery } from '../../lib/gallery'
 import { Button } from '../../components/ui/Button'
-import { toast } from '../../components/ui/Toast'
+import { toast } from '../../store/toasts'
 
 type Busy = null | 'jpg' | 'gif' | 'share' | 'gallery'
 

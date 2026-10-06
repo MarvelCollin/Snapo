@@ -1,9 +1,9 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { AppHeader } from './components/AppHeader'
-import { ToastRegion } from './components/ui/Toast'
-import { HomePage } from './pages/HomePage'
-import { BoothLayout } from './pages/booth/BoothLayout'
+import { AppHeader } from './components/app/AppHeader'
+import { ToastRegion } from './components/ui/ToastRegion'
+import HomePage from './pages/HomePage'
+import BoothShell from './pages/booth/BoothShell'
 
 const LayoutStep = lazy(() => import('./pages/booth/LayoutStep'))
 const ShootStep = lazy(() => import('./pages/booth/ShootStep'))
@@ -43,7 +43,7 @@ export default function App() {
         <Suspense fallback={<PageFallback />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/booth" element={<BoothLayout />}>
+            <Route path="/booth" element={<BoothShell />}>
               <Route index element={<Navigate to="layout" replace />} />
               <Route path="layout" element={<LayoutStep />} />
               <Route path="shoot" element={<ShootStep />} />
