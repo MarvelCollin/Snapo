@@ -202,9 +202,23 @@ function drawCaption(ctx: CanvasRenderingContext2D, rect: Rect, design: Design, 
   const captionBlock = lines.length * lineH
   const top = overlay ? y : y + (h - captionBlock - metaBlock) / 2
 
+  const halo = design.frame.fill.kind === 'pattern' && !overlay ? design.frame.fill.base : null
+  const text = (t: string, tx: number, ty: number, px: number) => {
+    if (halo) {
+      ctx.save()
+      ctx.strokeStyle = halo
+      ctx.lineWidth = Math.max(2, px * 0.28)
+      ctx.lineJoin = 'round'
+      ctx.globalAlpha = 1
+      ctx.strokeText(t, tx, ty)
+      ctx.restore()
+    }
+    ctx.fillText(t, tx, ty)
+  }
+
   if (caption) {
     ctx.font = fontString(font, size)
-    lines.forEach((line, i) => ctx.fillText(line, x + w / 2, top + lineH * (i + 0.5)))
+    lines.forEach((line, i) => text(line, x + w / 2, top + lineH * (i + 0.5), size))
   }
 
   if (overlay) {
@@ -227,13 +241,13 @@ function drawCaption(ctx: CanvasRenderingContext2D, rect: Rect, design: Design, 
   if (dateText) {
     ctx.font = metaFont
     ctx.globalAlpha = 0.85
-    ctx.fillText(dateText, x + w / 2, my)
+    text(dateText, x + w / 2, my, metaSize)
     my += metaSize * 1.5
   }
   if (logo) {
     ctx.globalAlpha = 0.7
     ctx.font = logoFont
-    ctx.fillText('snapo', x + w / 2, my)
+    text('snapo', x + w / 2, my, metaSize)
   }
   ctx.restore()
 }

@@ -1,0 +1,226 @@
+.save {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.save__preview {
+  display: grid;
+  place-items: center;
+  min-height: 420px;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background-color: var(--surface);
+  background-image: radial-gradient(var(--tint) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+}
+
+.save__frame {
+  position: relative;
+  width: min(100%, calc((100dvh - 260px) * var(--ratio)));
+  max-height: calc(100dvh - 260px);
+  transform: rotate(-2deg);
+  box-shadow: var(--shadow-float), 0 3px 10px oklch(0.4 0.08 10 / 0.2);
+  animation: drop-in 420ms var(--ease-out);
+}
+
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: rotate(-6deg) translateY(-24px);
+  }
+}
+
+.save__img {
+  width: 100%;
+  height: 100%;
+}
+
+.save__skeleton {
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+}
+
+.save__error {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--paper);
+  text-align: center;
+}
+
+.save__side {
+  display: grid;
+  gap: var(--space-6);
+}
+
+.save__actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.save__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.save__saved {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  font-weight: 700;
+  color: var(--mint-strong);
+}
+
+.save__saved a {
+  color: var(--mint-strong);
+}
+
+.save__privacy {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.save__more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 2px solid var(--tint);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-5);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gallery-skeleton {
+  height: 300px;
+}
+
+.gallery-card {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.gallery-card__art {
+  display: grid;
+  place-items: center;
+  height: 280px;
+  margin-bottom: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.gallery-card__art img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  box-shadow: var(--shadow-float);
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.gallery-card:hover .gallery-card__art {
+  background: var(--tint);
+}
+
+.gallery-card:hover .gallery-card__art img {
+  transform: rotate(-2deg) translateY(-3px);
+}
+
+.gallery-card__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.gallery-card__meta {
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+.gallery__more {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  color: var(--ink-muted);
+  font-size: var(--text-sm);
+}
+
+.viewer {
+  max-height: calc(85dvh - 180px);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.viewer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  max-width: 44ch;
+  margin: var(--space-7) auto;
+  text-align: center;
+}
+
+.empty h2 {
+  font-size: var(--text-2xl);
+}
+
+.empty p {
+  color: var(--ink-muted);
+  margin-bottom: var(--space-2);
+}
+
+@media (max-width: 900px) {
+  .save {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .save__preview {
+    min-height: 0;
+    padding: var(--space-4);
+  }
+
+  .save__frame {
+    width: min(100%, calc(60dvh * var(--ratio)));
+  }
+}
+
+@media (max-width: 720px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  .gallery-card__art {
+    height: 200px;
+    padding: var(--space-3);
+  }
+}
