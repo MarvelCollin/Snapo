@@ -66,6 +66,23 @@ export const templates: Template[] = [
     ],
   },
   {
+    id: 'tpl-bakery',
+    group: 'cute',
+    frame: frame('bakery', { kind: 'pattern', pattern: 'gingham', base: '#ffffff', ink: '#e63950', extra: '#ffffff', scale: 0.9 }, '#b0152f', '#ffd0d8', '#ffffff'),
+    filterId: 'strawberry-milk',
+    caption: 'sweet as pie',
+    captionFont: 'fredoka',
+    showDate: true,
+    showLogo: false,
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'cherries', x: 0.09, y: 0.27, w: 0.12, rot: -10 },
+      { ref: 'shortcake', x: 0.91, y: 0.27, w: 0.12, rot: 10 },
+      { ref: 'cupcake', x: 0.07, y: 0.955, w: 0.09, rot: -12 },
+      { ref: 'strawberry', x: 0.93, y: 0.955, w: 0.09, rot: 12 },
+    ],
+  },
+  {
     id: 'tpl-newspaper',
     group: 'editorial',
     frame: frame('newspaper', solid('#f3efe6'), '#1b1a18', '#d9d2c3', null, true),

@@ -115,6 +115,7 @@ export const en = {
       'tpl-records': 'Greatest Hits',
       'tpl-pop': 'stay fizzy',
       'tpl-mochi': 'soft and squishy',
+      'tpl-bakery': 'sweet as pie',
     } as Record<string, string>,
     blurbs: {
       'tpl-newspaper': 'A special edition front page with you as the headline.',
@@ -144,6 +145,7 @@ export const en = {
       'tpl-records': 'A vinyl album sleeve with your crew on the cover and your face spinning on the record.',
       'tpl-pop': 'A 1950s soda ad with bottle cap photos, rising fizz and an ice cold badge.',
       'tpl-mochi': 'Meet Mochi, Ube, Matcha and Sakura, four squishy pals peeking over your photos.',
+      'tpl-bakery': 'A red and white sweet shop with a striped awning, gingham walls and a ribbon on every photo.',
       'classic-4': 'The Seoul booth original. Four landscape cuts in a tall strip.',
       trio: 'Three taller cuts, more room for your poses.',
       duo: 'Two big portraits stacked. Great for couples.',
@@ -657,6 +659,8 @@ export const en = {
     bottling: (year: number) => `SNAPO BOTTLING CO.  *  EST. ${year}`,
     mochi: 'Mochi Club',
     mochiTag: 'squishy friends forever',
+    bakery: 'Ribbon Bakery',
+    bakeryTag: 'SWEET MEMORIES  *  BAKED FRESH',
   },
 }
 

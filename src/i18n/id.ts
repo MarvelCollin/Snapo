@@ -115,6 +115,7 @@ export const id: Dict = {
       'tpl-records': 'Lagu Terbaik',
       'tpl-pop': 'tetap segar',
       'tpl-mochi': 'lembut dan kenyal',
+      'tpl-bakery': 'semanis kue',
     } as Record<string, string>,
     blurbs: {
       'tpl-newspaper': 'Halaman depan edisi spesial dengan kamu sebagai berita utama.',
@@ -144,6 +145,7 @@ export const id: Dict = {
       'tpl-records': 'Sampul album piringan hitam dengan gengmu di sampul dan wajahmu berputar di piringan.',
       'tpl-pop': 'Iklan soda tahun 1950an dengan foto tutup botol, gelembung soda dan lencana dingin segar.',
       'tpl-mochi': 'Kenalan sama Mochi, Ube, Matcha dan Sakura, empat sahabat kenyal yang mengintip dari atas fotomu.',
+      'tpl-bakery': 'Toko kue merah putih dengan kanopi bergaris, dinding kotak-kotak dan pita di setiap foto.',
       'classic-4': 'Gaya asli photobox Seoul. Empat foto lebar dalam strip tinggi.',
       trio: 'Tiga foto lebih tinggi, lebih leluasa buat bergaya.',
       duo: 'Dua potret besar bertumpuk. Cocok buat pasangan.',
@@ -657,5 +659,7 @@ export const id: Dict = {
     bottling: (year: number) => `PABRIK MINUMAN SNAPO  *  SEJAK ${year}`,
     mochi: 'Mochi Club',
     mochiTag: 'sahabat kenyal selamanya',
+    bakery: 'Ribbon Bakery',
+    bakeryTag: 'KENANGAN MANIS  *  BARU DIPANGGANG',
   },
 }

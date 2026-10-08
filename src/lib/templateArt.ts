@@ -745,6 +745,22 @@ function focusLines(a: ArtArgs, x: number, y: number, w: number, h: number, coun
   c.restore()
 }
 
+function awning(a: ArtArgs, y: number, h: number, stripe: number, colors: [string, string]) {
+  const { c, s } = a
+  const W = a.w / s
+  c.save()
+  for (let i = 0, x = 0; x < W; i++, x += stripe) {
+    c.fillStyle = colors[i % 2]
+    c.beginPath()
+    c.rect(x * s, y * s, stripe * s, h * s)
+    c.fill()
+    c.beginPath()
+    c.arc((x + stripe / 2) * s, (y + h) * s, (stripe / 2) * s, 0, Math.PI)
+    c.fill()
+  }
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1472,6 +1488,29 @@ export const templateArt: Record<string, TemplateArt> = {
       c.rotate(0.18)
       text(a, a.t.kyaa, 0, 0, { size: 64, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', stroke: '#111111', strokeW: 12 })
       c.restore()
+    },
+  },
+  bakery: {
+    under: (a) => {
+      awning(a, 34, 150, 100, ['#e63950', '#ffffff'])
+      box(a, 0, 0, 1200, 34, '#b0152f')
+      box(a, 200, 250, 800, 170, '#fffaf0', 44)
+      outline(a, 200, 250, 800, 170, '#e63950', 8, 44)
+      text(a, a.t.bakery, 600, 355, { size: 104, family: 'Pacifico', align: 'center', color: '#b0152f', maxW: 720 })
+      text(a, a.t.bakeryTag, 600, 398, { size: 26, family: 'Oswald', weight: 500, align: 'center', color: '#e63950', spacing: 6, maxW: 700 })
+      box(a, 110, 1565, 980, 180, '#fffaf0', 50)
+      outline(a, 110, 1565, 980, 180, '#e63950', 6, 50)
+      for (const [x, y, r] of [
+        [160, 440, 18],
+        [1040, 440, 18],
+        [90, 1545, 14],
+        [1110, 1545, 14],
+      ])
+        heart(a, x, y, r, '#ff8fa3')
+    },
+    over: (a) => {
+      bow(a, 600, 232, 110, '#e63950')
+      a.slots.forEach((sl, i) => bow(a, i === 2 ? sl.x + sl.w - 34 : sl.x + 34, sl.y + 30, 90, '#e63950'))
     },
   },
 }

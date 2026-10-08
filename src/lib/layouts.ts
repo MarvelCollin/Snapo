@@ -119,6 +119,20 @@ const defs: Def[] = [
     captions: [{ x: 120, y: 1560, w: 960, h: 170 }],
   },
   {
+    id: 'tpl-bakery',
+    name: 'Ribbon Bakery',
+    group: 'template',
+    art: 'bakery',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 90, y: 470, w: 1020, h: 560, photo: 0, radius: 0.05 },
+      { x: 90, y: 1070, w: 495, h: 440, photo: 1, radius: 0.06 },
+      { x: 615, y: 1070, w: 495, h: 440, photo: 2, radius: 0.06 },
+    ],
+    captions: [{ x: 130, y: 1575, w: 940, h: 160 }],
+  },
+  {
     id: 'tpl-bunny',
     name: 'Bunny Picnic',
     group: 'template',
