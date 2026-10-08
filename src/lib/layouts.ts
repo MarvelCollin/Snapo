@@ -344,6 +344,21 @@ const defs: Def[] = [
     captions: [{ x: 80, y: 1200, w: 1040, h: 260 }],
   },
   {
+    id: 'tpl-timeslip',
+    name: 'Time Slip 98',
+    group: 'template',
+    art: 'timeslip',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 120, y: 480, w: 430, h: 400, photo: 0, card: true, rotate: -4 },
+      { x: 650, y: 500, w: 430, h: 400, photo: 1, card: true, rotate: 3 },
+      { x: 120, y: 1010, w: 430, h: 400, photo: 2, card: true, rotate: 3 },
+      { x: 650, y: 1030, w: 430, h: 400, photo: 3, card: true, rotate: -3 },
+    ],
+    captions: [],
+  },
+  {
     id: 'classic-4',
     name: 'Classic Four',
     group: 'strip',

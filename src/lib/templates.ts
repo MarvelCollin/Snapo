@@ -1,7 +1,7 @@
 import type { CanvasEl, Design } from '../store/design'
 import type { Fill, Frame } from './frames'
 
-export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'local'
+export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'drama' | 'local'
 
 type Sticker = { ref: string; x: number; y: number; w: number; rot?: number }
 
@@ -268,9 +268,21 @@ export const templates: Template[] = [
       { ref: 'sparkles', x: 0.92, y: 0.93, w: 0.09, rot: 10 },
     ],
   },
+  {
+    id: 'tpl-timeslip',
+    group: 'drama',
+    frame: frame('timeslip', { kind: 'gradient', colors: ['#bfeaff', '#e8fbe9'], angle: 180 }, '#1f5a3a', '#ff5d73', null),
+    filterId: 'golden-hour',
+    caption: 'our summer band',
+    photoOutline: 'none',
+    stickers: [
+      { ref: 'headphone', x: 0.92, y: 0.255, w: 0.1, rot: 14 },
+      { ref: 'sunflower', x: 0.08, y: 0.26, w: 0.09, rot: -12 },
+    ],
+  },
 ]
 
-export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'local']
+export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']
 
 export const templateById = (id: string) => templates.find((t) => t.id === id)
 

@@ -566,6 +566,75 @@ function cerealO(a: ArtArgs, x: number, y: number, r: number, color: string) {
   c.restore()
 }
 
+function watermelon(a: ArtArgs, x: number, y: number, r: number, rot: number) {
+  const { c, s } = a
+  c.save()
+  c.translate(x * s, y * s)
+  c.rotate(rot)
+  c.beginPath()
+  c.arc(0, 0, r * s, 0, Math.PI)
+  c.closePath()
+  c.fillStyle = '#2f9e44'
+  c.fill()
+  c.beginPath()
+  c.arc(0, 0, r * 0.9 * s, 0, Math.PI)
+  c.closePath()
+  c.fillStyle = '#e9fac8'
+  c.fill()
+  c.beginPath()
+  c.arc(0, 0, r * 0.8 * s, 0, Math.PI)
+  c.closePath()
+  c.fillStyle = '#ff5d73'
+  c.fill()
+  c.fillStyle = '#2b1d1d'
+  for (const [dx, dy] of [
+    [-0.45, 0.2],
+    [-0.15, 0.32],
+    [0.15, 0.32],
+    [0.45, 0.2],
+    [-0.3, 0.52],
+    [0, 0.6],
+    [0.3, 0.52],
+  ]) {
+    c.beginPath()
+    c.ellipse(dx * r * s, dy * r * s, r * 0.045 * s, r * 0.075 * s, dx * 0.8, 0, Math.PI * 2)
+    c.fill()
+  }
+  c.restore()
+}
+
+function cassette(a: ArtArgs, x: number, y: number, w: number, h: number, title: string, sub: string) {
+  const { c, s } = a
+  c.save()
+  c.shadowColor = 'rgba(20, 40, 30, 0.3)'
+  c.shadowBlur = 24 * s
+  c.shadowOffsetY = 10 * s
+  box(a, x, y, w, h, '#2b2b33', 28)
+  c.restore()
+  box(a, x + 40, y + 34, w - 80, h * 0.5, '#fff6e0', 12)
+  box(a, x + 40, y + 34, w - 80, 26, '#ff5d73', 8)
+  box(a, x + 40, y + 60, w - 80, 14, '#ffc53d')
+  text(a, title, x + w / 2, y + 150, { size: 64, family: 'Caveat', weight: 700, align: 'center', color: '#1f2a44', maxW: w - 140 })
+  text(a, sub, x + w / 2, y + 196, { size: 22, family: 'Space Mono', weight: 700, align: 'center', color: '#1f2a44', maxW: w - 140 })
+  const wy = y + h * 0.72
+  box(a, x + w * 0.28, wy - 36, w * 0.44, 72, '#4a4a55', 36)
+  for (const dx of [0.33, 0.67]) {
+    circle(a, x + w * dx, wy, 34, '#fff6e0')
+    circle(a, x + w * dx, wy, 16, '#2b2b33')
+  }
+  const { c: cc } = a
+  cc.save()
+  cc.fillStyle = '#3a3a44'
+  cc.beginPath()
+  cc.moveTo((x + w * 0.18) * s, (y + h) * s)
+  cc.lineTo((x + w * 0.24) * s, (y + h * 0.86) * s)
+  cc.lineTo((x + w * 0.76) * s, (y + h * 0.86) * s)
+  cc.lineTo((x + w * 0.82) * s, (y + h) * s)
+  cc.closePath()
+  cc.fill()
+  cc.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1156,6 +1225,23 @@ export const templateArt: Record<string, TemplateArt> = {
         crescent(a, sl.x + sl.w / 2, sl.y - 26, 26, '#e8b53a')
         star(a, sl.x + sl.w / 2 + 40, sl.y - 44, 12, '#e8b53a')
       }
+    },
+  },
+  timeslip: {
+    under: (a) => {
+      for (const [x, y, r] of [
+        [150, 40, 50],
+        [420, 20, 34],
+        [860, 30, 44],
+        [1100, 70, 30],
+      ])
+        circle(a, x, y, r, 'rgba(255, 255, 255, 0.7)')
+      cassette(a, 230, 60, 740, 360, a.caption || 'our summer band', a.t.mixtape)
+      text(a, a.t.timeslip, 600, 1618, { size: 96, family: 'Oswald', weight: 700, align: 'center', color: a.ink, spacing: 10, maxW: 700 })
+      text(a, a.t.slipFooter(a.date.getFullYear()), 600, 1700, { size: 46, family: 'Space Mono', weight: 700, align: 'center', color: a.accent })
+      text(a, a.t.slipNote, 600, 1762, { size: 44, family: 'Caveat', weight: 700, align: 'center', color: a.ink, maxW: 900 })
+      watermelon(a, 110, 1600, 110, -0.35)
+      watermelon(a, 1090, 1610, 110, 0.35)
     },
   },
 }
