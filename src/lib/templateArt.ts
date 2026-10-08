@@ -2139,19 +2139,21 @@ export const templateArt: Record<string, TemplateArt> = {
       outline(a, 200, 250, 800, 170, '#e63950', 8, 44)
       text(a, a.t.bakery, 600, 355, { size: 104, family: 'Pacifico', align: 'center', color: '#b0152f', maxW: 720 })
       text(a, a.t.bakeryTag, 600, 398, { size: 26, family: 'Oswald', weight: 500, align: 'center', color: '#e63950', spacing: 6, maxW: 700 })
-      box(a, 110, 1565, 980, 180, '#fffaf0', 50)
-      outline(a, 110, 1565, 980, 180, '#e63950', 6, 50)
+      box(a, 330, 1565, 540, 180, '#fffaf0', 50)
+      outline(a, 330, 1565, 540, 180, '#e63950', 6, 50)
       for (const [x, y, r] of [
         [160, 440, 18],
         [1040, 440, 18],
-        [90, 1545, 14],
-        [1110, 1545, 14],
+        [310, 1560, 14],
+        [890, 1560, 14],
       ])
         heart(a, x, y, r, '#ff8fa3')
     },
     over: (a) => {
       bow(a, 600, 232, 110, '#e63950')
       a.slots.forEach((sl, i) => bow(a, i === 2 ? sl.x + sl.w - 34 : sl.x + 34, sl.y + 30, 90, '#e63950'))
+      chibi(a, 190, 1752, 300, { hair: '#4a2a2a', top: '#ffffff', bottom: '#e63950', style: 'bob', bow: '#e63950', props: ['cupcake'], accent: '#ff8fa3' })
+      chibi(a, 1010, 1752, 300, { hair: '#6b4a3a', top: '#ffffff', bottom: '#3a2a3a', style: 'short', hat: 'chef', flip: true })
     },
   },
   haori: {

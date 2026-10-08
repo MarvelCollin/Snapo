@@ -151,7 +151,7 @@ export const en = {
       'tpl-records': 'A vinyl album sleeve with your crew on the cover and your face spinning on the record.',
       'tpl-pop': 'A 1950s soda ad with bottle cap photos, rising fizz and an ice cold badge.',
       'tpl-mochi': 'Meet Mochi, Ube, Matcha and Sakura, four squishy pals peeking over your photos.',
-      'tpl-bakery': 'A red and white sweet shop with a striped awning, gingham walls and a ribbon on every photo.',
+      'tpl-bakery': 'A red and white sweet shop in the Hello Kitty mood, with a striped awning, gingham walls, ribbons on every photo and two chibi bakers.',
       'classic-4': 'The Seoul booth original. Four landscape cuts in a tall strip.',
       trio: 'Three taller cuts, more room for your poses.',
       duo: 'Two big portraits stacked. Great for couples.',

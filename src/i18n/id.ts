@@ -151,7 +151,7 @@ export const id: Dict = {
       'tpl-records': 'Sampul album piringan hitam dengan gengmu di sampul dan wajahmu berputar di piringan.',
       'tpl-pop': 'Iklan soda tahun 1950an dengan foto tutup botol, gelembung soda dan lencana dingin segar.',
       'tpl-mochi': 'Kenalan sama Mochi, Ube, Matcha dan Sakura, empat sahabat kenyal yang mengintip dari atas fotomu.',
-      'tpl-bakery': 'Toko kue merah putih dengan kanopi bergaris, dinding kotak-kotak dan pita di setiap foto.',
+      'tpl-bakery': 'Toko kue merah putih bernuansa Hello Kitty, dengan kanopi bergaris, dinding kotak-kotak, pita di setiap foto dan dua chibi tukang kue.',
       'classic-4': 'Gaya asli photobox Seoul. Empat foto lebar dalam strip tinggi.',
       trio: 'Tiga foto lebih tinggi, lebih leluasa buat bergaya.',
       duo: 'Dua potret besar bertumpuk. Cocok buat pasangan.',

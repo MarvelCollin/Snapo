@@ -130,7 +130,7 @@ const defs: Def[] = [
       { x: 90, y: 1070, w: 495, h: 440, photo: 1, radius: 0.06 },
       { x: 615, y: 1070, w: 495, h: 440, photo: 2, radius: 0.06 },
     ],
-    captions: [{ x: 130, y: 1575, w: 940, h: 160 }],
+    captions: [{ x: 360, y: 1580, w: 480, h: 150 }],
   },
   {
     id: 'tpl-haori',

@@ -78,8 +78,6 @@ export const templates: Template[] = [
     stickers: [
       { ref: 'cherries', x: 0.09, y: 0.27, w: 0.12, rot: -10 },
       { ref: 'shortcake', x: 0.91, y: 0.27, w: 0.12, rot: 10 },
-      { ref: 'cupcake', x: 0.07, y: 0.955, w: 0.09, rot: -12 },
-      { ref: 'strawberry', x: 0.93, y: 0.955, w: 0.09, rot: 12 },
     ],
   },
   {
