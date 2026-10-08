@@ -335,8 +335,6 @@ export const templates: Template[] = [
     photoOutline: 'frame',
     stickers: [
       { ref: 'wind-chime', x: 0.91, y: 0.255, w: 0.09, rot: 8 },
-      { ref: 'sparkles', x: 0.08, y: 0.955, w: 0.08, rot: -10 },
-      { ref: 'shooting-star', x: 0.92, y: 0.955, w: 0.09, rot: 10 },
     ],
   },
   {

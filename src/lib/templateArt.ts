@@ -2167,14 +2167,16 @@ export const templateArt: Record<string, TemplateArt> = {
       text(a, a.t.haori, 600, 292, { size: 156, family: 'Playfair Display', weight: 900, align: 'center', color: a.ink, stroke: '#0a1520', strokeW: 16, maxW: 960 })
       text(a, a.t.haoriSub, 600, 352, { size: 32, family: 'Playfair Display', italic: true, align: 'center', color: 'rgba(246, 236, 210, 0.85)', maxW: 900 })
       slash(a, 100, 420, 600, 372, 1100, 430, '229, 83, 61')
-      box(a, 110, 1520, 980, 125, 'rgba(10, 21, 32, 0.78)', 16)
-      outline(a, 110, 1520, 980, 125, a.accent, 5, 16)
+      box(a, 310, 1520, 580, 125, 'rgba(10, 21, 32, 0.78)', 16)
+      outline(a, 310, 1520, 580, 125, a.accent, 5, 16)
       seigaiha(a, 0, 1668, 1200, 6, 52, ['#14405a', '#1f6e8c', '#0b2433'])
     },
     over: (a) => {
       for (const sl of a.slots) outline(a, sl.x - 8, sl.y - 8, sl.w + 16, sl.h + 16, a.accent, 5)
       embers(a, 46, 5, 1100, 1700, '255, 140, 70')
       embers(a, 26, 41, 120, 1000, '210, 255, 150')
+      chibi(a, 196, 1748, 310, { hair: '#3a2a2a', top: '#2b2f3a', bottom: '#2b2f3a', style: 'short', haori: true, props: ['sword'] })
+      chibi(a, 1004, 1748, 310, { hair: '#241a28', top: '#f6b5c8', bottom: '#f6b5c8', style: 'long', bow: '#e5533d', flip: true })
       checkerBorder(a, 40, '#1e8a5a', '#0b0f0e')
     },
   },

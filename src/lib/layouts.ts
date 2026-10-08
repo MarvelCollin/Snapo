@@ -144,7 +144,7 @@ const defs: Def[] = [
       { x: 110, y: 1050, w: 470, h: 450, photo: 1 },
       { x: 620, y: 1050, w: 470, h: 450, photo: 2 },
     ],
-    captions: [{ x: 130, y: 1530, w: 940, h: 105 }],
+    captions: [{ x: 330, y: 1530, w: 540, h: 105 }],
   },
   {
     id: 'tpl-sayit',
