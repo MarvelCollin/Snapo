@@ -364,8 +364,6 @@ export const templates: Template[] = [
     stickers: [
       { ref: 'musical-notes', x: 0.1, y: 0.2, w: 0.1, rot: -12 },
       { ref: 'microphone', x: 0.9, y: 0.2, w: 0.1, rot: 12 },
-      { ref: 'shooting-star', x: 0.08, y: 0.5, w: 0.08, rot: -10 },
-      { ref: 'sparkles', x: 0.93, y: 0.5, w: 0.08, rot: 10 },
     ],
   },
   {

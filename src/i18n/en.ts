@@ -142,7 +142,7 @@ export const en = {
       'tpl-manga': 'A shoujo manga page with screentone, focus lines, sparkles and a speech bubble for your big anime moment.',
       'tpl-haori': 'A Taisho era night with a giant moon, bamboo grove, wisteria, sea wave patterns and a green and black checkered border.',
       'tpl-sayit': 'An airmail postcard for a love story told in two languages, with stamps, a postmark and translated speech bubbles.',
-      'tpl-melon': 'A summer band poster under a sky of stars, with your big photo turned into a watermelon slice.',
+      'tpl-melon': 'A summer school band poster inspired by Twinkling Watermelon, with four chibi bandmates and your big photo turned into a watermelon slice.',
       'tpl-poster': 'A romance drama poster with two leads, a dreamy fade, a tagline and the tiny credits block.',
       'tpl-subtitle': 'Three cinematic stills with dual language subtitles and sound cues, like your favorite drama with captions on.',
       'tpl-firstsnow': 'A fantasy winter romance with falling snow, an arched window and two glowing candles.',

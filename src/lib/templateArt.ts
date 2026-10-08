@@ -1072,6 +1072,336 @@ function equalizer(a: ArtArgs, y: number, colors: string[]) {
   for (let i = 0, x = 6; x < W; i++, x += 36) box(a, x, y - heights[i % heights.length], 24, heights[i % heights.length] + 200, colors[i % colors.length], 6)
 }
 
+type Prop = 'sword' | 'headset' | 'guitar' | 'keys' | 'drum' | 'cupcake' | 'case' | 'shades'
+
+type Kid = {
+  hair: string
+  top: string
+  bottom: string
+  style: 'short' | 'tail' | 'long' | 'bob'
+  accent?: string
+  bow?: string
+  haori?: boolean
+  hat?: 'melon' | 'chef'
+  props?: Prop[]
+  flip?: boolean
+}
+
+function chibi(a: ArtArgs, x: number, y: number, h: number, k: Kid) {
+  const { c, s } = a
+  const line = '#3a2230'
+  const skin = '#ffe2cf'
+  const accent = k.accent ?? '#ff5d73'
+  const props = k.props ?? []
+  const r = h * 0.27
+  const headY = y - h * 0.6
+  const tw = h * 0.3
+  const th = h * 0.24
+  const ty = y - h * 0.37
+  const P = (v: number) => v * s
+  const paint = (fill: string) => {
+    c.fillStyle = fill
+    c.fill()
+    c.stroke()
+  }
+  c.save()
+  if (k.flip) {
+    c.translate(P(2 * x), 0)
+    c.scale(-1, 1)
+  }
+  c.lineJoin = 'round'
+  c.lineCap = 'round'
+  c.lineWidth = P(h * 0.018)
+  c.strokeStyle = line
+
+  if (k.style === 'long' || k.style === 'bob') {
+    const bw = r * (k.style === 'long' ? 1.1 : 1.18)
+    const bh = h * (k.style === 'long' ? 0.5 : 0.34)
+    c.beginPath()
+    c.moveTo(P(x - bw), P(headY))
+    c.lineTo(P(x - bw), P(headY + bh * 0.85))
+    c.quadraticCurveTo(P(x - bw), P(headY + bh), P(x - bw * 0.7), P(headY + bh))
+    c.lineTo(P(x + bw * 0.7), P(headY + bh))
+    c.quadraticCurveTo(P(x + bw), P(headY + bh), P(x + bw), P(headY + bh * 0.85))
+    c.lineTo(P(x + bw), P(headY))
+    c.closePath()
+    paint(k.hair)
+  }
+  if (k.style === 'tail') {
+    c.beginPath()
+    c.ellipse(P(x + r * 1.02), P(headY + r * 0.55), P(r * 0.3), P(r * 0.78), -0.35, 0, Math.PI * 2)
+    paint(k.hair)
+  }
+
+  for (const dir of [-1, 1]) {
+    c.beginPath()
+    c.roundRect(P(x + dir * h * 0.075 - h * 0.05), P(y - h * 0.16), P(h * 0.1), P(h * 0.15), P(h * 0.04))
+    paint(k.bottom)
+    c.beginPath()
+    c.ellipse(P(x + dir * h * 0.075), P(y - h * 0.01), P(h * 0.07), P(h * 0.04), 0, 0, Math.PI * 2)
+    paint('#4a3340')
+  }
+
+  c.beginPath()
+  c.roundRect(P(x - tw / 2), P(ty), P(tw), P(th), P(h * 0.07))
+  paint(k.top)
+
+  if (k.haori) {
+    const hem = ty + th + h * 0.06
+    const trapezoid = () => {
+      c.beginPath()
+      c.moveTo(P(x - tw * 0.58), P(ty))
+      c.lineTo(P(x + tw * 0.58), P(ty))
+      c.lineTo(P(x + tw * 0.8), P(hem))
+      c.lineTo(P(x - tw * 0.8), P(hem))
+      c.closePath()
+    }
+    const q = h * 0.04
+    c.save()
+    trapezoid()
+    c.clip()
+    for (let gy = 0; gy * q < hem - ty + q; gy++) {
+      for (let gx = -8; gx < 8; gx++) {
+        c.fillStyle = (gx + gy) % 2 ? '#1e8a5a' : '#0b0f0e'
+        c.fillRect(P(x + gx * q), P(ty + gy * q), P(q) + 1, P(q) + 1)
+      }
+    }
+    c.restore()
+    trapezoid()
+    c.stroke()
+    c.beginPath()
+    c.moveTo(P(x - tw * 0.1), P(ty))
+    c.lineTo(P(x + tw * 0.1), P(ty))
+    c.lineTo(P(x + tw * 0.16), P(hem))
+    c.lineTo(P(x - tw * 0.16), P(hem))
+    c.closePath()
+    paint(k.top)
+  }
+
+  for (const dir of [-1, 1]) {
+    c.save()
+    c.translate(P(x + dir * tw * 0.56), P(ty + h * 0.04))
+    c.rotate(dir * 0.3)
+    c.beginPath()
+    c.roundRect(P(-h * 0.04), 0, P(h * 0.08), P(h * 0.15), P(h * 0.04))
+    paint(k.haori ? '#1e8a5a' : k.top)
+    c.beginPath()
+    c.arc(0, P(h * 0.165), P(h * 0.04), 0, Math.PI * 2)
+    paint(skin)
+    c.restore()
+  }
+
+  if (props.includes('sword')) {
+    c.save()
+    c.translate(P(x - tw * 0.1), P(ty + th * 0.62))
+    c.rotate(0.5)
+    c.beginPath()
+    c.roundRect(P(-h * 0.26), P(-h * 0.017), P(h * 0.52), P(h * 0.034), P(h * 0.015))
+    paint('#2a2a35')
+    c.beginPath()
+    c.roundRect(P(h * 0.2), P(-h * 0.02), P(h * 0.1), P(h * 0.04), P(h * 0.012))
+    paint('#e5b94e')
+    c.beginPath()
+    c.arc(P(h * 0.19), 0, P(h * 0.03), 0, Math.PI * 2)
+    paint('#e5b94e')
+    c.restore()
+  }
+  if (props.includes('guitar')) {
+    c.save()
+    c.translate(P(x + tw * 0.05), P(ty + th * 0.85))
+    c.rotate(-0.55)
+    c.beginPath()
+    c.roundRect(P(h * 0.05), P(-h * 0.02), P(h * 0.4), P(h * 0.04), P(h * 0.01))
+    paint('#7a4a2e')
+    c.beginPath()
+    c.roundRect(P(h * 0.42), P(-h * 0.035), P(h * 0.08), P(h * 0.07), P(h * 0.015))
+    paint('#3a2230')
+    c.beginPath()
+    c.ellipse(0, 0, P(h * 0.15), P(h * 0.12), 0, 0, Math.PI * 2)
+    paint(accent)
+    c.beginPath()
+    c.arc(P(h * 0.02), 0, P(h * 0.035), 0, Math.PI * 2)
+    paint('#3a2230')
+    c.restore()
+  }
+  if (props.includes('keys')) {
+    c.beginPath()
+    c.roundRect(P(x - h * 0.3), P(ty + th * 0.8), P(h * 0.6), P(h * 0.1), P(h * 0.02))
+    paint('#2b2b33')
+    c.beginPath()
+    c.roundRect(P(x - h * 0.28), P(ty + th * 0.8 + h * 0.012), P(h * 0.56), P(h * 0.055), P(h * 0.012))
+    paint('#ffffff')
+    c.fillStyle = '#2b2b33'
+    for (let i = -3; i <= 3; i++) {
+      if (i === 0) continue
+      c.fillRect(P(x + i * h * 0.075 - h * 0.012), P(ty + th * 0.8 + h * 0.012), P(h * 0.024), P(h * 0.032))
+    }
+  }
+  if (props.includes('drum')) {
+    c.beginPath()
+    c.roundRect(P(x - h * 0.22), P(y - h * 0.3), P(h * 0.44), P(h * 0.24), P(h * 0.03))
+    paint(accent)
+    c.beginPath()
+    c.ellipse(P(x), P(y - h * 0.3), P(h * 0.22), P(h * 0.06), 0, 0, Math.PI * 2)
+    paint('#ffffff')
+    c.lineWidth = P(h * 0.016)
+    for (const dir of [-1, 1]) {
+      c.beginPath()
+      c.moveTo(P(x + dir * tw * 0.7), P(ty + th * 0.55))
+      c.lineTo(P(x + dir * h * 0.1), P(y - h * 0.31))
+      c.stroke()
+    }
+    c.lineWidth = P(h * 0.018)
+  }
+  if (props.includes('cupcake')) {
+    const cx = x + tw * 0.78
+    const cy = ty + th * 0.7
+    c.beginPath()
+    c.moveTo(P(cx - h * 0.07), P(cy))
+    c.lineTo(P(cx + h * 0.07), P(cy))
+    c.lineTo(P(cx + h * 0.05), P(cy + h * 0.08))
+    c.lineTo(P(cx - h * 0.05), P(cy + h * 0.08))
+    c.closePath()
+    paint(accent)
+    c.beginPath()
+    c.arc(P(cx), P(cy - h * 0.015), P(h * 0.08), Math.PI, 0)
+    c.closePath()
+    paint('#ffffff')
+    c.beginPath()
+    c.arc(P(cx), P(cy - h * 0.1), P(h * 0.025), 0, Math.PI * 2)
+    paint('#e63950')
+  }
+  if (props.includes('case')) {
+    const cx = x + h * 0.3
+    const cy = y - h * 0.2
+    c.beginPath()
+    c.arc(P(cx), P(cy), P(h * 0.05), Math.PI, 0)
+    c.stroke()
+    c.beginPath()
+    c.roundRect(P(cx - h * 0.09), P(cy), P(h * 0.18), P(h * 0.2), P(h * 0.03))
+    paint(accent)
+    c.beginPath()
+    c.moveTo(P(cx), P(cy))
+    c.lineTo(P(cx), P(cy + h * 0.2))
+    c.stroke()
+  }
+
+  c.beginPath()
+  c.arc(P(x), P(headY), P(r), 0, Math.PI * 2)
+  paint(skin)
+
+  c.beginPath()
+  c.arc(P(x), P(headY), P(r * 1.04), Math.PI * 0.97, Math.PI * 2.03)
+  const fy = headY - r * 0.12
+  c.lineTo(P(x + r), P(fy))
+  for (let i = 0; i < 4; i++) {
+    const x1 = x + r * (1 - (i + 1) * 0.5)
+    c.quadraticCurveTo(P(x1 + r * 0.25), P(fy + r * 0.42), P(x1), P(fy - r * 0.02))
+  }
+  c.closePath()
+  paint(k.hair)
+  if (k.style === 'short') {
+    for (const dx of [-0.55, -0.1, 0.38]) {
+      c.beginPath()
+      c.moveTo(P(x + r * dx), P(headY - r * 0.98))
+      c.lineTo(P(x + r * (dx + 0.2)), P(headY - r * 1.36))
+      c.lineTo(P(x + r * (dx + 0.5)), P(headY - r * 0.96))
+      c.closePath()
+      paint(k.hair)
+    }
+  }
+
+  for (const dir of [-1, 1]) {
+    c.fillStyle = line
+    c.beginPath()
+    c.ellipse(P(x + dir * r * 0.42), P(headY + r * 0.2), P(r * 0.12), P(r * 0.17), 0, 0, Math.PI * 2)
+    c.fill()
+    c.fillStyle = '#ffffff'
+    c.beginPath()
+    c.arc(P(x + dir * r * 0.42 - r * 0.04), P(headY + r * 0.13), P(r * 0.045), 0, Math.PI * 2)
+    c.fill()
+    c.fillStyle = 'rgba(255, 110, 140, 0.45)'
+    c.beginPath()
+    c.ellipse(P(x + dir * r * 0.66), P(headY + r * 0.46), P(r * 0.14), P(r * 0.08), 0, 0, Math.PI * 2)
+    c.fill()
+  }
+  c.beginPath()
+  c.arc(P(x), P(headY + r * 0.38), P(r * 0.1), Math.PI * 0.15, Math.PI * 0.85)
+  c.stroke()
+
+  if (props.includes('shades')) {
+    for (const dir of [-1, 1]) {
+      c.beginPath()
+      c.roundRect(P(x + dir * r * 0.42 - r * 0.24), P(headY + r * 0.02), P(r * 0.48), P(r * 0.34), P(r * 0.1))
+      paint('#2b2b33')
+    }
+    c.beginPath()
+    c.moveTo(P(x - r * 0.1), P(headY + r * 0.14))
+    c.lineTo(P(x + r * 0.1), P(headY + r * 0.14))
+    c.stroke()
+  }
+  if (props.includes('headset')) {
+    c.save()
+    c.lineWidth = P(h * 0.03)
+    c.strokeStyle = '#3a3f5a'
+    c.beginPath()
+    c.arc(P(x), P(headY), P(r * 1.12), Math.PI * 1.02, Math.PI * 1.98)
+    c.stroke()
+    c.restore()
+    for (const dir of [-1, 1]) {
+      c.beginPath()
+      c.roundRect(P(x + dir * r * 1.1 - r * 0.12), P(headY - r * 0.05), P(r * 0.24), P(r * 0.5), P(r * 0.1))
+      paint('#3a3f5a')
+    }
+    c.save()
+    c.lineWidth = P(h * 0.014)
+    c.strokeStyle = '#3a3f5a'
+    c.beginPath()
+    c.moveTo(P(x + r * 1.1), P(headY + r * 0.42))
+    c.quadraticCurveTo(P(x + r * 0.95), P(headY + r * 0.98), P(x + r * 0.34), P(headY + r * 0.8))
+    c.stroke()
+    c.restore()
+    c.beginPath()
+    c.arc(P(x + r * 0.34), P(headY + r * 0.8), P(r * 0.08), 0, Math.PI * 2)
+    paint('#3a3f5a')
+  }
+  if (k.bow) bow(a, x + r * 0.78, headY - r * 0.82, h * 0.3, k.bow)
+  if (k.hat === 'melon') {
+    const hy = headY - r * 0.78
+    const hr = r * 0.66
+    c.beginPath()
+    c.arc(P(x), P(hy), P(hr), Math.PI, 0)
+    c.closePath()
+    paint('#2f9e44')
+    c.beginPath()
+    c.arc(P(x), P(hy), P(hr * 0.84), Math.PI, 0)
+    c.closePath()
+    c.fillStyle = '#ff5d73'
+    c.fill()
+    c.fillStyle = '#2b1d1d'
+    for (const dx of [-0.4, 0, 0.4]) {
+      c.beginPath()
+      c.ellipse(P(x + hr * dx), P(hy - hr * 0.3), P(hr * 0.05), P(hr * 0.09), 0, 0, Math.PI * 2)
+      c.fill()
+    }
+  }
+  if (k.hat === 'chef') {
+    c.beginPath()
+    c.roundRect(P(x - r * 0.62), P(headY - r * 1.15), P(r * 1.24), P(r * 0.42), P(r * 0.08))
+    paint('#ffffff')
+    for (const dx of [-0.5, 0, 0.5]) {
+      c.beginPath()
+      c.arc(P(x + r * dx), P(headY - r * 1.2), P(r * 0.38), 0, Math.PI * 2)
+      paint('#ffffff')
+    }
+    c.beginPath()
+    c.roundRect(P(x - r * 0.62), P(headY - r * 1.15), P(r * 1.24), P(r * 0.42), P(r * 0.08))
+    c.fillStyle = '#ffffff'
+    c.fill()
+  }
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1903,6 +2233,10 @@ export const templateArt: Record<string, TemplateArt> = {
         [1030, 1170, 26],
       ])
         sparkle4(a, x, y, r, '#ffe066', '#ffe066')
+      chibi(a, 98, 830, 290, { hair: '#2d2a3e', top: '#ff5d73', bottom: '#2a2f5a', style: 'bob', hat: 'melon', props: ['keys'], accent: '#ffd84d' })
+      chibi(a, 100, 1160, 290, { hair: '#7a4a2e', top: '#ffd84d', bottom: '#2a2f5a', style: 'short', props: ['guitar'], accent: '#ff5d73' })
+      chibi(a, 1102, 830, 290, { hair: '#f2c14e', top: '#7bdcb5', bottom: '#2a2f5a', style: 'tail', props: ['drum'], accent: '#ff5d73', flip: true })
+      chibi(a, 1100, 1160, 290, { hair: '#3b2a4a', top: '#fff6e0', bottom: '#c2335c', style: 'long', props: ['headset'], bow: '#ff5d73', flip: true })
     },
   },
 }

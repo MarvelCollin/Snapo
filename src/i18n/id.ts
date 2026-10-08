@@ -142,7 +142,7 @@ export const id: Dict = {
       'tpl-manga': 'Halaman manga shoujo dengan screentone, garis fokus, kilauan dan balon kata untuk momen anime terbaikmu.',
       'tpl-haori': 'Malam era Taisho dengan bulan raksasa, rumpun bambu, wisteria, ombak seigaiha dan bingkai kotak-kotak hijau hitam.',
       'tpl-sayit': 'Kartu pos pos udara untuk kisah cinta dalam dua bahasa, lengkap dengan prangko, cap pos dan balon kata terjemahan.',
-      'tpl-melon': 'Poster band musim panas di bawah langit penuh bintang, dengan foto besarmu berubah jadi irisan semangka.',
+      'tpl-melon': 'Poster band sekolah musim panas terinspirasi Twinkling Watermelon, dengan empat personel chibi dan foto besarmu berubah jadi irisan semangka.',
       'tpl-poster': 'Poster drama romantis dengan dua pemeran utama, efek pudar yang syahdu, tagline dan blok kredit mungil.',
       'tpl-subtitle': 'Tiga potongan adegan sinematik dengan subtitle dua bahasa dan keterangan suara, seperti drama favoritmu dengan teks menyala.',
       'tpl-firstsnow': 'Romansa fantasi musim dingin dengan salju turun, jendela melengkung dan dua lilin yang menyala.',
