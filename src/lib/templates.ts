@@ -159,6 +159,15 @@ export const templates: Template[] = [
     photoOutline: 'none',
   },
   {
+    id: 'tpl-pop',
+    group: 'retro',
+    frame: frame('pop', solid('#fff3dc'), '#c8102e', '#22b8b0', '#ffffff', true),
+    filterId: 'golden-hour',
+    caption: 'stay fizzy',
+    photoOutline: 'frame',
+    stickers: [{ ref: 'cherries', x: 0.9, y: 0.07, w: 0.1, rot: 14 }],
+  },
+  {
     id: 'tpl-ticket',
     group: 'retro',
     frame: frame('ticket', solid('#ffd76e'), '#4a1c10', '#e9a93a'),

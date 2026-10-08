@@ -270,7 +270,7 @@ function burst(a: ArtArgs, x: number, y: number, r: number, fill: string, label:
   c.lineJoin = 'round'
   c.stroke()
   c.restore()
-  text(a, label, x, y + r * 0.22, { size: r * 0.55, family: 'Oswald', weight: 700, color: labelColor, align: 'center', stroke: '#111111', strokeW: 6 })
+  text(a, label, x, y + r * 0.22, { size: r * 0.55, family: 'Oswald', weight: 700, color: labelColor, align: 'center', stroke: '#111111', strokeW: 6, maxW: r * 1.2 })
 }
 
 function ears(a: ArtArgs, x: number, y: number, size: number) {
@@ -426,6 +426,79 @@ function peek(a: ArtArgs, x: number, edge: number, size: number, pal: Pal, ink =
     c.fill()
     c.stroke()
   }
+  c.restore()
+}
+
+function sunburst(a: ArtArgs, x: number, y: number, r: number, color: string, rays = 24) {
+  const { c, s } = a
+  c.save()
+  c.fillStyle = color
+  for (let i = 0; i < rays; i++) {
+    const a0 = (Math.PI * 2 * i) / rays
+    const a1 = a0 + Math.PI / rays
+    c.beginPath()
+    c.moveTo(x * s, y * s)
+    c.lineTo((x + Math.cos(a0) * r) * s, (y + Math.sin(a0) * r) * s)
+    c.lineTo((x + Math.cos(a1) * r) * s, (y + Math.sin(a1) * r) * s)
+    c.closePath()
+    c.fill()
+  }
+  c.restore()
+}
+
+function bottleCap(a: ArtArgs, x: number, y: number, r: number, fill: string, ink: string) {
+  const { c, s } = a
+  const teeth = 21
+  c.save()
+  c.beginPath()
+  for (let i = 0; i < teeth * 2; i++) {
+    const rad = (i % 2 ? r * 0.9 : r) * s
+    const ang = (Math.PI * i) / teeth
+    const px = x * s + Math.cos(ang) * rad
+    const py = y * s + Math.sin(ang) * rad
+    if (i === 0) c.moveTo(px, py)
+    else c.lineTo(px, py)
+  }
+  c.closePath()
+  c.fillStyle = fill
+  c.fill()
+  c.lineJoin = 'round'
+  c.lineWidth = 5 * s
+  c.strokeStyle = ink
+  c.stroke()
+  c.restore()
+  circle(a, x, y, r * 0.84, '#ffffff')
+}
+
+function fizz(a: ArtArgs, x: number, y: number, r: number, color: string) {
+  const { c, s } = a
+  c.save()
+  c.strokeStyle = color
+  c.lineWidth = Math.max(2, r * 0.22) * s
+  c.beginPath()
+  c.arc(x * s, y * s, r * s, 0, Math.PI * 2)
+  c.stroke()
+  c.fillStyle = color
+  c.beginPath()
+  c.arc((x - r * 0.35) * s, (y - r * 0.35) * s, r * 0.2 * s, 0, Math.PI * 2)
+  c.fill()
+  c.restore()
+}
+
+function ribbonBanner(a: ArtArgs, x: number, y: number, w: number, h: number, fill: string) {
+  const { c, s } = a
+  const notch = h * 0.45
+  c.save()
+  c.fillStyle = fill
+  c.beginPath()
+  c.moveTo((x - notch) * s, y * s)
+  c.lineTo((x + w + notch) * s, y * s)
+  c.lineTo((x + w) * s, (y + h / 2) * s)
+  c.lineTo((x + w + notch) * s, (y + h) * s)
+  c.lineTo((x - notch) * s, (y + h) * s)
+  c.lineTo(x * s, (y + h / 2) * s)
+  c.closePath()
+  c.fill()
   c.restore()
 }
 
@@ -694,6 +767,33 @@ export const templateArt: Record<string, TemplateArt> = {
       const sl = a.slots[0]
       text(a, a.t.player, sl.x + 24, sl.y + 50, { size: 26, family: 'Silkscreen', color: '#ffffff', shadow: true })
       for (let i = 0; i < 3; i++) heart(a, sl.x + sl.w - 40 - i * 46, sl.y + 40, 34, '#ff4d6d')
+    },
+  },
+  pop: {
+    under: (a) => {
+      sunburst(a, 600, 190, 900, 'rgba(255, 214, 102, 0.35)', 28)
+      text(a, a.t.pop, 600, 250, { size: 168, family: 'Pacifico', align: 'center', color: a.ink, stroke: '#ffffff', strokeW: 26, maxW: 1000 })
+      ribbonBanner(a, 270, 300, 660, 70, a.accent)
+      text(a, a.t.popTag, 600, 350, { size: 38, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', spacing: 4, maxW: 620 })
+      for (const sl of a.slots.slice(1)) bottleCap(a, sl.x + sl.w / 2, sl.y + sl.h / 2, 172, a.ink, '#7a0a1c')
+      const bubbles: [number, number, number][] = [
+        [40, 1180, 16],
+        [62, 1090, 10],
+        [34, 1000, 22],
+        [58, 880, 9],
+        [1160, 1190, 14],
+        [1140, 1080, 22],
+        [1166, 960, 10],
+        [1146, 860, 16],
+      ]
+      for (const [x, y, r] of bubbles) fizz(a, x, y, r, a.accent)
+      text(a, (a.caption || 'stay fizzy').toLowerCase(), 600, 1670, { size: 92, family: 'Pacifico', align: 'center', color: a.ink, maxW: 1000 })
+      rule(a, 160, 1712, 1040, 4, a.accent)
+      text(a, a.t.bottling(a.date.getFullYear()), 600, 1762, { size: 30, family: 'Oswald', weight: 500, align: 'center', color: a.ink, spacing: 4, maxW: 1000 })
+    },
+    over: (a) => {
+      const main = a.slots[0]
+      burst(a, main.x + main.w - 70, main.y + 60, 120, '#ffd166', a.t.iceCold, '#ffffff')
     },
   },
   ticket: {

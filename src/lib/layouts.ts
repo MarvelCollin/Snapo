@@ -183,6 +183,21 @@ const defs: Def[] = [
     captions: [],
   },
   {
+    id: 'tpl-pop',
+    name: 'Snapo Pop',
+    group: 'template',
+    art: 'pop',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 90, y: 420, w: 1020, h: 700, photo: 0, radius: 0.03 },
+      { x: 100, y: 1250, w: 280, h: 280, photo: 1, shape: 'circle' },
+      { x: 460, y: 1250, w: 280, h: 280, photo: 2, shape: 'circle' },
+      { x: 820, y: 1250, w: 280, h: 280, photo: 3, shape: 'circle' },
+    ],
+    captions: [],
+  },
+  {
     id: 'tpl-ticket',
     name: 'Movie Night',
     group: 'template',
