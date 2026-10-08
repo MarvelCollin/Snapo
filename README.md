@@ -31,13 +31,19 @@ Time Slip 98, First Snow, Subtitled, Drama Poster and Shoujo Manga, inspired by 
 
 ![Drama and Anime theme in the design picker](docs/screenshots/drama-anime-picker.webp)
 
+### Chibi mood templates
+
+Ribbon Bakery, Haori Night, Say It Twice and Melon Stars. Each one has original chibi characters that carry the mood of a show: a sweet shop in the Hello Kitty mood, a Taisho era night in the Kimetsu no Yaiba mood, an airmail postcard in the Can This Love Be Translated mood and a summer school band in the Twinkling Watermelon mood.
+
+![Ribbon Bakery, Haori Night, Say It Twice and Melon Stars templates](docs/screenshots/templates-chibi.webp)
+
 ### On your phone
 
 ![Snapo on a phone](docs/screenshots/mobile.webp)
 
 ## How a session goes
 
-1. **Design:** start from one of 27 complete templates, or pick a plain layout to decorate yourself
+1. **Design:** start from one of 31 complete templates, or pick a plain layout to decorate yourself
 2. **Shoot:** countdown, pose ideas, studio backdrops and live photo clips, with every setting on one screen
 3. **Edit:** tap any photo on the strip to crop it or give it its own filter
 4. **Decorate (optional):** frames, stickers, text, doodle pens and caption style
@@ -45,10 +51,10 @@ Time Slip 98, First Snow, Subtitled, Drama Poster and Shoujo Manga, inspired by 
 
 ## Features
 
-- **Templates:** 27 fully designed sheets that only need your photos, such as Snapo Times newspaper, Cover Story magazine, Kitty Club, Mochi Club, Bunny Picnic, Bear Cafe, Idol Photocard, Comic Pop, Love Letter, Camcorder, Film Roll 400, Movie Night ticket, Snapo Mart receipt, Snapo Air boarding pass, Snapo Pop soda ad, Snapo Records vinyl sleeve, Snapo O's cereal box, Pocket Player, Birthday Bash, Class Of, Time Slip 98, First Snow, Subtitled, Drama Poster, Shoujo Manga, Dirgahayu for 17 Agustus and Lebaran Day. Grouped into Cute, Editorial, Retro, Party, Drama & Anime and Indonesia
+- **Templates:** 31 fully designed sheets that only need your photos, such as Snapo Times newspaper, Cover Story magazine, Kitty Club, Mochi Club, Ribbon Bakery, Bunny Picnic, Bear Cafe, Idol Photocard, Comic Pop, Love Letter, Camcorder, Film Roll 400, Movie Night ticket, Snapo Mart receipt, Snapo Air boarding pass, Snapo Pop soda ad, Snapo Records vinyl sleeve, Snapo O's cereal box, Pocket Player, Birthday Bash, Class Of, Time Slip 98, First Snow, Subtitled, Drama Poster, Shoujo Manga, Haori Night, Say It Twice, Melon Stars, Dirgahayu for 17 Agustus and Lebaran Day. Grouped into Cute, Editorial, Retro, Party, Drama & Anime and Indonesia
 - **Layouts:** 27 plain strips, grids, postcards, singles and shapes, plus your own uploaded frames
 - **Look:** 50 filters you can set per photo, a soft skin slider, and studio backdrops (color, pattern or blur) powered by on-device segmentation
-- **Decorate:** 61 frame themes including batik, Lebaran, Imlek and 17 Agustus, 207 stickers, 38 word stickers, text and doodle pens (marker, neon, outline, rainbow, sparkle)
+- **Decorate:** 68 frame themes including batik, seigaiha waves, haori check, air mail, Lebaran, Imlek and 17 Agustus, 207 stickers, 50 word stickers, text and doodle pens (marker, neon, outline, rainbow, sparkle)
 - **Save:** PNG, JPG, flipbook GIF, live strip as video or GIF, share, print, a local gallery and a QR download link
 - **Languages:** English and Bahasa Indonesia
 - **SEO:** page titles per route, meta description, Open Graph and Twitter cards, JSON LD structured data, a web manifest with app icons, prerendered route pages, `robots.txt` and `sitemap.xml`
@@ -142,4 +148,4 @@ UI copy never lives in components or data. Add the key to `src/i18n/en.ts` first
 - Fonts from [Fontsource](https://fontsource.org), SIL Open Font License.
 - QR codes by [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), MIT License.
 - The Kitty Club and Mochi Club templates and the Mochi mascots are original designs and are not affiliated with any character brand.
-- Snapo Pop, Snapo O's, Snapo Records, Snapo Mart and Snapo Air are made up brands. The drama and anime templates are inspired by genres, not by any specific show.
+- Snapo Pop, Snapo O's, Snapo Records, Snapo Mart and Snapo Air are made up brands. The drama and anime templates are inspired by the moods of specific shows, credited in the template descriptions. All characters and art are original chibi drawings made for Snapo, with no official art, logos or real people's likenesses. Snapo is not affiliated with any show, studio or brand.
