@@ -13,16 +13,22 @@ const routes: SeoRoute[] = [
     path: '/',
     title: 'Snapo | Free Online Photo Booth with Cute Templates',
     description: 'Snapo is a free photo booth in your browser. Pick a cute template, shoot a photo strip with your webcam, add filters, frames and stickers, then save it as PNG, GIF or video. No sign up.',
+    priority: 1,
+    changefreq: 'weekly',
   },
   {
     path: '/booth/layout',
     title: 'Pick a Photo Strip Design | Snapo Photo Booth',
     description: 'Choose from cute photo booth templates like Kitty Club, Snapo Times, idol photocards, film strips and more, or a plain strip, grid or postcard layout to decorate yourself.',
+    priority: 0.8,
+    changefreq: 'weekly',
   },
   {
     path: '/gallery',
     title: 'Your Photo Strip Gallery | Snapo Photo Booth',
     description: 'Every photo strip you save in Snapo stays here on your device. Download, share or print them again any time.',
+    priority: 0.5,
+    changefreq: 'monthly',
   },
 ]
 
