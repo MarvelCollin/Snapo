@@ -397,6 +397,11 @@ export const en = {
       bunting: 'Bunting',
       lantern: 'Lanterns',
       moons: 'Moon and stars',
+      seigaiha: 'Sea waves',
+      asanoha: 'Hemp leaf',
+      airmail: 'Air mail',
+      melon: 'Melon seeds',
+      bows: 'Ribbon bows',
     } as Record<string, string>,
   },
   stickers: {

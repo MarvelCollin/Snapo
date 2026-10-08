@@ -397,6 +397,11 @@ export const id: Dict = {
       bunting: 'Bendera',
       lantern: 'Lampion',
       moons: 'Bulan dan bintang',
+      seigaiha: 'Ombak seigaiha',
+      asanoha: 'Daun rami',
+      airmail: 'Pos udara',
+      melon: 'Biji semangka',
+      bows: 'Pita',
     } as Record<string, string>,
   },
   stickers: {
