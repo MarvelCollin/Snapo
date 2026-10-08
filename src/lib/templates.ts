@@ -280,6 +280,14 @@ export const templates: Template[] = [
       { ref: 'sunflower', x: 0.08, y: 0.26, w: 0.09, rot: -12 },
     ],
   },
+  {
+    id: 'tpl-firstsnow',
+    group: 'drama',
+    frame: frame('firstsnow', { kind: 'gradient', colors: ['#17204a', '#4a2b62'], angle: 180 }, '#fff7ef', '#f2c46d', '#fff7ef'),
+    filterId: 'portra',
+    caption: 'make a wish on the first snow',
+    photoOutline: 'frame',
+  },
 ]
 
 export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']

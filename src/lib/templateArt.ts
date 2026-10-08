@@ -635,6 +635,64 @@ function cassette(a: ArtArgs, x: number, y: number, w: number, h: number, title:
   cc.restore()
 }
 
+function snowflake(a: ArtArgs, x: number, y: number, r: number, color: string) {
+  const { c, s } = a
+  c.save()
+  c.translate(x * s, y * s)
+  c.strokeStyle = color
+  c.lineCap = 'round'
+  c.lineWidth = Math.max(1.5, r * 0.14) * s
+  for (let i = 0; i < 6; i++) {
+    c.rotate(Math.PI / 3)
+    c.beginPath()
+    c.moveTo(0, 0)
+    c.lineTo(0, -r * s)
+    c.moveTo(0, -r * 0.55 * s)
+    c.lineTo(-r * 0.25 * s, -r * 0.8 * s)
+    c.moveTo(0, -r * 0.55 * s)
+    c.lineTo(r * 0.25 * s, -r * 0.8 * s)
+    c.stroke()
+  }
+  c.restore()
+}
+
+function snowfall(a: ArtArgs, count: number, seed: number, alpha: number, maxR: number) {
+  let n = seed
+  const rnd = () => {
+    n = (n * 9301 + 49297) % 233280
+    return n / 233280
+  }
+  const W = a.w / a.s
+  const H = a.h / a.s
+  for (let i = 0; i < count; i++) circle(a, rnd() * W, rnd() * H, 2 + rnd() * maxR, `rgba(255, 255, 255, ${alpha * (0.4 + rnd() * 0.6)})`)
+}
+
+function candle(a: ArtArgs, x: number, y: number, h: number) {
+  const { c, s } = a
+  c.save()
+  const g = c.createRadialGradient(x * s, (y - h - 30) * s, 0, x * s, (y - h - 30) * s, 150 * s)
+  g.addColorStop(0, 'rgba(255, 214, 140, 0.6)')
+  g.addColorStop(1, 'rgba(255, 214, 140, 0)')
+  c.fillStyle = g
+  c.fillRect((x - 150) * s, (y - h - 180) * s, 300 * s, 300 * s)
+  c.restore()
+  box(a, x - 26, y - h, 52, h, '#fff1df', 8)
+  box(a, x - 26, y - h, 52, 18, '#f7dcc0', 8)
+  rule(a, x - 1.5, y - h - 6, x + 1.5, 14, '#3a2a2a')
+  c.save()
+  c.fillStyle = '#ffcf5c'
+  c.beginPath()
+  c.moveTo(x * s, (y - h - 62) * s)
+  c.quadraticCurveTo((x + 20) * s, (y - h - 22) * s, x * s, (y - h - 8) * s)
+  c.quadraticCurveTo((x - 20) * s, (y - h - 22) * s, x * s, (y - h - 62) * s)
+  c.fill()
+  c.fillStyle = '#fff6d6'
+  c.beginPath()
+  c.ellipse(x * s, (y - h - 22) * s, 6 * s, 12 * s, 0, 0, Math.PI * 2)
+  c.fill()
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1242,6 +1300,27 @@ export const templateArt: Record<string, TemplateArt> = {
       text(a, a.t.slipNote, 600, 1762, { size: 44, family: 'Caveat', weight: 700, align: 'center', color: a.ink, maxW: 900 })
       watermelon(a, 110, 1600, 110, -0.35)
       watermelon(a, 1090, 1610, 110, 0.35)
+    },
+  },
+  firstsnow: {
+    under: (a) => {
+      snowfall(a, 140, 11, 0.75, 6)
+      text(a, a.t.firstSnow, 600, 190, { size: 124, family: 'Playfair Display', italic: true, align: 'center', color: a.ink, maxW: 1000, shadow: true })
+      text(a, a.t.winterStory, 600, 260, { size: 30, family: 'Oswald', weight: 500, align: 'center', color: a.accent, spacing: 10, maxW: 900 })
+      for (const [x, y, r] of [
+        [140, 110, 34],
+        [1060, 150, 28],
+        [190, 860, 22],
+        [1030, 760, 30],
+      ])
+        snowflake(a, x, y, r, 'rgba(255, 255, 255, 0.85)')
+      text(a, a.caption || 'make a wish on the first snow', 600, 1650, { size: 60, family: 'Playfair Display', italic: true, align: 'center', color: a.ink, maxW: 780 })
+      text(a, shortDate(a), 600, 1720, { size: 26, family: 'Space Mono', weight: 700, align: 'center', color: a.accent })
+      candle(a, 120, 1760, 120)
+      candle(a, 1080, 1760, 150)
+    },
+    over: (a) => {
+      snowfall(a, 50, 29, 0.55, 4)
     },
   },
 }

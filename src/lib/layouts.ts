@@ -359,6 +359,20 @@ const defs: Def[] = [
     captions: [],
   },
   {
+    id: 'tpl-firstsnow',
+    name: 'First Snow',
+    group: 'template',
+    art: 'firstsnow',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 290, y: 330, w: 620, h: 760, photo: 0, shape: 'arch' },
+      { x: 90, y: 1150, w: 495, h: 380, photo: 1, radius: 0.04 },
+      { x: 615, y: 1150, w: 495, h: 380, photo: 2, radius: 0.04 },
+    ],
+    captions: [],
+  },
+  {
     id: 'classic-4',
     name: 'Classic Four',
     group: 'strip',
