@@ -550,6 +550,22 @@ function ringText(a: ArtArgs, str: string, x: number, y: number, r: number, size
   c.restore()
 }
 
+function cerealO(a: ArtArgs, x: number, y: number, r: number, color: string) {
+  const { c, s } = a
+  c.save()
+  c.lineWidth = r * 0.62 * s
+  c.strokeStyle = color
+  c.beginPath()
+  c.arc(x * s, y * s, r * 0.7 * s, 0, Math.PI * 2)
+  c.stroke()
+  c.lineWidth = r * 0.14 * s
+  c.strokeStyle = 'rgba(255, 255, 255, 0.55)'
+  c.beginPath()
+  c.arc(x * s, y * s, r * 0.78 * s, Math.PI * 1.1, Math.PI * 1.55)
+  c.stroke()
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1031,6 +1047,48 @@ export const templateArt: Record<string, TemplateArt> = {
       circle(a, 600, 540, 74, '#c2334d')
       circle(a, 600, 540, 58, '#d9455f')
       heart(a, 600, 542, 56, '#ffffff')
+    },
+  },
+  cereal: {
+    under: (a) => {
+      const os: [number, number, number, string][] = [
+        [80, 300, 34, '#ff4f79'],
+        [190, 345, 26, '#7ad3ff'],
+        [1010, 330, 30, '#8be07a'],
+        [1120, 290, 24, '#ffffff'],
+        [330, 60, 22, '#8be07a'],
+        [880, 52, 26, '#ff4f79'],
+      ]
+      for (const [x, y, r, col] of os) cerealO(a, x, y, r, col)
+      const { c, s } = a
+      c.save()
+      c.translate(600 * s, 215 * s)
+      c.rotate(-0.04)
+      text(a, a.t.cereal, 0, 0, { size: 176, family: 'Fredoka', weight: 700, align: 'center', color: '#ffffff', stroke: a.ink, strokeW: 34, maxW: 780 })
+      c.restore()
+      ribbonBanner(a, 250, 270, 700, 80, a.accent)
+      text(a, (a.caption || 'breakfast of besties').toUpperCase(), 600, 326, { size: 40, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', spacing: 3, maxW: 660 })
+      box(a, 80, 1230, 600, 420, '#ffffff', 10)
+      outline(a, 80, 1230, 600, 420, '#111111', 6, 10)
+      text(a, a.t.nutrition, 104, 1300, { size: 56, family: 'Oswald', weight: 700, color: '#111111', maxW: 550 })
+      rule(a, 104, 1322, 656, 3, '#111111')
+      text(a, a.t.serving, 104, 1362, { size: 26, family: 'Space Mono', color: '#111111', maxW: 550 })
+      rule(a, 104, 1385, 656, 12, '#111111')
+      a.t.facts.forEach(([label, value], i) => {
+        const y = 1442 + i * 56
+        text(a, label, 104, y, { size: 32, family: 'Oswald', weight: 700, color: '#111111', maxW: 380 })
+        text(a, value, 656, y, { size: 32, family: 'Space Mono', weight: 700, color: '#111111', align: 'right' })
+        if (i < a.t.facts.length - 1) rule(a, 104, y + 18, 656, 2, '#111111')
+      })
+      const prize = a.slots[1]
+      burst(a, prize.x + prize.w / 2, prize.y + prize.h / 2, 250, '#ffffff', '', '#ffffff')
+    },
+    over: (a) => {
+      const prize = a.slots[1]
+      ribbonBanner(a, prize.x + 10, prize.y + prize.h - 40, prize.w - 20, 64, a.ink)
+      text(a, a.t.prize, prize.x + prize.w / 2, prize.y + prize.h + 6, { size: 30, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', spacing: 1, maxW: prize.w - 40 })
+      burst(a, 150, 140, 95, '#ff4f79', a.t.newBadge, '#ffffff')
+      mochi(a, 1098, 190, 165, mochiPals[3], '#1d3fbb')
     },
   },
   birthday: {

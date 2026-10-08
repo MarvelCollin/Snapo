@@ -211,6 +211,14 @@ export const templates: Template[] = [
     photoOutline: 'none',
   },
   {
+    id: 'tpl-cereal',
+    group: 'party',
+    frame: frame('cereal', { kind: 'pattern', pattern: 'sprinkles', base: '#ffd23f', ink: '#ff8fb1', extra: '#7ad3ff', scale: 0.9 }, '#1d3fbb', '#ff4f79', '#ffffff'),
+    filterId: 'fresh',
+    caption: 'breakfast of besties',
+    photoOutline: 'frame',
+  },
+  {
     id: 'tpl-birthday',
     group: 'party',
     frame: frame('birthday', { kind: 'pattern', pattern: 'confetti', base: '#fffaf0', ink: '#ff7fa0', extra: '#6cc4f0', scale: 1 }, '#c2335c', '#ffeccc', '#ffffff'),

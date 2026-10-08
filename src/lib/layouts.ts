@@ -283,6 +283,19 @@ const defs: Def[] = [
     captions: [{ x: 100, y: 1250, w: 1000, h: 260 }],
   },
   {
+    id: 'tpl-cereal',
+    name: "Snapo O's",
+    group: 'template',
+    art: 'cereal',
+    size: { w: 1200, h: 1700 },
+    sizeLabel: '4 x 5.7 in',
+    slots: [
+      { x: 80, y: 400, w: 1040, h: 780, photo: 0, radius: 0.03 },
+      { x: 750, y: 1250, w: 340, h: 340, photo: 1, shape: 'circle' },
+    ],
+    captions: [],
+  },
+  {
     id: 'tpl-birthday',
     name: 'Birthday Bash',
     group: 'template',
