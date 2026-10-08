@@ -141,7 +141,7 @@ export const id: Dict = {
       'tpl-lebaran': 'Lengkungan, bulan sabit dan ketupat untuk Idul Fitri.',
       'tpl-manga': 'Halaman manga shoujo dengan screentone, garis fokus, kilauan dan balon kata untuk momen anime terbaikmu.',
       'tpl-haori': 'Malam era Taisho terinspirasi Kimetsu no Yaiba, dengan bulan raksasa, rumpun bambu, wisteria, ombak seigaiha, bingkai kotak-kotak dan dua pahlawan chibi.',
-      'tpl-sayit': 'Kartu pos pos udara untuk kisah cinta dalam dua bahasa, lengkap dengan prangko, cap pos dan balon kata terjemahan.',
+      'tpl-sayit': 'Kartu pos pos udara terinspirasi Can This Love Be Translated, dengan chibi pelancong dan penerjemah, prangko, cap pos dan balon kata terjemahan.',
       'tpl-melon': 'Poster band sekolah musim panas terinspirasi Twinkling Watermelon, dengan empat personel chibi dan foto besarmu berubah jadi irisan semangka.',
       'tpl-poster': 'Poster drama romantis dengan dua pemeran utama, efek pudar yang syahdu, tagline dan blok kredit mungil.',
       'tpl-subtitle': 'Tiga potongan adegan sinematik dengan subtitle dua bahasa dan keterangan suara, seperti drama favoritmu dengan teks menyala.',

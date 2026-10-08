@@ -2210,6 +2210,8 @@ export const templateArt: Record<string, TemplateArt> = {
       speech(a, 690, 385, 420, 100, 'left', one[0], one[1], '#ffffff')
       speech(a, 40, 1070, 250, 108, 'right', two[0], two[1], '#fff1f3')
       speech(a, 910, 1120, 250, 108, 'left', three[0], three[1], '#e8f1ff')
+      chibi(a, 160, 1530, 250, { hair: '#6b3a2a', top: '#ffd84d', bottom: '#1f2f5a', style: 'short', props: ['shades', 'case'], accent: '#e04a5a' })
+      chibi(a, 1040, 1530, 250, { hair: '#2a2236', top: '#e8f1ff', bottom: '#1f2f5a', style: 'bob', props: ['headset'], flip: true })
       airmailBorder(a, 30, [a.accent, '#ffffff', a.ink, '#ffffff'])
     },
   },
