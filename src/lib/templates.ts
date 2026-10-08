@@ -50,6 +50,22 @@ export const templates: Template[] = [
     ],
   },
   {
+    id: 'tpl-mochi',
+    group: 'cute',
+    frame: frame('mochi', { kind: 'pattern', pattern: 'clouds', base: '#ece4ff', ink: '#ffffff', extra: '#ffffff', scale: 0.8 }, '#4a2a5c', '#ffffff', '#ffffff'),
+    filterId: 'strawberry-milk',
+    caption: 'soft and squishy',
+    captionFont: 'fredoka',
+    showDate: true,
+    showLogo: false,
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'sparkles', x: 0.93, y: 0.05, w: 0.09, rot: 12 },
+      { ref: 'strawberry', x: 0.07, y: 0.955, w: 0.09, rot: -12 },
+      { ref: 'bubble-tea', x: 0.93, y: 0.955, w: 0.09, rot: 10 },
+    ],
+  },
+  {
     id: 'tpl-newspaper',
     group: 'editorial',
     frame: frame('newspaper', solid('#f3efe6'), '#1b1a18', '#d9d2c3', null, true),

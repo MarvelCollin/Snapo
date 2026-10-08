@@ -106,6 +106,7 @@ export const id: Dict = {
       'tpl-graduation': 'Selamat Wisuda!',
       'tpl-merdeka': 'Merdeka!',
       'tpl-lebaran': 'Mohon Maaf Lahir dan Batin',
+      'tpl-mochi': 'lembut dan kenyal',
     } as Record<string, string>,
     blurbs: {
       'tpl-newspaper': 'Halaman depan edisi spesial dengan kamu sebagai berita utama.',
@@ -126,6 +127,7 @@ export const id: Dict = {
       'tpl-graduation': 'Biru tua dan emas dengan pita untuk angkatan tahun ini.',
       'tpl-merdeka': 'Bendera merah putih untuk 17 Agustus.',
       'tpl-lebaran': 'Lengkungan, bulan sabit dan ketupat untuk Idul Fitri.',
+      'tpl-mochi': 'Kenalan sama Mochi, Ube, Matcha dan Sakura, empat sahabat kenyal yang mengintip dari atas fotomu.',
       'classic-4': 'Gaya asli photobox Seoul. Empat foto lebar dalam strip tinggi.',
       trio: 'Tiga foto lebih tinggi, lebih leluasa buat bergaya.',
       duo: 'Dua potret besar bertumpuk. Cocok buat pasangan.',
@@ -600,5 +602,7 @@ export const id: Dict = {
     republic: 'REPUBLIK INDONESIA',
     raya: 'Selamat Hari Raya',
     idulFitri: 'IDUL FITRI',
+    mochi: 'Mochi Club',
+    mochiTag: 'sahabat kenyal selamanya',
   },
 }

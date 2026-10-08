@@ -331,6 +331,104 @@ function crescent(a: ArtArgs, x: number, y: number, r: number, fill: string) {
   c.restore()
 }
 
+type Pal = { body: string; sprout: string; cheek: string }
+
+const mochiPals: Pal[] = [
+  { body: '#fffaf3', sprout: '#5fbf6a', cheek: '#ff9fb6' },
+  { body: '#cdb8f4', sprout: '#7a52c7', cheek: '#ff8fb0' },
+  { body: '#c6e8ad', sprout: '#3f9a4c', cheek: '#ff9f9f' },
+  { body: '#ffc9da', sprout: '#e0577f', cheek: '#ff7f9f' },
+]
+
+function mochiBody(c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+  c.beginPath()
+  c.moveTo(x - w / 2, y + h * 0.22)
+  c.bezierCurveTo(x - w / 2, y - h * 0.62, x + w / 2, y - h * 0.62, x + w / 2, y + h * 0.22)
+  c.bezierCurveTo(x + w / 2, y + h * 0.56, x - w / 2, y + h * 0.56, x - w / 2, y + h * 0.22)
+  c.closePath()
+}
+
+function mochi(a: ArtArgs, x: number, y: number, size: number, pal: Pal, ink = '#4a2a3a') {
+  const { c, s } = a
+  const w = size * s
+  const h = size * 0.82 * s
+  const cx = x * s
+  const cy = y * s
+  c.save()
+  c.lineJoin = 'round'
+  c.lineCap = 'round'
+  c.strokeStyle = ink
+  c.lineWidth = w * 0.035
+  c.beginPath()
+  c.moveTo(cx, cy - h * 0.38)
+  c.quadraticCurveTo(cx + w * 0.02, cy - h * 0.5, cx, cy - h * 0.58)
+  c.stroke()
+  for (const dir of [-1, 1]) {
+    c.save()
+    c.translate(cx + dir * w * 0.075, cy - h * 0.6)
+    c.rotate(dir * 0.75)
+    c.fillStyle = pal.sprout
+    c.beginPath()
+    c.ellipse(0, 0, w * 0.1, w * 0.05, 0, 0, Math.PI * 2)
+    c.fill()
+    c.stroke()
+    c.restore()
+  }
+  mochiBody(c, cx, cy, w, h)
+  c.fillStyle = pal.body
+  c.fill()
+  c.stroke()
+  c.save()
+  c.globalAlpha = 0.55
+  c.fillStyle = '#ffffff'
+  c.beginPath()
+  c.ellipse(cx - w * 0.22, cy - h * 0.2, w * 0.09, h * 0.05, -0.5, 0, Math.PI * 2)
+  c.fill()
+  c.restore()
+  for (const dir of [-1, 1]) {
+    c.fillStyle = ink
+    c.beginPath()
+    c.ellipse(cx + dir * w * 0.16, cy + h * 0.02, w * 0.04, w * 0.055, 0, 0, Math.PI * 2)
+    c.fill()
+    c.fillStyle = '#ffffff'
+    c.beginPath()
+    c.arc(cx + dir * w * 0.16 - w * 0.012, cy - h * 0.012, w * 0.014, 0, Math.PI * 2)
+    c.fill()
+    c.fillStyle = pal.cheek
+    c.globalAlpha = 0.75
+    c.beginPath()
+    c.ellipse(cx + dir * w * 0.29, cy + h * 0.15, w * 0.075, w * 0.042, 0, 0, Math.PI * 2)
+    c.fill()
+    c.globalAlpha = 1
+  }
+  c.lineWidth = w * 0.025
+  c.beginPath()
+  c.arc(cx, cy + h * 0.07, w * 0.05, 0.2 * Math.PI, 0.8 * Math.PI)
+  c.stroke()
+  c.restore()
+}
+
+function peek(a: ArtArgs, x: number, edge: number, size: number, pal: Pal, ink = '#4a2a3a') {
+  const { c, s } = a
+  c.save()
+  c.beginPath()
+  c.rect(0, 0, a.w, edge * s)
+  c.clip()
+  mochi(a, x, edge - size * 0.16, size, pal, ink)
+  c.restore()
+  c.save()
+  c.fillStyle = pal.body
+  c.strokeStyle = ink
+  c.lineWidth = size * 0.03 * s
+  for (const dir of [-1, 1]) {
+    c.beginPath()
+    c.ellipse((x + dir * size * 0.3) * s, edge * s, size * 0.075 * s, size * 0.05 * s, 0, 0, Math.PI * 2)
+    c.fill()
+    c.stroke()
+  }
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -405,6 +503,27 @@ export const templateArt: Record<string, TemplateArt> = {
         bow(a, sl.x + 40, sl.y + 36, 96, '#ff6f91')
         paw(a, sl.x + sl.w - 46, sl.y + sl.h - 40, 48, 'rgba(255,255,255,0.9)')
       }
+    },
+  },
+  mochi: {
+    under: (a) => {
+      mochi(a, 230, 232, 280, mochiPals[0], a.ink)
+      text(a, a.t.mochi, 740, 250, { size: 128, family: 'Fredoka', weight: 700, align: 'center', color: a.ink, stroke: '#ffffff', strokeW: 24, maxW: 760 })
+      text(a, a.t.mochiTag, 740, 330, { size: 46, family: 'Caveat', weight: 700, align: 'center', color: '#7a52c7', maxW: 700 })
+      box(a, 110, 1545, 980, 200, 'rgba(255, 255, 255, 0.9)', 60)
+      for (const [x, y, r] of [
+        [1110, 110, 16],
+        [1150, 400, 10],
+        [70, 470, 12],
+      ])
+        star(a, x, y, r, '#ffffff')
+    },
+    over: (a) => {
+      a.slots.forEach((sl, i) => {
+        const pal = mochiPals[i % mochiPals.length]
+        const x = i % 2 ? sl.x + sl.w * 0.7 : sl.x + sl.w * 0.3
+        peek(a, x, sl.y, 170, pal, a.ink)
+      })
     },
   },
   bunny: {

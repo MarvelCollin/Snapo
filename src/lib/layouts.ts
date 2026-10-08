@@ -109,6 +109,16 @@ const defs: Def[] = [
     captions: [{ x: 70, y: 1560, w: 1060, h: 200 }],
   },
   {
+    id: 'tpl-mochi',
+    name: 'Mochi Club',
+    group: 'template',
+    art: 'mochi',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: grid({ w: 1200, h: 1800, cols: 2, rows: 2, left: 80, top: 480, bottom: 300, gap: 50, gapY: 110, radius: 0.08 }),
+    captions: [{ x: 120, y: 1560, w: 960, h: 170 }],
+  },
+  {
     id: 'tpl-bunny',
     name: 'Bunny Picnic',
     group: 'template',

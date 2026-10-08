@@ -106,6 +106,7 @@ export const en = {
       'tpl-graduation': 'Congratulations!',
       'tpl-merdeka': 'Merdeka!',
       'tpl-lebaran': 'Mohon Maaf Lahir dan Batin',
+      'tpl-mochi': 'soft and squishy',
     } as Record<string, string>,
     blurbs: {
       'tpl-newspaper': 'A special edition front page with you as the headline.',
@@ -126,6 +127,7 @@ export const en = {
       'tpl-graduation': "Navy and gold with a ribbon for this year's class.",
       'tpl-merdeka': 'Red and white bunting for 17 Agustus.',
       'tpl-lebaran': 'Arches, crescent moons and ketupat for Idul Fitri.',
+      'tpl-mochi': 'Meet Mochi, Ube, Matcha and Sakura, four squishy pals peeking over your photos.',
       'classic-4': 'The Seoul booth original. Four landscape cuts in a tall strip.',
       trio: 'Three taller cuts, more room for your poses.',
       duo: 'Two big portraits stacked. Great for couples.',
@@ -600,6 +602,8 @@ export const en = {
     republic: 'REPUBLIK INDONESIA',
     raya: 'Selamat Hari Raya',
     idulFitri: 'IDUL FITRI',
+    mochi: 'Mochi Club',
+    mochiTag: 'squishy friends forever',
   },
 }
 
