@@ -1323,6 +1323,23 @@ export const templateArt: Record<string, TemplateArt> = {
       snowfall(a, 50, 29, 0.55, 4)
     },
   },
+  subtitle: {
+    under: (a) => {
+      text(a, a.t.original, 600, 90, { size: 26, family: 'Oswald', weight: 500, align: 'center', color: a.accent, spacing: 8, maxW: 1000 })
+      text(a, a.caption || 'Lost in Translation', 600, 200, { size: 96, family: 'Playfair Display', italic: true, align: 'center', color: a.ink, maxW: 1080 })
+      text(a, a.t.finale, 60, 2026, { size: 26, family: 'Space Mono', weight: 700, color: a.ink })
+      text(a, shortDate(a), 1140, 2026, { size: 26, family: 'Space Mono', weight: 700, color: a.ink, align: 'right' })
+    },
+    over: (a) => {
+      a.slots.forEach((sl, i) => {
+        const [line, roman] = a.t.subs[i % a.t.subs.length]
+        const cue = a.t.cues[i % a.t.cues.length]
+        text(a, cue, sl.x + 30, sl.y + 56, { size: 30, family: 'Nunito', weight: 800, color: '#ffffff', stroke: 'rgba(0, 0, 0, 0.75)', strokeW: 8, maxW: sl.w - 60 })
+        text(a, line, sl.x + sl.w / 2, sl.y + sl.h - 82, { size: 46, family: 'Nunito', weight: 800, align: 'center', color: '#ffffff', stroke: 'rgba(0, 0, 0, 0.8)', strokeW: 10, maxW: sl.w - 80 })
+        text(a, roman, sl.x + sl.w / 2, sl.y + sl.h - 30, { size: 36, family: 'Nunito', weight: 800, align: 'center', color: a.accent, stroke: 'rgba(0, 0, 0, 0.8)', strokeW: 9, maxW: sl.w - 80 })
+      })
+    },
+  },
 }
 
 export function artPaper(fill: Fill) {

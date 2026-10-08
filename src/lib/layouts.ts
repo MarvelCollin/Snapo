@@ -373,6 +373,20 @@ const defs: Def[] = [
     captions: [],
   },
   {
+    id: 'tpl-subtitle',
+    name: 'Subtitled',
+    group: 'template',
+    art: 'subtitle',
+    size: { w: 1200, h: 2060 },
+    sizeLabel: '4 x 6.9 in',
+    slots: [
+      { x: 60, y: 250, w: 1080, h: 540, photo: 0 },
+      { x: 60, y: 840, w: 1080, h: 540, photo: 1 },
+      { x: 60, y: 1430, w: 1080, h: 540, photo: 2 },
+    ],
+    captions: [],
+  },
+  {
     id: 'classic-4',
     name: 'Classic Four',
     group: 'strip',

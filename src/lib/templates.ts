@@ -288,6 +288,14 @@ export const templates: Template[] = [
     caption: 'make a wish on the first snow',
     photoOutline: 'frame',
   },
+  {
+    id: 'tpl-subtitle',
+    group: 'drama',
+    frame: frame('subtitle', solid('#0e0d10'), '#ffffff', '#ffd84d'),
+    filterId: 'portra',
+    caption: 'Lost in Translation',
+    photoOutline: 'none',
+  },
 ]
 
 export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']
