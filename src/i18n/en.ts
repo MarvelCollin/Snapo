@@ -1,6 +1,20 @@
 const s = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`
 
 export const en = {
+  meta: {
+    brand: 'Snapo Photo Booth',
+    home: 'Snapo | Free Online Photo Booth with Cute Templates',
+    homeText: 'Snapo is a free photo booth in your browser. Pick a cute template, shoot a photo strip with your webcam, add filters, frames and stickers, then save it as PNG, GIF or video. No sign up.',
+    layout: 'Pick a Photo Strip Design',
+    layoutText: 'Choose from cute photo booth templates or a plain strip, grid or postcard layout to decorate yourself.',
+    shoot: 'Shoot Your Photos',
+    edit: 'Crop and Filter',
+    decorate: 'Decorate Your Strip',
+    save: 'Save and Share',
+    gallery: 'Your Photo Strip Gallery',
+    galleryText: 'Every photo strip you save in Snapo stays here on your device. Download, share or print them again any time.',
+    notFound: 'Page Not Found',
+  },
   common: {
     close: 'Close',
     dismiss: 'Dismiss message',

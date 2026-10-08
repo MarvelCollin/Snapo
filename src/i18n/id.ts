@@ -1,6 +1,20 @@
 import type { Dict } from './en'
 
 export const id: Dict = {
+  meta: {
+    brand: 'Snapo Photo Booth',
+    home: 'Snapo | Photobox Online Gratis dengan Template Lucu',
+    homeText: 'Snapo adalah photobox gratis di browser. Pilih template lucu, foto strip pakai webcam, tambah filter, bingkai dan stiker, lalu simpan sebagai PNG, GIF atau video. Tanpa daftar.',
+    layout: 'Pilih Desain Strip Foto',
+    layoutText: 'Pilih template photobox yang lucu, atau tata letak strip, grid dan kartu pos polos untuk kamu hias sendiri.',
+    shoot: 'Ambil Fotomu',
+    edit: 'Potong dan Filter',
+    decorate: 'Hias Strip Kamu',
+    save: 'Simpan dan Bagikan',
+    gallery: 'Galeri Strip Foto Kamu',
+    galleryText: 'Setiap strip foto yang kamu simpan di Snapo ada di sini, di perangkatmu. Unduh, bagikan atau cetak lagi kapan saja.',
+    notFound: 'Halaman Tidak Ditemukan',
+  },
   common: {
     close: 'Tutup',
     dismiss: 'Tutup pesan',
