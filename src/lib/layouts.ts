@@ -133,6 +133,20 @@ const defs: Def[] = [
     captions: [{ x: 130, y: 1575, w: 940, h: 160 }],
   },
   {
+    id: 'tpl-haori',
+    name: 'Haori Night',
+    group: 'template',
+    art: 'haori',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 110, y: 470, w: 980, h: 540, photo: 0 },
+      { x: 110, y: 1050, w: 470, h: 450, photo: 1 },
+      { x: 620, y: 1050, w: 470, h: 450, photo: 2 },
+    ],
+    captions: [{ x: 130, y: 1530, w: 940, h: 105 }],
+  },
+  {
     id: 'tpl-bunny',
     name: 'Bunny Picnic',
     group: 'template',

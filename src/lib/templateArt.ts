@@ -761,6 +761,130 @@ function awning(a: ArtArgs, y: number, h: number, stripe: number, colors: [strin
   c.restore()
 }
 
+function moonGlow(a: ArtArgs, x: number, y: number, r: number) {
+  const { c, s } = a
+  c.save()
+  const g = c.createRadialGradient(x * s, y * s, r * 0.6 * s, x * s, y * s, r * 2.6 * s)
+  g.addColorStop(0, 'rgba(255, 244, 205, 0.55)')
+  g.addColorStop(1, 'rgba(255, 244, 205, 0)')
+  c.fillStyle = g
+  c.fillRect((x - r * 3) * s, (y - r * 3) * s, r * 6 * s, r * 6 * s)
+  c.restore()
+  circle(a, x, y, r, '#fff4cd')
+  circle(a, x - r * 0.28, y - r * 0.2, r * 0.22, 'rgba(231, 214, 160, 0.55)')
+  circle(a, x + r * 0.32, y + r * 0.25, r * 0.16, 'rgba(231, 214, 160, 0.55)')
+  circle(a, x + r * 0.12, y - r * 0.42, r * 0.1, 'rgba(231, 214, 160, 0.55)')
+}
+
+function bamboo(a: ArtArgs, x: number, y1: number, y2: number, w: number, color: string) {
+  const { c, s } = a
+  c.save()
+  c.fillStyle = color
+  c.fillRect((x - w / 2) * s, y1 * s, w * s, (y2 - y1) * s)
+  c.fillStyle = 'rgba(255, 255, 255, 0.12)'
+  c.fillRect((x - w / 2) * s, y1 * s, w * 0.28 * s, (y2 - y1) * s)
+  const step = w * 3.4
+  c.fillStyle = 'rgba(0, 0, 0, 0.35)'
+  for (let y = y1 + step * 0.6; y < y2; y += step) c.fillRect((x - w / 2 - 3) * s, y * s, (w + 6) * s, w * 0.2 * s)
+  c.fillStyle = color
+  let k = 0
+  for (let y = y1 + step * 1.2; y < y2; y += step * 2) {
+    const dir = k++ % 2 ? -1 : 1
+    c.save()
+    c.translate((x + dir * w * 0.5) * s, y * s)
+    c.rotate(dir * -0.9)
+    c.beginPath()
+    c.ellipse(dir * w * 1.6 * s, 0, w * 1.7 * s, w * 0.28 * s, 0, 0, Math.PI * 2)
+    c.fill()
+    c.restore()
+  }
+  c.restore()
+}
+
+function seigaiha(a: ArtArgs, x: number, y: number, w: number, rows: number, r: number, colors: [string, string, string]) {
+  const { c, s } = a
+  c.save()
+  c.beginPath()
+  c.rect(x * s, y * s, w * s, a.h - y * s)
+  c.clip()
+  c.lineWidth = Math.max(1.5, r * 0.04) * s
+  c.strokeStyle = colors[2]
+  const rings = [1, 0.74, 0.48, 0.22]
+  for (let j = 0; j < rows; j++) {
+    for (let i = -1; i <= Math.ceil(w / (r * 2)); i++) {
+      const cx = x + i * r * 2 + (j % 2) * r
+      const cy = y + j * r * 0.5
+      rings.forEach((k, n) => {
+        c.beginPath()
+        c.arc(cx * s, cy * s, r * k * s, 0, Math.PI * 2)
+        c.fillStyle = colors[n % 2]
+        c.fill()
+        c.stroke()
+      })
+    }
+  }
+  c.restore()
+}
+
+function checkerBorder(a: ArtArgs, size: number, c1: string, c2: string) {
+  const W = a.w / a.s
+  const H = a.h / a.s
+  const cols = Math.round(W / size)
+  const rows = Math.round(H / size)
+  const cw = W / cols
+  const ch = H / rows
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < cols; i++) {
+      if (i > 0 && i < cols - 1 && j > 0 && j < rows - 1) continue
+      box(a, i * cw, j * ch, cw + 0.5, ch + 0.5, (i + j) % 2 ? c1 : c2)
+    }
+  }
+}
+
+function wisteria(a: ArtArgs, x: number, y: number, len: number, seed: number) {
+  let n = seed
+  const rnd = () => {
+    n = (n * 9301 + 49297) % 233280
+    return n / 233280
+  }
+  const palette = ['#b79cf0', '#9b7be0', '#d4c2ff', '#8564cc']
+  const rows = Math.round(len / 16)
+  for (let i = 0; i < rows; i++) {
+    const t = i / rows
+    const spread = (1 - t) * 46 + 4
+    const count = Math.round((1 - t) * 5) + 1
+    for (let k = 0; k < count; k++) circle(a, x + (rnd() - 0.5) * 2 * spread, y + i * 16 + rnd() * 6, 8 + rnd() * 5 * (1 - t), palette[Math.floor(rnd() * palette.length)])
+  }
+}
+
+function slash(a: ArtArgs, x1: number, y1: number, cx: number, cy: number, x2: number, y2: number, rgb: string) {
+  const { c, s } = a
+  c.save()
+  c.lineCap = 'round'
+  for (const [w, col] of [
+    [30, `rgba(${rgb}, 0.22)`],
+    [12, `rgb(${rgb})`],
+    [4, '#ffffff'],
+  ] as [number, string][]) {
+    c.strokeStyle = col
+    c.lineWidth = w * s
+    c.beginPath()
+    c.moveTo(x1 * s, y1 * s)
+    c.quadraticCurveTo(cx * s, cy * s, x2 * s, y2 * s)
+    c.stroke()
+  }
+  c.restore()
+}
+
+function embers(a: ArtArgs, count: number, seed: number, y1: number, y2: number, rgb: string) {
+  let n = seed
+  const rnd = () => {
+    n = (n * 9301 + 49297) % 233280
+    return n / 233280
+  }
+  for (let i = 0; i < count; i++) circle(a, 40 + rnd() * 1120, y1 + rnd() * (y2 - y1), 2 + rnd() * 4, `rgba(${rgb}, ${0.35 + rnd() * 0.6})`)
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1511,6 +1635,30 @@ export const templateArt: Record<string, TemplateArt> = {
     over: (a) => {
       bow(a, 600, 232, 110, '#e63950')
       a.slots.forEach((sl, i) => bow(a, i === 2 ? sl.x + sl.w - 34 : sl.x + 34, sl.y + 30, 90, '#e63950'))
+    },
+  },
+  haori: {
+    under: (a) => {
+      moonGlow(a, 950, 210, 100)
+      bamboo(a, 60, 0, 1800, 42, '#14452f')
+      bamboo(a, 150, 0, 1800, 26, '#1b5a3b')
+      bamboo(a, 1140, 0, 1800, 42, '#14452f')
+      bamboo(a, 1052, 0, 1800, 26, '#1b5a3b')
+      wisteria(a, 150, 60, 250, 7)
+      wisteria(a, 240, 56, 170, 19)
+      text(a, a.t.haoriTag, 600, 138, { size: 28, family: 'Oswald', weight: 500, align: 'center', color: a.accent, spacing: 10, maxW: 900 })
+      text(a, a.t.haori, 600, 292, { size: 156, family: 'Playfair Display', weight: 900, align: 'center', color: a.ink, stroke: '#0a1520', strokeW: 16, maxW: 960 })
+      text(a, a.t.haoriSub, 600, 352, { size: 32, family: 'Playfair Display', italic: true, align: 'center', color: 'rgba(246, 236, 210, 0.85)', maxW: 900 })
+      slash(a, 100, 420, 600, 372, 1100, 430, '229, 83, 61')
+      box(a, 110, 1520, 980, 125, 'rgba(10, 21, 32, 0.78)', 16)
+      outline(a, 110, 1520, 980, 125, a.accent, 5, 16)
+      seigaiha(a, 0, 1668, 1200, 6, 52, ['#14405a', '#1f6e8c', '#0b2433'])
+    },
+    over: (a) => {
+      for (const sl of a.slots) outline(a, sl.x - 8, sl.y - 8, sl.w + 16, sl.h + 16, a.accent, 5)
+      embers(a, 46, 5, 1100, 1700, '255, 140, 70')
+      embers(a, 26, 41, 120, 1000, '210, 255, 150')
+      checkerBorder(a, 40, '#1e8a5a', '#0b0f0e')
     },
   },
 }

@@ -107,6 +107,7 @@ export const en = {
       'tpl-merdeka': 'Merdeka!',
       'tpl-lebaran': 'Mohon Maaf Lahir dan Batin',
       'tpl-manga': 'my heart just went doki doki',
+      'tpl-haori': 'brave hearts stay together',
       'tpl-poster': 'Love, Rewritten',
       'tpl-subtitle': 'Lost in Translation',
       'tpl-firstsnow': 'make a wish on the first snow',
@@ -137,6 +138,7 @@ export const en = {
       'tpl-merdeka': 'Red and white bunting for 17 Agustus.',
       'tpl-lebaran': 'Arches, crescent moons and ketupat for Idul Fitri.',
       'tpl-manga': 'A shoujo manga page with screentone, focus lines, sparkles and a speech bubble for your big anime moment.',
+      'tpl-haori': 'A Taisho era night with a giant moon, bamboo grove, wisteria, sea wave patterns and a green and black checkered border.',
       'tpl-poster': 'A romance drama poster with two leads, a dreamy fade, a tagline and the tiny credits block.',
       'tpl-subtitle': 'Three cinematic stills with dual language subtitles and sound cues, like your favorite drama with captions on.',
       'tpl-firstsnow': 'A fantasy winter romance with falling snow, an arched window and two glowing candles.',
@@ -661,6 +663,9 @@ export const en = {
     mochiTag: 'squishy friends forever',
     bakery: 'Ribbon Bakery',
     bakeryTag: 'SWEET MEMORIES  *  BAKED FRESH',
+    haori: 'Haori Night',
+    haoriTag: 'A TAISHO ERA NIGHT TALE',
+    haoriSub: 'courage burns brightest in the dark',
   },
 }
 

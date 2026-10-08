@@ -326,6 +326,20 @@ export const templates: Template[] = [
     ],
   },
   {
+    id: 'tpl-haori',
+    group: 'drama',
+    frame: frame('haori', { kind: 'gradient', colors: ['#0a1520', '#12302b'], angle: 180 }, '#f6ecd2', '#e5533d', '#f6ecd2'),
+    filterId: 'moonlight',
+    caption: 'brave hearts stay together',
+    captionFont: 'serif',
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'wind-chime', x: 0.91, y: 0.255, w: 0.09, rot: 8 },
+      { ref: 'sparkles', x: 0.08, y: 0.955, w: 0.08, rot: -10 },
+      { ref: 'shooting-star', x: 0.92, y: 0.955, w: 0.09, rot: 10 },
+    ],
+  },
+  {
     id: 'tpl-manga',
     group: 'drama',
     frame: frame('manga', { kind: 'pattern', pattern: 'dots', base: '#ffffff', ink: '#e4e4e8', extra: '#ffffff', scale: 0.5 }, '#111111', '#ff8fb8', null, true),
