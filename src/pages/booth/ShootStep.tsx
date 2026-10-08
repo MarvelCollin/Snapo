@@ -203,7 +203,11 @@ export default function ShootStep() {
 
   const remaining = layout.shots - filled
   const shotNumber = (current ?? target ?? 0) + 1
-  const badge = run ? t.shoot.shotOf(run.index + 1, run.total) : t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
+  const badge = run
+    ? t.shoot.shotOf(run.index + 1, run.total)
+    : complete && selected === null
+      ? t.shoot.allDone
+      : t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
 
   return (
     <section className="step step--shoot" aria-labelledby="shoot-title">
