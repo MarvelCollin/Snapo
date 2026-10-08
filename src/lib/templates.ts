@@ -308,6 +308,14 @@ export const templates: Template[] = [
       { ref: 'cherry-blossom', x: 0.93, y: 0.62, w: 0.07, rot: 18 },
     ],
   },
+  {
+    id: 'tpl-manga',
+    group: 'drama',
+    frame: frame('manga', { kind: 'pattern', pattern: 'dots', base: '#ffffff', ink: '#e4e4e8', extra: '#ffffff', scale: 0.5 }, '#111111', '#ff8fb8', null, true),
+    filterId: 'idol',
+    caption: 'my heart just went doki doki',
+    photoOutline: 'none',
+  },
 ]
 
 export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']

@@ -400,6 +400,21 @@ const defs: Def[] = [
     captions: [],
   },
   {
+    id: 'tpl-manga',
+    name: 'Shoujo Manga',
+    group: 'template',
+    art: 'manga',
+    size: { w: 1200, h: 1700 },
+    sizeLabel: '4 x 5.7 in',
+    slots: [
+      { x: 60, y: 60, w: 1080, h: 640, photo: 0 },
+      { x: 60, y: 730, w: 520, h: 850, photo: 1 },
+      { x: 610, y: 730, w: 530, h: 400, photo: 2 },
+      { x: 610, y: 1160, w: 530, h: 420, photo: 3 },
+    ],
+    captions: [],
+  },
+  {
     id: 'classic-4',
     name: 'Classic Four',
     group: 'strip',

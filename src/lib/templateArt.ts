@@ -693,6 +693,58 @@ function candle(a: ArtArgs, x: number, y: number, h: number) {
   c.restore()
 }
 
+function sparkle4(a: ArtArgs, x: number, y: number, r: number, fill: string, ink = '#111111') {
+  const { c, s } = a
+  c.save()
+  c.translate(x * s, y * s)
+  c.beginPath()
+  for (let i = 0; i < 4; i++) {
+    const ang = (Math.PI / 2) * i - Math.PI / 2
+    if (i === 0) c.moveTo(Math.cos(ang) * r * s, Math.sin(ang) * r * s)
+    else c.lineTo(Math.cos(ang) * r * s, Math.sin(ang) * r * s)
+    c.quadraticCurveTo(0, 0, Math.cos(ang + Math.PI / 2) * r * s, Math.sin(ang + Math.PI / 2) * r * s)
+  }
+  c.closePath()
+  c.fillStyle = fill
+  c.fill()
+  c.lineWidth = Math.max(2, r * 0.08) * s
+  c.lineJoin = 'round'
+  c.strokeStyle = ink
+  c.stroke()
+  c.restore()
+}
+
+function focusLines(a: ArtArgs, x: number, y: number, w: number, h: number, count: number, color: string) {
+  const { c, s } = a
+  let n = 17
+  const rnd = () => {
+    n = (n * 9301 + 49297) % 233280
+    return n / 233280
+  }
+  const cx = x + w / 2
+  const cy = y + h / 2
+  c.save()
+  c.beginPath()
+  c.rect(x * s, y * s, w * s, h * s)
+  c.clip()
+  c.fillStyle = color
+  for (let i = 0; i < count; i++) {
+    const ang = (Math.PI * 2 * i) / count + rnd() * 0.05
+    const dx = Math.cos(ang)
+    const dy = Math.sin(ang)
+    const t = Math.min(Math.abs(w / 2 / (dx || 1e-6)), Math.abs(h / 2 / (dy || 1e-6)))
+    const len = 50 + rnd() * 110
+    const spread = 0.012 + rnd() * 0.01
+    c.beginPath()
+    c.moveTo((cx + Math.cos(ang - spread) * (t + 40)) * s, (cy + Math.sin(ang - spread) * (t + 40)) * s)
+    c.lineTo((cx + Math.cos(ang + spread) * (t + 40)) * s, (cy + Math.sin(ang + spread) * (t + 40)) * s)
+    c.lineTo((cx + dx * (t - len)) * s, (cy + dy * (t - len)) * s)
+    c.closePath()
+    c.fill()
+  }
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1367,6 +1419,59 @@ export const templateArt: Record<string, TemplateArt> = {
       text(a, a.t.starring, 600, 1410, { size: 58, family: 'Caveat', weight: 700, align: 'center', color: a.accent, maxW: 900 })
       paragraph(a, a.t.credits, 140, 1480, 920, 30, { size: 22, family: 'Oswald', weight: 500, align: 'center', color: 'rgba(90, 33, 64, 0.75)', spacing: 1 }, 3)
       text(a, a.t.premiere(shortDate(a)), 600, 1640, { size: 40, family: 'Oswald', weight: 700, align: 'center', color: a.ink, spacing: 6, maxW: 1000 })
+    },
+  },
+  manga: {
+    under: (a) => {
+      text(a, a.t.comics, 60, 1650, { size: 34, family: 'Oswald', weight: 700, color: a.ink, spacing: 4 })
+      text(a, a.t.chapter, 600, 1650, { size: 28, family: 'Space Mono', weight: 700, align: 'center', color: a.ink, maxW: 520 })
+      text(a, a.t.volume, 1140, 1650, { size: 34, family: 'Oswald', weight: 700, align: 'right', color: a.ink, spacing: 4 })
+    },
+    over: (a) => {
+      const [top, tall, mid, low] = a.slots
+      focusLines(a, top.x, top.y, top.w, top.h, 90, 'rgba(17, 17, 17, 0.85)')
+      for (const sl of a.slots) outline(a, sl.x, sl.y, sl.w, sl.h, '#111111', 10)
+      const { c, s } = a
+      c.save()
+      c.fillStyle = '#ffffff'
+      c.strokeStyle = '#111111'
+      c.lineWidth = 6 * s
+      c.beginPath()
+      c.ellipse(330 * s, 190 * s, 230 * s, 96 * s, 0, 0, Math.PI * 2)
+      c.fill()
+      c.stroke()
+      c.beginPath()
+      c.moveTo(420 * s, 270 * s)
+      c.lineTo(500 * s, 340 * s)
+      c.lineTo(480 * s, 262 * s)
+      c.closePath()
+      c.fill()
+      c.stroke()
+      c.restore()
+      const bubble = { size: 38, family: 'Patrick Hand', align: 'center' as const, color: '#111111' }
+      const said = a.caption || 'my heart just went doki doki'
+      const lines = Math.min(2, wrapLines(a, said, 400, bubble).length)
+      paragraph(a, said, 130, 203 - (lines - 1) * 23, 400, 46, bubble, 2)
+      for (const [x, y, r, col] of [
+        [1040, 140, 44, '#ffffff'],
+        [1090, 230, 22, '#ffe066'],
+        [980, 230, 18, '#ffffff'],
+        [tall.x + tall.w - 60, tall.y + 80, 40, '#ffffff'],
+        [tall.x + tall.w - 120, tall.y + 150, 20, '#ff8fb8'],
+        [tall.x + 70, tall.y + tall.h - 120, 34, '#ffffff'],
+        [low.x + low.w - 70, low.y + 70, 30, '#ffe066'],
+      ] as [number, number, number, string][])
+        sparkle4(a, x, y, r, col)
+      c.save()
+      c.translate((mid.x + mid.w / 2) * s, (mid.y + mid.h - 36) * s)
+      c.rotate(-0.12)
+      text(a, a.t.doki, 0, 0, { size: 96, family: 'Oswald', weight: 700, align: 'center', color: a.accent, stroke: '#111111', strokeW: 14, maxW: mid.w - 60 })
+      c.restore()
+      c.save()
+      c.translate((low.x + 120) * s, (low.y + 100) * s)
+      c.rotate(0.18)
+      text(a, a.t.kyaa, 0, 0, { size: 64, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', stroke: '#111111', strokeW: 12 })
+      c.restore()
     },
   },
 }
