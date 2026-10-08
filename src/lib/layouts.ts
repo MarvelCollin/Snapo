@@ -387,6 +387,19 @@ const defs: Def[] = [
     captions: [],
   },
   {
+    id: 'tpl-poster',
+    name: 'Drama Poster',
+    group: 'template',
+    art: 'poster',
+    size: { w: 1200, h: 1700 },
+    sizeLabel: '4 x 5.7 in',
+    slots: [
+      { x: 60, y: 230, w: 535, h: 1030, photo: 0 },
+      { x: 605, y: 230, w: 535, h: 1030, photo: 1 },
+    ],
+    captions: [],
+  },
+  {
     id: 'classic-4',
     name: 'Classic Four',
     group: 'strip',

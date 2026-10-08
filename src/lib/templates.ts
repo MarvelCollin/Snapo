@@ -296,6 +296,18 @@ export const templates: Template[] = [
     caption: 'Lost in Translation',
     photoOutline: 'none',
   },
+  {
+    id: 'tpl-poster',
+    group: 'drama',
+    frame: frame('poster', { kind: 'gradient', colors: ['#ffd6e3', '#fff4ea'], angle: 180 }, '#5a2140', '#ff7aa2'),
+    filterId: 'cherry-blossom',
+    caption: 'Love, Rewritten',
+    photoOutline: 'none',
+    stickers: [
+      { ref: 'cherry-blossom', x: 0.08, y: 0.1, w: 0.09, rot: -14 },
+      { ref: 'cherry-blossom', x: 0.93, y: 0.62, w: 0.07, rot: 18 },
+    ],
+  },
 ]
 
 export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']

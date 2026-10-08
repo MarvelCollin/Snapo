@@ -1340,6 +1340,35 @@ export const templateArt: Record<string, TemplateArt> = {
       })
     },
   },
+  poster: {
+    under: (a) => {
+      text(a, a.t.posterTag, 600, 110, { size: 34, family: 'Oswald', weight: 500, align: 'center', color: a.ink, spacing: 9, maxW: 1000 })
+      box(a, 480, 140, 240, 50, a.ink, 25)
+      text(a, a.t.episodes, 600, 175, { size: 24, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', spacing: 4, maxW: 210 })
+    },
+    over: (a) => {
+      const { c, s } = a
+      c.save()
+      const g = c.createLinearGradient(0, 900 * s, 0, 1265 * s)
+      g.addColorStop(0, 'rgba(255, 230, 231, 0)')
+      g.addColorStop(0.6, 'rgba(255, 234, 230, 0.7)')
+      g.addColorStop(1, 'rgba(255, 236, 232, 1)')
+      c.fillStyle = g
+      c.fillRect(60 * s, 900 * s, 1080 * s, 366 * s)
+      c.restore()
+      for (const [x, y, r] of [
+        [110, 1120, 22],
+        [1090, 1060, 18],
+        [180, 1220, 14],
+        [1010, 1200, 16],
+      ])
+        heart(a, x, y, r, 'rgba(255, 122, 162, 0.7)')
+      text(a, a.caption || 'Love, Rewritten', 600, 1330, { size: 128, family: 'Playfair Display', weight: 900, align: 'center', color: a.ink, stroke: '#ffffff', strokeW: 14, maxW: 1080 })
+      text(a, a.t.starring, 600, 1410, { size: 58, family: 'Caveat', weight: 700, align: 'center', color: a.accent, maxW: 900 })
+      paragraph(a, a.t.credits, 140, 1480, 920, 30, { size: 22, family: 'Oswald', weight: 500, align: 'center', color: 'rgba(90, 33, 64, 0.75)', spacing: 1 }, 3)
+      text(a, a.t.premiere(shortDate(a)), 600, 1640, { size: 40, family: 'Oswald', weight: 700, align: 'center', color: a.ink, spacing: 6, maxW: 1000 })
+    },
+  },
 }
 
 export function artPaper(fill: Fill) {
