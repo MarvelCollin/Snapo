@@ -340,6 +340,20 @@ export const templates: Template[] = [
     ],
   },
   {
+    id: 'tpl-sayit',
+    group: 'drama',
+    frame: frame('sayit', solid('#fbf3e3'), '#1f2f5a', '#e04a5a', null, true),
+    filterId: 'portra',
+    caption: 'I like you in every language',
+    captionFont: 'caveat',
+    showDate: false,
+    photoOutline: 'none',
+    stickers: [
+      { ref: 'love-letter', x: 0.1, y: 0.935, w: 0.1, rot: -8 },
+      { ref: 'heart-with-ribbon', x: 0.9, y: 0.935, w: 0.1, rot: 8 },
+    ],
+  },
+  {
     id: 'tpl-manga',
     group: 'drama',
     frame: frame('manga', { kind: 'pattern', pattern: 'dots', base: '#ffffff', ink: '#e4e4e8', extra: '#ffffff', scale: 0.5 }, '#111111', '#ff8fb8', null, true),

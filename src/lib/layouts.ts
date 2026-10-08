@@ -147,6 +147,20 @@ const defs: Def[] = [
     captions: [{ x: 130, y: 1530, w: 940, h: 105 }],
   },
   {
+    id: 'tpl-sayit',
+    name: 'Say It Twice',
+    group: 'template',
+    art: 'sayit',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 100, y: 440, w: 480, h: 400, photo: 0, card: true, rotate: -3 },
+      { x: 660, y: 520, w: 440, h: 380, photo: 1, card: true, rotate: 3 },
+      { x: 340, y: 1060, w: 520, h: 300, photo: 2, card: true, rotate: -2 },
+    ],
+    captions: [{ x: 130, y: 1570, w: 940, h: 110 }],
+  },
+  {
     id: 'tpl-bunny',
     name: 'Bunny Picnic',
     group: 'template',

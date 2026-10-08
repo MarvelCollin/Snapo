@@ -885,6 +885,126 @@ function embers(a: ArtArgs, count: number, seed: number, y1: number, y2: number,
   for (let i = 0; i < count; i++) circle(a, 40 + rnd() * 1120, y1 + rnd() * (y2 - y1), 2 + rnd() * 4, `rgba(${rgb}, ${0.35 + rnd() * 0.6})`)
 }
 
+function airmailBorder(a: ArtArgs, thickness: number, colors: string[]) {
+  const { c, s } = a
+  const W = a.w / s
+  const H = a.h / s
+  const stripe = 34
+  c.save()
+  c.beginPath()
+  c.rect(0, 0, a.w, a.h)
+  c.rect(thickness * s, thickness * s, (W - thickness * 2) * s, (H - thickness * 2) * s)
+  c.clip('evenodd')
+  for (let i = 0; i * stripe < W + H; i++) {
+    c.fillStyle = colors[i % colors.length]
+    c.beginPath()
+    c.moveTo(i * stripe * s, 0)
+    c.lineTo((i + 1) * stripe * s, 0)
+    c.lineTo(((i + 1) * stripe - H) * s, a.h)
+    c.lineTo((i * stripe - H) * s, a.h)
+    c.closePath()
+    c.fill()
+  }
+  c.restore()
+}
+
+function stamp(a: ArtArgs, x: number, y: number, w: number, h: number) {
+  const { c, s } = a
+  c.save()
+  c.shadowColor = 'rgba(31, 47, 90, 0.25)'
+  c.shadowBlur = 10 * s
+  c.shadowOffsetY = 4 * s
+  c.fillStyle = '#ffffff'
+  c.fillRect(x * s, y * s, w * s, h * s)
+  c.restore()
+  for (let px = x; px <= x + w + 0.1; px += 18) {
+    circle(a, px, y, 6, a.paper)
+    circle(a, px, y + h, 6, a.paper)
+  }
+  for (let py = y; py <= y + h + 0.1; py += 18) {
+    circle(a, x, py, 6, a.paper)
+    circle(a, x + w, py, 6, a.paper)
+  }
+  box(a, x + 16, y + 16, w - 32, h - 32, a.accent)
+  heart(a, x + w / 2, y + h * 0.42, 52, '#ffffff')
+  text(a, a.t.stampName, x + w / 2, y + h - 52, { size: 22, family: 'Oswald', weight: 700, align: 'center', color: '#ffffff', spacing: 3, maxW: w - 48 })
+  text(a, a.t.stampValue, x + w / 2, y + h - 28, { size: 20, family: 'Space Mono', weight: 700, align: 'center', color: '#ffffff', maxW: w - 48 })
+}
+
+function postmark(a: ArtArgs, x: number, y: number, r: number, color: string) {
+  const { c, s } = a
+  c.save()
+  c.globalAlpha = 0.72
+  c.strokeStyle = color
+  c.lineWidth = 4 * s
+  c.beginPath()
+  c.arc(x * s, y * s, r * s, 0, Math.PI * 2)
+  c.stroke()
+  c.beginPath()
+  c.arc(x * s, y * s, r * 0.66 * s, 0, Math.PI * 2)
+  c.stroke()
+  c.restore()
+  c.save()
+  c.globalAlpha = 0.72
+  ringText(a, a.t.postmark, x, y, r * 0.82, 15, color)
+  c.restore()
+  const day = a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short' }).toUpperCase()
+  text(a, day, x, y + 8, { size: 22, family: 'Space Mono', weight: 700, align: 'center', color, maxW: r * 1.1 })
+}
+
+function paperPlane(a: ArtArgs, x: number, y: number, size: number, rot: number) {
+  const { c, s } = a
+  c.save()
+  c.translate(x * s, y * s)
+  c.rotate(rot)
+  c.lineJoin = 'round'
+  c.strokeStyle = a.ink
+  c.lineWidth = size * 0.06 * s
+  c.fillStyle = '#ffffff'
+  c.beginPath()
+  c.moveTo(-size * s, size * 0.1 * s)
+  c.lineTo(size * s, -size * 0.1 * s)
+  c.lineTo(-size * 0.3 * s, size * 0.5 * s)
+  c.closePath()
+  c.fill()
+  c.stroke()
+  c.fillStyle = '#d7e3f7'
+  c.beginPath()
+  c.moveTo(-size * s, size * 0.1 * s)
+  c.lineTo(-size * 0.15 * s, size * 0.2 * s)
+  c.lineTo(-size * 0.3 * s, size * 0.5 * s)
+  c.closePath()
+  c.fill()
+  c.stroke()
+  c.restore()
+}
+
+function speech(a: ArtArgs, x: number, y: number, w: number, h: number, tail: 'left' | 'right', line: string, sub: string, fill: string) {
+  const { c, s } = a
+  c.save()
+  c.fillStyle = fill
+  c.strokeStyle = a.ink
+  c.lineWidth = 5 * s
+  c.lineJoin = 'round'
+  c.beginPath()
+  c.roundRect(x * s, y * s, w * s, h * s, 34 * s)
+  c.fill()
+  c.stroke()
+  const tx = tail === 'left' ? x + 52 : x + w - 52
+  const dir = tail === 'left' ? -1 : 1
+  c.beginPath()
+  c.moveTo((tx - 18) * s, (y + h - 2) * s)
+  c.lineTo((tx + dir * 22) * s, (y + h + 42) * s)
+  c.lineTo((tx + 22) * s, (y + h - 2) * s)
+  c.closePath()
+  c.fill()
+  c.stroke()
+  c.fillRect((tx - 15) * s, (y + h - 7) * s, 35 * s, 11 * s)
+  c.restore()
+  text(a, line, x + w / 2, y + h * 0.48, { size: 38, family: 'Fredoka', weight: 700, align: 'center', color: a.ink, maxW: w - 44 })
+  text(a, sub, x + w / 2, y + h * 0.82, { size: 32, family: 'Caveat', weight: 700, align: 'center', color: a.accent, maxW: w - 44 })
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1659,6 +1779,39 @@ export const templateArt: Record<string, TemplateArt> = {
       embers(a, 46, 5, 1100, 1700, '255, 140, 70')
       embers(a, 26, 41, 120, 1000, '210, 255, 150')
       checkerBorder(a, 40, '#1e8a5a', '#0b0f0e')
+    },
+  },
+  sayit: {
+    under: (a) => {
+      text(a, a.t.airmail, 90, 128, { size: 30, family: 'Oswald', weight: 700, color: a.accent, spacing: 8 })
+      rule(a, 90, 150, 400, 4, a.accent)
+      rule(a, 90, 162, 400, 4, a.ink)
+      text(a, a.t.sayTitle, 90, 290, { size: 150, family: 'Pacifico', color: a.ink, maxW: 650 })
+      text(a, a.t.sayTag, 96, 362, { size: 58, family: 'Caveat', weight: 700, color: a.accent, maxW: 720 })
+      const { c, s } = a
+      c.save()
+      c.setLineDash([16 * s, 14 * s])
+      c.strokeStyle = a.ink
+      c.globalAlpha = 0.5
+      c.lineWidth = 4 * s
+      c.beginPath()
+      c.moveTo(120 * s, 1500 * s)
+      c.bezierCurveTo(40 * s, 1200 * s, 520 * s, 1000 * s, 330 * s, 700 * s)
+      c.stroke()
+      c.restore()
+      stamp(a, 930, 96, 180, 220)
+      postmark(a, 890, 290, 84, a.ink)
+      box(a, 110, 1565, 980, 120, 'rgba(255, 255, 255, 0.8)', 28)
+      outline(a, 110, 1565, 980, 120, a.accent, 4, 28)
+      text(a, a.t.sayTo, 600, 1735, { size: 24, family: 'Space Mono', weight: 700, align: 'center', color: a.ink, maxW: 960 })
+    },
+    over: (a) => {
+      paperPlane(a, 760, 150, 54, -0.3)
+      const [one, two, three] = a.t.sayPairs
+      speech(a, 690, 385, 420, 100, 'left', one[0], one[1], '#ffffff')
+      speech(a, 40, 1070, 250, 108, 'right', two[0], two[1], '#fff1f3')
+      speech(a, 910, 1120, 250, 108, 'left', three[0], three[1], '#e8f1ff')
+      airmailBorder(a, 30, [a.accent, '#ffffff', a.ink, '#ffffff'])
     },
   },
 }
