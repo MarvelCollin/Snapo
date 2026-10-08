@@ -161,6 +161,21 @@ const defs: Def[] = [
     captions: [{ x: 130, y: 1570, w: 940, h: 110 }],
   },
   {
+    id: 'tpl-melon',
+    name: 'Melon Stars',
+    group: 'template',
+    art: 'melon',
+    size: { w: 1200, h: 1800 },
+    sizeLabel: '4 x 6 in',
+    slots: [
+      { x: 240, y: 440, w: 720, h: 720, photo: 0, shape: 'circle' },
+      { x: 90, y: 1270, w: 330, h: 330, photo: 1, radius: 0.08 },
+      { x: 435, y: 1270, w: 330, h: 330, photo: 2, radius: 0.08 },
+      { x: 780, y: 1270, w: 330, h: 330, photo: 3, radius: 0.08 },
+    ],
+    captions: [{ x: 130, y: 1655, w: 940, h: 90 }],
+  },
+  {
     id: 'tpl-bunny',
     name: 'Bunny Picnic',
     group: 'template',

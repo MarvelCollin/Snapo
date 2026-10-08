@@ -1005,6 +1005,73 @@ function speech(a: ArtArgs, x: number, y: number, w: number, h: number, tail: 'l
   text(a, sub, x + w / 2, y + h * 0.82, { size: 32, family: 'Caveat', weight: 700, align: 'center', color: a.accent, maxW: w - 44 })
 }
 
+function melonSlice(a: ArtArgs, cx: number, cy: number, r: number) {
+  const { c, s } = a
+  circle(a, cx, cy, r + 80, '#2f9e44')
+  c.save()
+  c.fillStyle = '#237a35'
+  for (let i = 0; i < 24; i += 2) {
+    c.beginPath()
+    c.moveTo(cx * s, cy * s)
+    c.arc(cx * s, cy * s, (r + 80) * s, (i * Math.PI) / 12, ((i + 1) * Math.PI) / 12)
+    c.closePath()
+    c.fill()
+  }
+  c.restore()
+  circle(a, cx, cy, r + 48, '#e9fac8')
+  circle(a, cx, cy, r + 32, '#ff5d73')
+  c.save()
+  c.fillStyle = '#2b1d1d'
+  for (let i = 0; i < 14; i++) {
+    const ang = (i / 14) * Math.PI * 2 + 0.2
+    c.save()
+    c.translate((cx + Math.cos(ang) * (r + 16)) * s, (cy + Math.sin(ang) * (r + 16)) * s)
+    c.rotate(ang + Math.PI / 2)
+    c.beginPath()
+    c.ellipse(0, 0, 5 * s, 10 * s, 0, 0, Math.PI * 2)
+    c.fill()
+    c.restore()
+  }
+  c.restore()
+}
+
+function twinkles(a: ArtArgs, count: number, seed: number, y1: number, y2: number) {
+  let n = seed
+  const rnd = () => {
+    n = (n * 9301 + 49297) % 233280
+    return n / 233280
+  }
+  for (let i = 0; i < count; i++) {
+    const x = 30 + rnd() * 1140
+    const y = y1 + rnd() * (y2 - y1)
+    if (rnd() > 0.82) sparkle4(a, x, y, 12 + rnd() * 14, '#fff6c8', '#fff6c8')
+    else circle(a, x, y, 1.5 + rnd() * 3, `rgba(255, 246, 200, ${0.5 + rnd() * 0.5})`)
+  }
+}
+
+function spotBeam(a: ArtArgs, x: number, topW: number, tx: number, ty: number, bottomW: number) {
+  const { c, s } = a
+  c.save()
+  const g = c.createLinearGradient(0, 0, 0, ty * s)
+  g.addColorStop(0, 'rgba(255, 246, 214, 0.3)')
+  g.addColorStop(1, 'rgba(255, 246, 214, 0)')
+  c.fillStyle = g
+  c.beginPath()
+  c.moveTo((x - topW / 2) * s, 0)
+  c.lineTo((x + topW / 2) * s, 0)
+  c.lineTo((tx + bottomW / 2) * s, ty * s)
+  c.lineTo((tx - bottomW / 2) * s, ty * s)
+  c.closePath()
+  c.fill()
+  c.restore()
+}
+
+function equalizer(a: ArtArgs, y: number, colors: string[]) {
+  const W = a.w / a.s
+  const heights = [26, 54, 38, 70, 44, 82, 30, 60, 48, 76, 34, 64]
+  for (let i = 0, x = 6; x < W; i++, x += 36) box(a, x, y - heights[i % heights.length], 24, heights[i % heights.length] + 200, colors[i % colors.length], 6)
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -1812,6 +1879,30 @@ export const templateArt: Record<string, TemplateArt> = {
       speech(a, 40, 1070, 250, 108, 'right', two[0], two[1], '#fff1f3')
       speech(a, 910, 1120, 250, 108, 'left', three[0], three[1], '#e8f1ff')
       airmailBorder(a, 30, [a.accent, '#ffffff', a.ink, '#ffffff'])
+    },
+  },
+  melon: {
+    under: (a) => {
+      twinkles(a, 70, 13, 20, 1250)
+      spotBeam(a, 150, 60, 380, 760, 260)
+      spotBeam(a, 1050, 60, 820, 760, 260)
+      spotBeam(a, 600, 90, 600, 760, 380)
+      equalizer(a, 1790, [a.accent, '#ff5d73'])
+      text(a, a.t.melonTag, 600, 82, { size: 28, family: 'Oswald', weight: 500, align: 'center', color: a.accent, spacing: 8, maxW: 1000 })
+      text(a, a.t.melon, 600, 232, { size: 160, family: 'Oswald', weight: 700, align: 'center', color: a.ink, stroke: '#2a1561', strokeW: 22, spacing: 6, maxW: 1000 })
+      text(a, a.t.melonSub, 600, 312, { size: 54, family: 'Caveat', weight: 700, align: 'center', color: '#ff8fa3', maxW: 900 })
+      melonSlice(a, 600, 800, 360)
+      box(a, 110, 1635, 980, 125, 'rgba(20, 15, 61, 0.82)', 30)
+      outline(a, 110, 1635, 980, 125, a.accent, 5, 30)
+    },
+    over: (a) => {
+      for (const [x, y, r] of [
+        [215, 500, 26],
+        [1000, 560, 22],
+        [170, 1130, 20],
+        [1030, 1170, 26],
+      ])
+        sparkle4(a, x, y, r, '#ffe066', '#ffe066')
     },
   },
 }

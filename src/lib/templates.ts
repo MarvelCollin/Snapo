@@ -354,6 +354,21 @@ export const templates: Template[] = [
     ],
   },
   {
+    id: 'tpl-melon',
+    group: 'drama',
+    frame: frame('melon', { kind: 'gradient', colors: ['#140f3d', '#3d2580', '#e8557a'], angle: 180 }, '#fff6e0', '#ffd84d', '#fff6e0'),
+    filterId: 'sunset',
+    caption: 'our summer never ends',
+    captionFont: 'fredoka',
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'musical-notes', x: 0.1, y: 0.2, w: 0.1, rot: -12 },
+      { ref: 'microphone', x: 0.9, y: 0.2, w: 0.1, rot: 12 },
+      { ref: 'shooting-star', x: 0.08, y: 0.5, w: 0.08, rot: -10 },
+      { ref: 'sparkles', x: 0.93, y: 0.5, w: 0.08, rot: 10 },
+    ],
+  },
+  {
     id: 'tpl-manga',
     group: 'drama',
     frame: frame('manga', { kind: 'pattern', pattern: 'dots', base: '#ffffff', ink: '#e4e4e8', extra: '#ffffff', scale: 0.5 }, '#111111', '#ff8fb8', null, true),
