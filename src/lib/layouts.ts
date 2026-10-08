@@ -198,6 +198,22 @@ const defs: Def[] = [
     captions: [],
   },
   {
+    id: 'tpl-records',
+    name: 'Snapo Records',
+    group: 'template',
+    art: 'records',
+    size: { w: 2000, h: 1300 },
+    sizeLabel: 'LP sleeve',
+    slots: [
+      { x: 110, y: 170, w: 535, h: 400, photo: 0 },
+      { x: 675, y: 170, w: 535, h: 400, photo: 1 },
+      { x: 110, y: 600, w: 535, h: 400, photo: 2 },
+      { x: 675, y: 600, w: 535, h: 400, photo: 3 },
+      { x: 1340, y: 480, w: 340, h: 340, photo: 0, shape: 'circle' },
+    ],
+    captions: [],
+  },
+  {
     id: 'tpl-ticket',
     name: 'Movie Night',
     group: 'template',

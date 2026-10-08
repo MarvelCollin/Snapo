@@ -502,6 +502,54 @@ function ribbonBanner(a: ArtArgs, x: number, y: number, w: number, h: number, fi
   c.restore()
 }
 
+function vinyl(a: ArtArgs, x: number, y: number, r: number, label: string, labelR: number) {
+  const { c, s } = a
+  c.save()
+  c.shadowColor = 'rgba(30, 10, 30, 0.35)'
+  c.shadowBlur = 40 * s
+  c.shadowOffsetY = 12 * s
+  circle(a, x, y, r, '#151219')
+  c.restore()
+  c.save()
+  c.strokeStyle = 'rgba(255, 255, 255, 0.07)'
+  c.lineWidth = 2 * s
+  for (let rr = labelR + 24; rr < r - 10; rr += 13) {
+    c.beginPath()
+    c.arc(x * s, y * s, rr * s, 0, Math.PI * 2)
+    c.stroke()
+  }
+  c.fillStyle = 'rgba(255, 255, 255, 0.08)'
+  for (const start of [-0.9, Math.PI - 0.9]) {
+    c.beginPath()
+    c.moveTo(x * s, y * s)
+    c.arc(x * s, y * s, (r - 8) * s, start, start + 0.45)
+    c.closePath()
+    c.fill()
+  }
+  c.restore()
+  circle(a, x, y, labelR, label)
+}
+
+function ringText(a: ArtArgs, str: string, x: number, y: number, r: number, size: number, color: string) {
+  const { c, s } = a
+  c.save()
+  c.font = `700 ${size * s}px "Oswald"`
+  c.fillStyle = color
+  c.textAlign = 'center'
+  c.textBaseline = 'middle'
+  const chars = [...str]
+  const step = (Math.PI * 2) / chars.length
+  chars.forEach((ch, i) => {
+    const ang = -Math.PI / 2 + i * step
+    c.save()
+    c.translate((x + Math.cos(ang) * r) * s, (y + Math.sin(ang) * r) * s)
+    c.rotate(ang + Math.PI / 2)
+    c.fillText(ch, 0, 0)
+    c.restore()
+  })
+  c.restore()
+}
+
 const monthYear = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { month: 'long', year: 'numeric' }).toUpperCase()
 const shortDate = (a: ArtArgs) => a.date.toLocaleDateString(a.locale, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()
 const clock = (a: ArtArgs) => a.date.toLocaleTimeString(a.locale, { hour: '2-digit', minute: '2-digit' })
@@ -794,6 +842,50 @@ export const templateArt: Record<string, TemplateArt> = {
     over: (a) => {
       const main = a.slots[0]
       burst(a, main.x + main.w - 70, main.y + 60, 120, '#ffd166', a.t.iceCold, '#ffffff')
+    },
+  },
+  records: {
+    under: (a) => {
+      const disc = a.slots[4]
+      const cx = disc.x + disc.w / 2
+      const cy = disc.y + disc.h / 2
+      vinyl(a, cx, cy, 600, a.accent, 222)
+      const { c, s } = a
+      c.save()
+      c.shadowColor = 'rgba(40, 15, 40, 0.35)'
+      c.shadowBlur = 50 * s
+      c.shadowOffsetX = 14 * s
+      c.shadowOffsetY = 16 * s
+      box(a, 60, 50, 1200, 1200, '#fff8ee', 6)
+      c.restore()
+      box(a, 60, 50, 1200, 100, a.ink, 6)
+      text(a, a.t.records, 110, 118, { size: 46, family: 'Oswald', weight: 700, color: '#fff8ee', spacing: 6, maxW: 700 })
+      text(a, 'LP', 1210, 118, { size: 46, family: 'Oswald', weight: 700, color: a.accent, align: 'right' })
+      text(a, a.caption || 'Greatest Hits', 110, 1120, { size: 110, family: 'Playfair Display', weight: 900, color: a.ink, maxW: 820 })
+      text(a, a.t.recordsSub, 112, 1196, { size: 40, family: 'Playfair Display', italic: true, color: a.ink, maxW: 820 })
+      text(a, a.t.recordsVol, 1210, 1110, { size: 28, family: 'Space Mono', weight: 700, color: a.ink, align: 'right', maxW: 300 })
+      text(a, String(a.date.getFullYear()), 1210, 1190, { size: 64, family: 'Oswald', weight: 700, color: a.accent, align: 'right' })
+      ringText(a, `${a.t.sideA}  *  ${a.t.rpm}  *  ${a.t.records}  *  `, cx, cy, 196, 22, '#ffffff')
+    },
+    over: (a) => {
+      const disc = a.slots[4]
+      circle(a, disc.x + disc.w / 2, disc.y + disc.h / 2, 14, '#151219')
+      circle(a, 1180, 140, 96, '#ffd84d')
+      const { c, s } = a
+      c.save()
+      c.setLineDash([8 * s, 6 * s])
+      c.strokeStyle = a.ink
+      c.lineWidth = 3 * s
+      c.beginPath()
+      c.arc(1180 * s, 140 * s, 82 * s, 0, Math.PI * 2)
+      c.stroke()
+      c.restore()
+      c.save()
+      c.translate(1180 * s, 140 * s)
+      c.rotate(0.22)
+      text(a, a.t.limited1, 0, -4, { size: 30, family: 'Oswald', weight: 700, color: a.ink, align: 'center', maxW: 140 })
+      text(a, a.t.limited2, 0, 30, { size: 30, family: 'Oswald', weight: 700, color: a.ink, align: 'center', maxW: 140 })
+      c.restore()
     },
   },
   ticket: {

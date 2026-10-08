@@ -168,6 +168,15 @@ export const templates: Template[] = [
     stickers: [{ ref: 'cherries', x: 0.9, y: 0.07, w: 0.1, rot: 14 }],
   },
   {
+    id: 'tpl-records',
+    group: 'retro',
+    frame: frame('records', solid('#ffe3d3'), '#2b1d3a', '#ff6b9a', null, true),
+    filterId: 'portra',
+    caption: 'Greatest Hits',
+    photoOutline: 'none',
+    stickers: [{ ref: 'musical-notes', x: 0.94, y: 0.1, w: 0.07, rot: 12 }],
+  },
+  {
     id: 'tpl-ticket',
     group: 'retro',
     frame: frame('ticket', solid('#ffd76e'), '#4a1c10', '#e9a93a'),
