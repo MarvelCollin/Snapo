@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, Camera, ImagesSquare, LockSimple } from '@phosphor-icons/react'
+import { ArrowRight, Camera, ImagesSquare } from '@phosphor-icons/react'
 import { LinkButton } from '../components/ui/LinkButton'
 import { CompositionCanvas } from '../components/shared/CompositionCanvas'
 import { layoutById, layouts } from '../lib/layouts'
@@ -100,10 +100,7 @@ export default function HomePage() {
               {t.home.gallery}
             </LinkButton>
           </div>
-          <p className="hero__note">
-            <LockSimple weight="bold" size={16} aria-hidden="true" />
-            {t.home.note}
-          </p>
+          <p className="hero__note">{t.home.note}</p>
         </div>
         <div className="hero__art" aria-label={t.home.art} role="img">
           {photos &&
@@ -155,55 +152,53 @@ export default function HomePage() {
         </ul>
       </section>
 
-      <section className="home-section home-split" aria-labelledby="filters-title">
-        <div className="home-split__text">
-          <h2 id="filters-title">{t.home.filtersTitle(filters.length)}</h2>
-          <p>{t.home.filtersText}</p>
+      <section className="home-section home-film" aria-labelledby="filters-title">
+        <div className="home-copy">
+          <h2 id="filters-title">{t.home.filtersTitle}</h2>
+          <p>{t.home.filtersText(filters.length)}</p>
         </div>
-        <ul className="filter-demo" aria-label={t.home.filterExamples}>
+        <ul className="film" aria-label={t.home.filterExamples}>
           {demoFilters.map((id) => {
             const f = filters.find((x) => x.id === id)!
             return (
-              <li key={id}>
-                <span className="filter-demo__img">{demo ? <span className="filter-chip__sprite" style={thumbStyle(demo, id)} /> : <span className="skeleton" />}</span>
-                <span className="filter-demo__name">{f.name}</span>
+              <li key={id} className="film__frame">
+                <span className="film__img">{demo ? <span className="filter-chip__sprite" style={thumbStyle(demo, id)} /> : <span className="skeleton" />}</span>
+                <span className="film__name">{f.name}</span>
               </li>
             )
           })}
         </ul>
       </section>
 
-      <section className="home-section home-split home-split--flip" aria-labelledby="stickers-title">
-        <div className="home-split__text">
-          <h2 id="stickers-title">{t.home.stickersTitle(stickers.length + wordPresets.length, frames.length)}</h2>
-          <p>{t.home.stickersText}</p>
-          <LinkButton to="/booth" variant="secondary" iconEnd={<ArrowRight weight="bold" size={18} />}>
+      <section className="home-section home-stickers" aria-labelledby="stickers-title">
+        <div className="home-copy">
+          <h2 id="stickers-title">{t.home.stickersTitle}</h2>
+          <p>{t.home.stickersText(stickers.length + wordPresets.length, frames.length)}</p>
+          <LinkButton to="/booth" iconEnd={<ArrowRight weight="bold" size={18} />}>
             {t.home.makeOne}
           </LinkButton>
         </div>
-        <ul className="sticker-wall" aria-label={t.home.stickerExamples}>
-          {wall.map((id, i) => (
-            <li key={id} style={{ transform: `rotate(${((i * 37) % 30) - 15}deg)` }}>
-              <img src={stickerSrc(id)} alt="" width={72} height={72} loading="lazy" />
-            </li>
-          ))}
-        </ul>
+        <div className="sheet">
+          <ul className="sheet__grid" aria-label={t.home.stickerExamples}>
+            {wall.map((id, i) => (
+              <li key={id} style={{ rotate: `${((i * 37) % 30) - 15}deg` }}>
+                <img src={stickerSrc(id)} alt="" width={72} height={72} loading="lazy" />
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section className="home-section home-booth" aria-labelledby="booth-title">
-        <div className="home-section__head">
-          <h2 id="booth-title">{t.home.boothTitle}</h2>
-          <p className="home-booth__lede">{t.home.boothText}</p>
-        </div>
-        <ul className="home-booth__list">
+        <h2 id="booth-title">{t.home.boothTitle}</h2>
+        <dl className="home-booth__list">
           {t.home.features.map((f) => (
-            <li key={f.title} className="home-booth__item">
-              <img src={stickerSrc(f.sticker)} alt="" width={56} height={56} loading="lazy" />
-              <h3>{f.title}</h3>
-              <p>{f.text}</p>
-            </li>
+            <div key={f.title} className="home-booth__item">
+              <dt>{f.title}</dt>
+              <dd>{f.text}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       </section>
 
       <footer className="home-foot">
