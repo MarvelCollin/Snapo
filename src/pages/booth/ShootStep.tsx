@@ -203,7 +203,12 @@ export default function ShootStep() {
 
   const remaining = layout.shots - filled
   const shotNumber = (current ?? target ?? 0) + 1
-  const badge = run ? t.shoot.shotOf(run.index + 1, run.total) : t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
+  const badge =
+    run && run.total > 1
+      ? t.shoot.shotOf(run.index + 1, run.total)
+      : run || !complete || selected !== null
+        ? t.shoot.shotOf(Math.min(shotNumber, layout.shots), layout.shots)
+        : null
 
   return (
     <section className="step step--shoot" aria-labelledby="shoot-title">
@@ -227,7 +232,7 @@ export default function ShootStep() {
               beauty={design.beauty}
               backdropId={design.backdropId}
             >
-              {live && (
+              {live && badge && (
                 <span className="liveview__badge" aria-live="polite">
                   {badge}
                 </span>

@@ -233,6 +233,14 @@
   max-width: 62ch;
 }
 
+.step__head--row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  max-width: none;
+}
+
 .step__head h1 {
   font-size: var(--text-3xl);
 }
