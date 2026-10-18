@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, CaretLeft, CaretRight, Check, PencilSimple, Sparkle } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, CaretLeft, CaretRight, Check, PencilSimple } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
@@ -64,7 +64,7 @@ export default function EditStep() {
           <Button variant="ghost" icon={<ArrowLeft weight="bold" size={18} />} onClick={() => navigate('/booth/shoot')}>
             {t.edit.back}
           </Button>
-          <Button icon={<Sparkle weight="bold" size={18} />} onClick={() => navigate('/booth/decorate')}>
+          <Button onClick={() => navigate('/booth/decorate')}>
             {t.edit.decorate}
           </Button>
           <Button variant="primary" size="lg" iconEnd={<ArrowRight weight="bold" size={20} />} onClick={() => navigate('/booth/save')}>

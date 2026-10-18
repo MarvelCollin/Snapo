@@ -84,11 +84,6 @@
   color: var(--mint-strong);
 }
 
-.save__privacy {
-  font-size: var(--text-sm);
-  color: var(--ink-muted);
-}
-
 .save__more {
   display: flex;
   flex-wrap: wrap;

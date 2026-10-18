@@ -1,18 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import {
-  ArrowLeft,
-  DownloadSimple,
-  FileJpg,
-  FilmStrip,
-  Heart,
-  Printer,
-  ShareNetwork,
-  Sparkle,
-  CheckCircle,
-  VideoCamera,
-  Gif,
-} from '@phosphor-icons/react'
+import { ArrowLeft, CheckCircle, DownloadSimple } from '@phosphor-icons/react'
 import { useSession } from '../../store/session'
 import { useDesign } from '../../store/design'
 import { layoutById } from '../../lib/layouts'
@@ -112,7 +100,6 @@ export default function SaveStep() {
         png.blob,
       )
       setSavedId(id)
-      toast(t.save.savedToast, { actionLabel: t.save.openGallery, onAction: () => navigate('/gallery') })
     })
 
   const startOver = () => {
@@ -204,7 +191,6 @@ export default function SaveStep() {
             </Button>
             <div className="save__grid">
               <Button
-                icon={<FileJpg weight="bold" size={20} />}
                 disabled={!png}
                 loading={busy === 'jpg'}
                 onClick={() =>
@@ -216,7 +202,6 @@ export default function SaveStep() {
                 {t.save.jpg}
               </Button>
               <Button
-                icon={<FilmStrip weight="bold" size={20} />}
                 disabled={!png}
                 loading={busy === 'gif'}
                 onClick={() => run('gif', async () => download(await makeGif(layout, design, photos), `${name}.gif`))}
@@ -225,7 +210,6 @@ export default function SaveStep() {
               </Button>
               {share && (
                 <Button
-                  icon={<ShareNetwork weight="bold" size={20} />}
                   disabled={!png}
                   loading={busy === 'share'}
                   onClick={() =>
@@ -237,10 +221,21 @@ export default function SaveStep() {
                   {t.save.share}
                 </Button>
               )}
-              <Button icon={<Printer weight="bold" size={20} />} disabled={!png} onClick={() => png && printImage(png.url, png.canvas.width, png.canvas.height)}>
+              <Button disabled={!png} onClick={() => png && printImage(png.url, png.canvas.width, png.canvas.height)}>
                 {t.save.print}
               </Button>
             </div>
+
+            {savedId ? (
+              <p className="save__saved">
+                <CheckCircle weight="fill" size={20} aria-hidden="true" />
+                {t.save.saved} <Link to="/gallery">{t.save.seeGallery}</Link>
+              </p>
+            ) : (
+              <Button block disabled={!png} loading={busy === 'gallery'} onClick={saveGallery}>
+                {t.save.saveGallery}
+              </Button>
+            )}
 
             {strip && (
               <div className="save__live">
@@ -249,7 +244,6 @@ export default function SaveStep() {
                 <div className="save__grid">
                   {canVideo && (
                     <Button
-                      icon={<VideoCamera weight="bold" size={20} />}
                       loading={busy === 'video'}
                       disabled={!!busy && busy !== 'video'}
                       onClick={() =>
@@ -263,7 +257,6 @@ export default function SaveStep() {
                     </Button>
                   )}
                   <Button
-                    icon={<Gif weight="bold" size={20} />}
                     loading={busy === 'livegif'}
                     disabled={!!busy && busy !== 'livegif'}
                     onClick={() => run('livegif', async () => download(await liveGif(strip), `${name}-live.gif`))}
@@ -282,25 +275,13 @@ export default function SaveStep() {
                 return toJpeg(png.canvas)
               }}
             />
-
-            {savedId ? (
-              <p className="save__saved">
-                <CheckCircle weight="fill" size={20} aria-hidden="true" />
-                {t.save.saved} <Link to="/gallery">{t.save.seeGallery}</Link>
-              </p>
-            ) : (
-              <Button variant="mint" block icon={<Heart weight="bold" size={20} />} disabled={!png} loading={busy === 'gallery'} onClick={saveGallery}>
-                {t.save.saveGallery}
-              </Button>
-            )}
-            <p className="save__privacy">{t.save.privacy}</p>
           </div>
 
           <div className="save__more">
             <Button variant="ghost" icon={<ArrowLeft weight="bold" size={18} />} onClick={() => navigate('/booth/decorate')}>
               {t.save.keepDecorating}
             </Button>
-            <Button variant="ghost" icon={<Sparkle weight="bold" size={18} />} onClick={startOver}>
+            <Button variant="ghost" onClick={startOver}>
               {t.save.newStrip}
             </Button>
           </div>
