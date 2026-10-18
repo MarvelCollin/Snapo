@@ -1,5 +1,6 @@
 import type { CanvasEl, Design } from '../store/design'
 import type { Fill, Frame } from './frames'
+import { layoutById } from './layouts'
 
 export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'drama'
 
@@ -24,7 +25,7 @@ const solid = (color: string): Fill => ({ kind: 'solid', color })
 
 const frame = (id: string, fill: Fill, text: string, accent: string, photoOutline: string | null = null, paper = false): Frame => ({
   id: `tpl-${id}`,
-  name: id,
+  name: layoutById(`tpl-${id}`).name,
   group: 'classic',
   fill,
   text,

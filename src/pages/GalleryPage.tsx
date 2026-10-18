@@ -121,7 +121,7 @@ export default function GalleryPage() {
                   </span>
                   <span className="gallery-card__name">{item.layoutName}</span>
                   <span className="gallery-card__meta">
-                    {item.frameName}, {when(item.createdAt)}
+                    {t.common.shots(item.shots)}, {when(item.createdAt)}
                   </span>
                 </button>
               </li>

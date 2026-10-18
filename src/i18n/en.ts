@@ -468,6 +468,7 @@ export const en = {
     title: 'Your strip is ready',
     lede: (layout: string, frame: string) => `${layout} with the ${frame} frame.`,
     ledeOwn: (layout: string) => `${layout}, your own frame.`,
+    ledeTemplate: (layout: string) => `${layout} template.`,
     size: (w: number, h: number) => `${w} by ${h} pixels, print ready.`,
     drawing: 'Drawing it in full size now.',
     png: 'Download PNG',

@@ -468,6 +468,7 @@ export const id: Dict = {
     title: 'Strip kamu sudah jadi',
     lede: (layout: string, frame: string) => `${layout} dengan frame ${frame}.`,
     ledeOwn: (layout: string) => `${layout}, frame buatanmu sendiri.`,
+    ledeTemplate: (layout: string) => `Template ${layout}.`,
     size: (w: number, h: number) => `${w} kali ${h} piksel, siap cetak.`,
     drawing: 'Sedang digambar dalam ukuran penuh.',
     png: 'Unduh PNG',

@@ -132,6 +132,11 @@ export default function SaveStep() {
     })
   }
 
+  const lede = layout.overlay
+    ? t.save.ledeOwn(layout.name)
+    : design.template
+      ? t.save.ledeTemplate(layout.name)
+      : t.save.lede(layout.name, design.frame.name)
   const ratio = layout.size.w / layout.size.h
   const strip = live.status === 'ready' ? live.strip : null
   const showLive = view === 'live' && strip
@@ -182,7 +187,7 @@ export default function SaveStep() {
           <header className="step__head">
             <h1 id="save-title">{t.save.title}</h1>
             <p className="step__lede">
-              {layout.overlay ? t.save.ledeOwn(layout.name) : t.save.lede(layout.name, design.frame.name)} {png ? t.save.size(png.canvas.width, png.canvas.height) : t.save.drawing}
+              {lede} {png ? t.save.size(png.canvas.width, png.canvas.height) : t.save.drawing}
             </p>
           </header>
 
