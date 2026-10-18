@@ -6,7 +6,7 @@ type Props = {
   meta: string
   active: boolean
   onPick: () => void
-  onOpen: () => void
+  onOpen?: () => void
   children: ReactNode
 }
 
@@ -17,10 +17,13 @@ export function LayoutCard({ name, meta, active, onPick, onOpen, children }: Pro
       className={`layout-card ${active ? 'is-active' : ''}`}
       aria-pressed={active}
       onClick={onPick}
-      onDoubleClick={() => {
-        onPick()
-        onOpen()
-      }}
+      onDoubleClick={
+        onOpen &&
+        (() => {
+          onPick()
+          onOpen()
+        })
+      }
     >
       <span className="layout-card__art">{children}</span>
       <span className="layout-card__text">

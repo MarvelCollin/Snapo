@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type DragEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowRight, Trash, UploadSimple } from '@phosphor-icons/react'
 import { layouts, layoutGroups, layoutById, type Layout, type LayoutGroup } from '../../lib/layouts'
@@ -16,6 +16,7 @@ import { IconButton } from '../../components/ui/IconButton'
 import { Segmented } from '../../components/ui/Segmented'
 import { LayoutThumb } from '../../components/shared/LayoutThumb'
 import { LayoutCard } from '../../components/layout/LayoutCard'
+import { TemplatePreview } from '../../components/layout/TemplatePreview'
 
 export default function LayoutStep() {
   const t = useT()
@@ -31,6 +32,7 @@ export default function LayoutStep() {
   const [samples, setSamples] = useState<string[]>([])
   const [reading, setReading] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [previewId, setPreviewId] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const lastToast = useRef<number | null>(null)
   const selected = layoutById(layoutId)
@@ -54,6 +56,18 @@ export default function LayoutStep() {
   const previews = useMemo(() => new Map(templates.map((tpl) => [tpl.id, templateDesign(previewBase, tpl, captions[tpl.id])])), [previewBase, captions])
   const ownPhotos = photos.some(Boolean)
   const previewPhotos = ownPhotos ? photos : samples
+  const lookOf = (tpl: Template) => (layoutId === tpl.id && design.template === tpl.id ? design : previews.get(tpl.id)!)
+  const previewIndex = shown.findIndex((tpl) => tpl.id === previewId)
+  const previewTpl = previewIndex >= 0 ? shown[previewIndex] : null
+  const previewLayout = previewTpl ? layoutById(previewTpl.id) : null
+  const stepPreview = useCallback(
+    (dir: number) =>
+      setPreviewId((id) => {
+        const i = shown.findIndex((tpl) => tpl.id === id)
+        return shown[(i + dir + shown.length) % shown.length].id
+      }),
+    [shown],
+  )
 
   const tabs = layoutGroups.map((id) => ({ id, label: t.layout.groups[id] }))
 
@@ -134,6 +148,12 @@ export default function LayoutStep() {
 
   const meta = (l: Layout) => t.layout.meta(l.shots, l.group === 'mine' ? t.layout.custom.sizeLabel : l.sizeLabel)
   const open = () => navigate('/booth/shoot')
+  const applyPreview = () => {
+    if (!previewTpl) return
+    pickTemplate(previewTpl)
+    setPreviewId(null)
+    open()
+  }
 
   return (
     <section className="step step--layout" aria-labelledby="layout-title">
@@ -164,13 +184,11 @@ export default function LayoutStep() {
           <ul className="layout-grid layout-grid--templates" aria-label={t.layout.groups.template}>
             {shown.map((tpl) => {
               const l = layoutById(tpl.id)
-              const active = layoutId === tpl.id
-              const look = active && design.template === tpl.id ? design : previews.get(tpl.id)!
               return (
                 <li key={tpl.id}>
-                  <LayoutCard name={l.name} meta={meta(l)} active={active} onPick={() => pickTemplate(tpl)} onOpen={open}>
+                  <LayoutCard name={l.name} meta={meta(l)} active={layoutId === tpl.id} onPick={() => setPreviewId(tpl.id)}>
                     {previewPhotos.length ? (
-                      <LayoutThumb layout={l} design={look} photos={previewPhotos} includeElements emptyLabel={false} label={t.layout.preview(l.name)} />
+                      <LayoutThumb layout={l} design={lookOf(tpl)} photos={previewPhotos} includeElements emptyLabel={false} label={t.layout.preview(l.name)} />
                     ) : (
                       <span className="btn__spinner" aria-hidden="true" />
                     )}
@@ -229,6 +247,19 @@ export default function LayoutStep() {
           </ul>
         )}
       </div>
+
+      <TemplatePreview
+        layout={previewLayout}
+        design={previewTpl ? lookOf(previewTpl) : null}
+        photos={previewPhotos}
+        meta={previewLayout ? meta(previewLayout) : ''}
+        blurb={previewLayout ? blurb(previewLayout) : ''}
+        index={previewIndex}
+        total={shown.length}
+        onStep={stepPreview}
+        onUse={applyPreview}
+        onClose={() => setPreviewId(null)}
+      />
 
       <div className="action-bar">
         <div className="action-bar__info">
