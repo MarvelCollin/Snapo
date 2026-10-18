@@ -47,8 +47,8 @@
 }
 
 .edit__spot.is-active {
-  border-color: var(--ink);
-  box-shadow: 0 0 0 3px var(--paper);
+  border-color: var(--strong);
+  box-shadow: 0 0 0 2px var(--paper);
 }
 
 .edit__spot-tag {
@@ -57,9 +57,9 @@
   gap: 2px;
   min-height: 24px;
   padding: 0 var(--space-2);
-  border: 2px solid var(--ink);
   border-radius: var(--radius-xs);
   background: var(--paper);
+  box-shadow: var(--shadow-1);
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 700;
@@ -109,7 +109,7 @@
 .crop__view {
   position: relative;
   width: 100%;
-  border: var(--border);
+  border: 1.5px solid var(--edge-strong);
   border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--surface);

@@ -20,10 +20,8 @@
   display: grid;
   place-items: center;
   padding: var(--space-4);
-  border: var(--border);
   border-radius: var(--radius-lg);
   background: var(--ink);
-  box-shadow: var(--shadow-2);
 }
 
 .liveview {
@@ -291,13 +289,13 @@
 .tray__item.is-next .tray__thumb {
   border-color: var(--strong);
   border-style: solid;
-  box-shadow: 0 0 0 3px var(--tint);
 }
 
 .tray__item.is-selected .tray__thumb,
 .tray__item.is-shooting .tray__thumb {
-  border: 3px solid var(--ink);
-  box-shadow: 0 2px 0 var(--ink);
+  border-color: var(--strong);
+  border-style: solid;
+  box-shadow: var(--ring);
 }
 
 .tray__item .tooltip-anchor {
@@ -310,8 +308,9 @@
   width: 30px;
   height: 30px;
   background: var(--paper);
-  border: 2px solid var(--ink);
+  border: 1.5px solid var(--edge-strong);
   border-radius: 50%;
+  box-shadow: var(--shadow-1);
   opacity: 0;
   transition: opacity var(--dur-fast) var(--ease-out);
 }
@@ -380,7 +379,7 @@
   aspect-ratio: 96 / 112;
   border-radius: var(--radius-sm);
   overflow: hidden;
-  border: 2px solid var(--tint);
+  border: 2px solid var(--edge);
   background: var(--surface);
   transition:
     transform var(--dur-fast) var(--ease-out),
@@ -408,13 +407,12 @@
 }
 
 .filter-chip:hover .filter-chip__img {
-  transform: translateY(-2px);
-  border-color: var(--soft);
+  border-color: var(--edge-strong);
 }
 
 .filter-chip.is-active .filter-chip__img {
-  border: 3px solid var(--ink);
-  box-shadow: 0 3px 0 var(--ink);
+  border-color: var(--paper);
+  box-shadow: 0 0 0 2px var(--strong);
 }
 
 .filter-chip__name {
@@ -513,10 +511,9 @@
   width: max-content;
   max-width: calc(100% - var(--space-6));
   padding: var(--space-2) var(--space-4) var(--space-2) var(--space-2);
-  border: var(--border);
   border-radius: var(--radius-md);
   background: var(--paper);
-  box-shadow: var(--shadow-1);
+  box-shadow: var(--shadow-2);
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 700;

@@ -94,7 +94,7 @@
   flex-wrap: wrap;
   gap: var(--space-2);
   padding-top: var(--space-4);
-  border-top: 2px solid var(--tint);
+  border-top: 1.5px solid var(--edge);
 }
 
 .gallery-grid {
@@ -253,7 +253,7 @@
   display: grid;
   gap: var(--space-2);
   padding-top: var(--space-4);
-  border-top: 2px solid var(--tint);
+  border-top: 1.5px solid var(--edge);
 }
 
 .save__live .save__grid {
@@ -264,7 +264,7 @@
   display: grid;
   gap: var(--space-2);
   padding-top: var(--space-4);
-  border-top: 2px solid var(--tint);
+  border-top: 1.5px solid var(--edge);
 }
 
 .qr__links {

@@ -93,12 +93,12 @@
   height: 30px;
   padding: 0;
   border-radius: 50%;
-  border: 2px solid var(--ink);
+  border: 1.5px solid var(--ink);
   background: var(--paper);
   color: var(--ink);
   cursor: pointer;
   touch-action: none;
-  box-shadow: 0 2px 0 var(--ink);
+  box-shadow: var(--shadow-2);
 }
 
 .el__handle::before {
@@ -142,7 +142,7 @@
 .el-toolbar__group + .el-toolbar__group,
 .el-toolbar__group + .el-toolbar__hint {
   padding-left: var(--space-2);
-  border-left: 2px solid var(--tint);
+  border-left: 1.5px solid var(--edge);
 }
 
 .el-toolbar__name {
@@ -216,7 +216,7 @@
 
 .panel-section + .panel-section {
   padding-top: var(--space-5);
-  border-top: 2px solid var(--tint);
+  border-top: 1.5px solid var(--edge);
 }
 
 .panel-subtitle {
@@ -277,9 +277,8 @@
 
 .frame-tile.is-active,
 .pattern-tile.is-active {
-  border-color: var(--ink);
+  border-color: var(--strong);
   background: var(--tint);
-  box-shadow: 0 2px 0 var(--ink);
 }
 
 .frame-tile.is-active .frame-tile__name,
@@ -359,7 +358,7 @@
   width: 100%;
   min-height: 46px;
   padding: 0 var(--space-4);
-  border: var(--border);
+  border: 1.5px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--paper);
   color: var(--ink);
@@ -460,7 +459,7 @@
 .font-chip {
   min-height: 40px;
   padding: 0 var(--space-3);
-  border: 2px solid var(--tint);
+  border: 1.5px solid var(--edge);
   border-radius: var(--radius-sm);
   background: var(--paper);
   font-size: var(--text-md);
@@ -475,9 +474,8 @@
 }
 
 .font-chip[aria-checked='true'] {
-  border-color: var(--ink);
+  border-color: var(--strong);
   background: var(--tint);
-  box-shadow: 0 2px 0 var(--ink);
 }
 
 .word-preview {
@@ -595,7 +593,7 @@
   justify-items: center;
   gap: var(--space-1);
   padding: var(--space-2);
-  border: 2px solid var(--tint);
+  border: 1.5px solid var(--edge);
   border-radius: var(--radius-sm);
   background: var(--paper);
   color: var(--ink-muted);
@@ -612,9 +610,8 @@
 }
 
 .pen-chip.is-active {
-  border-color: var(--ink);
+  border-color: var(--strong);
   background: var(--tint);
-  box-shadow: 0 2px 0 var(--ink);
   color: var(--ink);
 }
 
