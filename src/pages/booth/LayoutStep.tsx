@@ -55,11 +55,7 @@ export default function LayoutStep() {
   const ownPhotos = photos.some(Boolean)
   const previewPhotos = ownPhotos ? photos : samples
 
-  const tabs = layoutGroups.map((id) => ({
-    id,
-    label: t.layout.groups[id],
-    count: id === 'all' ? plain.length : all.filter((l) => l.group === id).length,
-  }))
+  const tabs = layoutGroups.map((id) => ({ id, label: t.layout.groups[id] }))
 
   const blurb = (l: Layout) => {
     if (l.group !== 'mine') return t.layout.blurbs[l.id] ?? ''
@@ -146,7 +142,7 @@ export default function LayoutStep() {
         <p className="step__lede">{t.layout.lede}</p>
       </header>
 
-      <Tabs label={t.layout.typeLabel} tabs={tabs} active={group} onChange={setGroup} idPrefix="layouts" variant="track" />
+      <Tabs label={t.layout.typeLabel} tabs={tabs} active={group} onChange={setGroup} idPrefix="layouts" variant="line" />
 
       <div id="layouts-panel" role="tabpanel" aria-labelledby={`layouts-tab-${group}`}>
         {group === 'template' && (

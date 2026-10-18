@@ -1,6 +1,6 @@
 import { useRef, type KeyboardEvent, type ReactNode } from 'react'
 
-export type TabItem<T extends string> = { id: T; label: ReactNode; icon?: ReactNode; count?: number }
+export type TabItem<T extends string> = { id: T; label: ReactNode; icon?: ReactNode }
 
 type Props<T extends string> = {
   label: string
@@ -58,7 +58,6 @@ export function Tabs<T extends string>({ label, tabs, active, onChange, idPrefix
           >
             {t.icon}
             <span>{t.label}</span>
-            {t.count !== undefined && <span className="tabs__count">{t.count}</span>}
           </button>
         )
       })}
