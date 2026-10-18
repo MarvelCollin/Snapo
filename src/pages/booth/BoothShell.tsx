@@ -20,7 +20,7 @@ export default function BoothShell() {
   return (
     <div className="booth">
       <nav aria-label={t.booth.stepsLabel} className="stepper">
-        <p className="stepper__count">{t.booth.stepOf(current + 1, steps.length)}</p>
+        <p className="visually-hidden">{t.booth.stepOf(current + 1, steps.length)}</p>
         <ol className="stepper__list">
           {steps.map((step, i) => {
             const locked = i >= 2 && !complete
