@@ -375,7 +375,7 @@
   display: flex;
   gap: var(--space-1);
   overflow-x: auto;
-  scrollbar-width: thin;
+  overflow-y: hidden;
 }
 
 .tabs__tab {
@@ -624,8 +624,6 @@
   border-radius: var(--radius-md);
   background: var(--paper);
   box-shadow: var(--shadow-pop-lg), var(--shadow-float);
-  scrollbar-width: thin;
-  scrollbar-color: var(--soft) transparent;
   animation: dialog-in var(--dur-mid) var(--ease-out);
 }
 

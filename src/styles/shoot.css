@@ -349,7 +349,6 @@
 
 .filter-picker__scroll {
   overflow: auto;
-  scrollbar-width: thin;
 }
 
 .filter-picker--rail .filter-picker__scroll {
@@ -490,7 +489,6 @@
     grid-auto-columns: 72px;
     overflow-x: auto;
     padding: var(--space-3) var(--space-1) var(--space-2);
-    scrollbar-width: thin;
   }
 
   .step--shoot .step__lede {

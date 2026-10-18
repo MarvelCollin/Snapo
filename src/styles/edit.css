@@ -77,8 +77,6 @@
   background: var(--paper);
   box-shadow: var(--shadow-pop);
   overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--soft) transparent;
 }
 
 .edit__panel-head {
