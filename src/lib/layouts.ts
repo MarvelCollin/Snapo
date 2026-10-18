@@ -134,7 +134,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-haori',
-    name: 'Haori Night',
+    name: 'Demon Slayer',
     group: 'template',
     art: 'haori',
     size: { w: 1200, h: 1800 },
@@ -148,7 +148,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-sayit',
-    name: 'Say It Twice',
+    name: 'Can This Love Be Translated?',
     group: 'template',
     art: 'sayit',
     size: { w: 1200, h: 1800 },
@@ -162,7 +162,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-melon',
-    name: 'Melon Stars',
+    name: 'Twinkling Watermelon',
     group: 'template',
     art: 'melon',
     size: { w: 1200, h: 1800 },
@@ -378,7 +378,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-timeslip',
-    name: 'Time Slip 98',
+    name: 'Lovely Runner',
     group: 'template',
     art: 'timeslip',
     size: { w: 1200, h: 1800 },
@@ -393,7 +393,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-firstsnow',
-    name: 'First Snow',
+    name: 'Goblin',
     group: 'template',
     art: 'firstsnow',
     size: { w: 1200, h: 1800 },
@@ -407,7 +407,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-subtitle',
-    name: 'Subtitled',
+    name: 'Crash Landing on You',
     group: 'template',
     art: 'subtitle',
     size: { w: 1200, h: 2060 },
@@ -421,7 +421,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-poster',
-    name: 'Drama Poster',
+    name: 'Queen of Tears',
     group: 'template',
     art: 'poster',
     size: { w: 1200, h: 1700 },
@@ -434,7 +434,7 @@ const defs: Def[] = [
   },
   {
     id: 'tpl-manga',
-    name: 'Shoujo Manga',
+    name: 'Kimi ni Todoke',
     group: 'template',
     art: 'manga',
     size: { w: 1200, h: 1700 },
