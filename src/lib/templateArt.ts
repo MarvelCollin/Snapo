@@ -316,21 +316,6 @@ function heart(a: ArtArgs, x: number, y: number, size: number, fill: string) {
   c.restore()
 }
 
-function crescent(a: ArtArgs, x: number, y: number, r: number, fill: string) {
-  const { c, s } = a
-  c.save()
-  c.beginPath()
-  c.arc(x * s, y * s, r * s, 0, Math.PI * 2)
-  c.clip()
-  c.beginPath()
-  c.arc(x * s, y * s, r * s, 0, Math.PI * 2)
-  c.moveTo((x + r * 0.42 + r * 0.86) * s, (y - r * 0.28) * s)
-  c.arc((x + r * 0.42) * s, (y - r * 0.28) * s, r * 0.86 * s, 0, Math.PI * 2)
-  c.fillStyle = fill
-  c.fill('evenodd')
-  c.restore()
-}
-
 type Pal = { body: string; sprout: string; cheek: string }
 
 const mochiPals: Pal[] = [
@@ -1959,39 +1944,6 @@ export const templateArt: Record<string, TemplateArt> = {
         [1000, 1560, 12],
       ])
         star(a, x, y, r, a.ink)
-    },
-  },
-  merdeka: {
-    under: (a) => {
-      bunting(a, 0, 600, 20, 40, ['#e2231a', '#ffffff'], 46)
-      text(a, a.t.dirgahayu, 300, 200, { size: 74, family: 'Oswald', weight: 700, align: 'center', color: a.ink, spacing: 2, maxW: 540 })
-      text(a, a.t.republic, 300, 246, { size: 32, family: 'Oswald', weight: 500, align: 'center', color: a.ink, spacing: 4, maxW: 540 })
-      text(a, `17 . 08 . ${a.date.getFullYear()}`, 300, 284, { size: 26, family: 'Space Mono', weight: 700, align: 'center', color: a.ink })
-      const { c, s } = a
-      c.save()
-      c.translate(300 * s, 1760 * s)
-      c.rotate(-0.1)
-      c.strokeStyle = a.ink
-      c.lineWidth = 8 * s
-      c.beginPath()
-      c.roundRect(-210 * s, -70 * s, 420 * s, 140 * s, 18 * s)
-      c.stroke()
-      c.restore()
-      text(a, (a.caption || 'Merdeka!').toUpperCase(), 300, 1784, { size: 72, family: 'Oswald', weight: 700, align: 'center', color: a.ink, maxW: 380 })
-    },
-  },
-  lebaran: {
-    under: (a) => {
-      box(a, 90, 50, 1020, 250, 'rgba(255, 255, 255, 0.82)', 60)
-      box(a, 70, 1180, 1060, 300, 'rgba(255, 255, 255, 0.82)', 60)
-      text(a, a.t.raya, 600, 180, { size: 96, family: 'Pacifico', align: 'center', color: a.ink, stroke: '#ffffff', strokeW: 18, maxW: 1080 })
-      text(a, a.t.idulFitri, 600, 262, { size: 40, family: 'Oswald', weight: 500, align: 'center', color: a.ink, spacing: 10 })
-    },
-    over: (a) => {
-      for (const sl of a.slots) {
-        crescent(a, sl.x + sl.w / 2, sl.y - 26, 26, '#e8b53a')
-        star(a, sl.x + sl.w / 2 + 40, sl.y - 44, 12, '#e8b53a')
-      }
     },
   },
   timeslip: {

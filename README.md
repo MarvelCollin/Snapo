@@ -43,7 +43,7 @@ Ribbon Bakery, Haori Night, Say It Twice and Melon Stars. Each one has original 
 
 ## How a session goes
 
-1. **Design:** start from one of 31 complete templates, or pick a plain layout to decorate yourself
+1. **Design:** start from one of 29 complete templates, or pick a plain layout to decorate yourself
 2. **Shoot:** countdown, pose ideas, studio backdrops and live photo clips, with every setting on one screen
 3. **Edit:** tap any photo on the strip to crop it or give it its own filter
 4. **Decorate (optional):** frames, stickers, text, doodle pens and caption style
@@ -51,7 +51,7 @@ Ribbon Bakery, Haori Night, Say It Twice and Melon Stars. Each one has original 
 
 ## Features
 
-- **Templates:** 31 fully designed sheets that only need your photos, such as Snapo Times newspaper, Cover Story magazine, Kitty Club, Mochi Club, Ribbon Bakery, Bunny Picnic, Bear Cafe, Idol Photocard, Comic Pop, Love Letter, Camcorder, Film Roll 400, Movie Night ticket, Snapo Mart receipt, Snapo Air boarding pass, Snapo Pop soda ad, Snapo Records vinyl sleeve, Snapo O's cereal box, Pocket Player, Birthday Bash, Class Of, Time Slip 98, First Snow, Subtitled, Drama Poster, Shoujo Manga, Haori Night, Say It Twice, Melon Stars, Dirgahayu for 17 Agustus and Lebaran Day. Grouped into Cute, Editorial, Retro, Party, Drama & Anime and Indonesia
+- **Templates:** 29 fully designed sheets that only need your photos, such as Snapo Times newspaper, Cover Story magazine, Kitty Club, Mochi Club, Ribbon Bakery, Bunny Picnic, Bear Cafe, Idol Photocard, Comic Pop, Love Letter, Camcorder, Film Roll 400, Movie Night ticket, Snapo Mart receipt, Snapo Air boarding pass, Snapo Pop soda ad, Snapo Records vinyl sleeve, Snapo O's cereal box, Pocket Player, Birthday Bash, Class Of, Time Slip 98, First Snow, Subtitled, Drama Poster, Shoujo Manga, Haori Night, Say It Twice and Melon Stars. Grouped into Cute, Editorial, Retro, Party and Drama & Anime
 - **Layouts:** 27 plain strips, grids, postcards, singles and shapes, plus your own uploaded frames
 - **Look:** 50 filters you can set per photo, a soft skin slider, and studio backdrops (color, pattern or blur) powered by on-device segmentation
 - **Decorate:** 68 frame themes including batik, seigaiha waves, haori check, air mail, Lebaran, Imlek and 17 Agustus, 207 stickers, 50 word stickers, text and doodle pens (marker, neon, outline, rainbow, sparkle)

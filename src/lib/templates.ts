@@ -1,7 +1,7 @@
 import type { CanvasEl, Design } from '../store/design'
 import type { Fill, Frame } from './frames'
 
-export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'drama' | 'local'
+export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'drama'
 
 type Sticker = { ref: string; x: number; y: number; w: number; rot?: number }
 
@@ -261,29 +261,6 @@ export const templates: Template[] = [
     ],
   },
   {
-    id: 'tpl-merdeka',
-    group: 'local',
-    frame: frame('merdeka', solid('#ffffff'), '#c4161c', '#ffe1dc', '#e2231a'),
-    filterId: 'clear',
-    caption: 'Merdeka!',
-    photoOutline: 'frame',
-  },
-  {
-    id: 'tpl-lebaran',
-    group: 'local',
-    frame: frame('lebaran', { kind: 'pattern', pattern: 'ketupat', base: '#e6f4e3', ink: '#2f8f4e', extra: '#e8b53a', scale: 0.8 }, '#1f5e34', '#cfe9cb', '#ffffff'),
-    filterId: 'fresh',
-    caption: 'Mohon Maaf Lahir dan Batin',
-    captionFont: 'serif',
-    showDate: true,
-    showLogo: false,
-    photoOutline: 'frame',
-    stickers: [
-      { ref: 'mosque', x: 0.09, y: 0.93, w: 0.11, rot: -6 },
-      { ref: 'sparkles', x: 0.92, y: 0.93, w: 0.09, rot: 10 },
-    ],
-  },
-  {
     id: 'tpl-timeslip',
     group: 'drama',
     frame: frame('timeslip', { kind: 'gradient', colors: ['#bfeaff', '#e8fbe9'], angle: 180 }, '#1f5a3a', '#ff5d73', null),
@@ -372,7 +349,7 @@ export const templates: Template[] = [
   },
 ]
 
-export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']
+export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama']
 
 export const templateById = (id: string) => templates.find((t) => t.id === id)
 
