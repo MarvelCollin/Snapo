@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { X } from '@phosphor-icons/react'
 import { useT } from '../../i18n'
 
@@ -17,6 +17,20 @@ export function Popover({ label, icon, title, children, wide, disabled }: Props)
   const [open, setOpen] = useState(false)
   const trigger = useRef<HTMLButtonElement>(null)
   const panel = useRef<HTMLDivElement>(null)
+
+  useLayoutEffect(() => {
+    const el = panel.current
+    if (!open || !el || window.matchMedia('(max-width: 640px)').matches) return
+    const box = (document.getElementById('main') ?? document.body).getBoundingClientRect()
+    const edge = 16
+    const r = el.getBoundingClientRect()
+    const left = r.left + (r.width - el.offsetWidth) / 2
+    const right = left + el.offsetWidth
+    const min = Math.max(box.left, 0) + edge
+    const max = Math.min(box.right, window.innerWidth) - edge
+    const shift = left < min ? min - left : right > max ? max - right : 0
+    if (shift) el.style.translate = `${shift}px 0`
+  }, [open])
 
   useEffect(() => {
     if (!open) return
@@ -57,7 +71,13 @@ export function Popover({ label, icon, title, children, wide, disabled }: Props)
         <span className="popover__label">{label}</span>
       </button>
       {open && (
-        <div ref={panel} id={`${id}-panel`} role="dialog" aria-labelledby={`${id}-title`} className={`popover__panel ${wide ? 'popover__panel--wide' : ''}`}>
+        <div
+          ref={panel}
+          id={`${id}-panel`}
+          role="dialog"
+          aria-labelledby={`${id}-title`}
+          className={`popover__panel ${wide ? 'popover__panel--wide' : ''}`}
+        >
           <div className="popover__head">
             <h2 id={`${id}-title`}>{title}</h2>
             <button
