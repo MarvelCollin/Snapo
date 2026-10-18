@@ -294,7 +294,6 @@ export const id: Dict = {
     photo: (n: number) => `Foto ${n}`,
     editPhoto: (n: number) => `Edit foto ${n}`,
     all: 'Semua foto',
-    hint: 'Ketuk foto di strip untuk crop atau ganti filternya.',
     tool: 'Alat edit',
     crop: 'Crop',
     filter: 'Filter',

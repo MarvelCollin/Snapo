@@ -153,10 +153,6 @@ export default function EditStep() {
             </div>
           ) : (
             <div className="panel-stack">
-              <p className="edit__hint">
-                <PencilSimple weight="bold" size={18} aria-hidden="true" />
-                {t.edit.hint}
-              </p>
               <section className="panel-section" aria-labelledby="edit-all-filter">
                 <h2 id="edit-all-filter" className="panel-subtitle">
                   {t.edit.allFilter}

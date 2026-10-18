@@ -294,7 +294,6 @@ export const en = {
     photo: (n: number) => `Photo ${n}`,
     editPhoto: (n: number) => `Edit photo ${n}`,
     all: 'All photos',
-    hint: 'Tap a photo in the strip to crop it or change its filter.',
     tool: 'Edit tool',
     crop: 'Crop',
     filter: 'Filter',
