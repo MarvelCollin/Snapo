@@ -146,7 +146,7 @@ export default function LayoutStep() {
         <p className="step__lede">{t.layout.lede}</p>
       </header>
 
-      <Tabs label={t.layout.typeLabel} tabs={tabs} active={group} onChange={setGroup} idPrefix="layouts" variant="chunky" />
+      <Tabs label={t.layout.typeLabel} tabs={tabs} active={group} onChange={setGroup} idPrefix="layouts" variant="track" />
 
       <div id="layouts-panel" role="tabpanel" aria-labelledby={`layouts-tab-${group}`}>
         {group === 'template' && (

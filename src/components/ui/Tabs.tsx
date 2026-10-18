@@ -8,7 +8,7 @@ type Props<T extends string> = {
   active: T
   onChange: (id: T) => void
   idPrefix: string
-  variant?: 'line' | 'chunky'
+  variant?: 'line' | 'track'
 }
 
 export function Tabs<T extends string>({ label, tabs, active, onChange, idPrefix, variant = 'line' }: Props<T>) {

@@ -89,7 +89,7 @@ export default function DecorateStep() {
         </div>
 
         <aside className="decorate__panel" aria-label={t.decorate.tools}>
-          <Tabs label={t.decorate.tools} tabs={tabs} active={panel} onChange={setPanel} idPrefix="tools" variant="chunky" />
+          <Tabs label={t.decorate.tools} tabs={tabs} active={panel} onChange={setPanel} idPrefix="tools" variant="track" />
           <div id="tools-panel" role="tabpanel" aria-labelledby={`tools-tab-${panel}`} className="decorate__body" tabIndex={0}>
             {panel === 'frames' && <FramePanel />}
             {panel === 'stickers' && <StickerPanel />}

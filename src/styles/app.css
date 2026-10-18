@@ -282,7 +282,7 @@
 
 .layout-card.is-active {
   border-color: var(--ink);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--shadow-1);
   background: var(--tint);
 }
 
@@ -337,7 +337,7 @@
   border: var(--border);
   border-radius: var(--radius-lg);
   background: var(--paper);
-  box-shadow: var(--shadow-pop-lg), var(--shadow-float);
+  box-shadow: var(--shadow-2);
 }
 
 .action-bar__info {

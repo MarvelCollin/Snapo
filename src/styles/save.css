@@ -282,7 +282,7 @@
   border: var(--border);
   border-radius: var(--radius-md);
   background: var(--paper);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--shadow-1);
 }
 
 .qr__code {

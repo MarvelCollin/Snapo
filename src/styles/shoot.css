@@ -23,7 +23,7 @@
   border: var(--border);
   border-radius: var(--radius-lg);
   background: var(--ink);
-  box-shadow: var(--shadow-pop-lg);
+  box-shadow: var(--shadow-2);
 }
 
 .liveview {
@@ -516,7 +516,7 @@
   border: var(--border);
   border-radius: var(--radius-md);
   background: var(--paper);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--shadow-1);
   color: var(--ink);
   font-family: var(--font-display);
   font-weight: 700;

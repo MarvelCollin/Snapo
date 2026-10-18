@@ -51,7 +51,7 @@ export function StickerPanel() {
           active={pack}
           onChange={setPack}
           idPrefix="stickers"
-          variant="chunky"
+          variant="track"
         />
       )}
       <Switch label={t.stickers.border} hint={t.stickers.borderHint} checked={outline} onChange={setOutline} />
