@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /Snapo/dev/
+Disallow: /Snapo/booth/shoot
+Disallow: /Snapo/booth/edit
+Disallow: /Snapo/booth/decorate
+Disallow: /Snapo/booth/save
+
+Sitemap: https://marvelcollin.github.io/Snapo/sitemap.xml
