@@ -69,6 +69,12 @@ export const frames: Frame[] = [
   { id: 'scallop', name: 'Seashell', group: 'pattern', fill: pat('scallop', '#fff1e8', '#f6b9a0', '#ffffff', 0.7), text: '#8a4128', accent: '#ffe1d1', photoOutline: '#ffffff' },
   { id: 'zigzag', name: 'Zigzag', group: 'pattern', fill: pat('zigzag', '#fff6d8', '#ff9f8a', '#ffffff', 0.6), text: '#8a3a28', accent: '#ffe9b0', photoOutline: '#ffffff' },
   { id: 'tartan', name: 'Tartan', group: 'pattern', fill: pat('plaid', '#f7e9e2', '#c9475e', '#2b4a74', 0.9), text: '#7a1f33', accent: '#efd9cf', photoOutline: '#ffffff' },
+  { id: 'haori-check', name: 'Haori Check', group: 'pattern', fill: pat('checker', '#0b0f0e', '#1e8a5a', '#ffffff', 0.7), text: '#e7f6ec', accent: '#14573a', photoOutline: '#e7f6ec' },
+  { id: 'sea-waves', name: 'Sea Waves', group: 'pattern', fill: pat('seigaiha', '#16466b', '#8fd3e8', '#2a6f98', 1), text: '#eaf8ff', accent: '#1d5a86', photoOutline: '#eaf8ff' },
+  { id: 'hemp-leaf', name: 'Hemp Leaf', group: 'pattern', fill: pat('asanoha', '#fff3f6', '#e0597a', '#f9d3dd', 1), text: '#8c1f43', accent: '#f7c1cf', photoOutline: '#ffffff' },
+  { id: 'air-mail', name: 'Air Mail', group: 'pattern', fill: pat('airmail', '#fbf3e3', '#e04a5a', '#1f2f5a', 1), text: '#1f2f5a', accent: '#ffe1e5', photoOutline: '#ffffff' },
+  { id: 'melon-seeds', name: 'Melon Seeds', group: 'pattern', fill: pat('melon', '#ff8a98', '#2b1d1d', '#ffffff', 0.9), text: '#4a0f1d', accent: '#ff5d73', photoOutline: '#ffffff' },
+  { id: 'ribbon-bows', name: 'Ribbon Bows', group: 'pattern', fill: pat('bows', '#fff0f3', '#e63950', '#ffc2cd', 0.9), text: '#a3152e', accent: '#ffd0d8', photoOutline: '#ffffff' },
 
   { id: 'sunset', name: 'Sunset', group: 'gradient', fill: grad(160, '#ffd3a5', '#fd9fb3', '#c9a7eb'), text: '#ffffff', accent: '#ffc0b8', photoOutline: '#ffffff' },
   { id: 'cotton-candy', name: 'Cotton Candy', group: 'gradient', fill: grad(180, '#ffd1e3', '#c7e4ff'), text: '#5a3a7a', accent: '#f0d7f1', photoOutline: '#ffffff' },
@@ -86,6 +92,7 @@ export const frames: Frame[] = [
   { id: 'autumn', name: 'Pumpkin Spice', group: 'season', fill: pat('plaid', '#f4c48f', '#a14d1e', '#3d5e2f', 0.9), text: '#5a2a0e', accent: '#e9b57d', photoOutline: '#fff3e2' },
   { id: 'winter', name: 'First Snow', group: 'season', fill: pat('snow', '#c9e2f7', '#ffffff', '#ffffff', 0.9), text: '#24487f', accent: '#b4d4ef', photoOutline: '#ffffff' },
   { id: 'xmas', name: 'Holly Jolly', group: 'season', fill: pat('snow', '#2f6b48', '#ffffff', '#ffffff', 0.9), text: '#fff3d6', accent: '#3d7f58', photoOutline: '#fff3d6' },
+  { id: 'wisteria', name: 'Wisteria Night', group: 'season', fill: pat('petals', '#2a1b52', '#b79cf0', '#d4c2ff', 0.9), text: '#efe6ff', accent: '#3a2a6e', photoOutline: '#efe6ff' },
 
   { id: 'batik-kawung', name: 'Batik Kawung', group: 'local', fill: pat('kawung', '#f3e3c3', '#6b3e1f', '#c8963e', 0.8), text: '#4a2a12', accent: '#e7d2ab', photoOutline: '#fff8ea', paper: true },
   { id: 'batik-parang', name: 'Batik Parang', group: 'local', fill: pat('parang', '#1f2f5a', '#e9dcc0', '#c8963e', 0.9), text: '#f6ecd6', accent: '#2c3f72', photoOutline: '#f6ecd6' },

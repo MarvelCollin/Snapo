@@ -29,6 +29,11 @@ export type PatternId =
   | 'bunting'
   | 'lantern'
   | 'moons'
+  | 'seigaiha'
+  | 'asanoha'
+  | 'airmail'
+  | 'melon'
+  | 'bows'
 
 export const patternList: PatternId[] = [
   'dots',
@@ -61,6 +66,11 @@ export const patternList: PatternId[] = [
   'bunting',
   'lantern',
   'moons',
+  'seigaiha',
+  'asanoha',
+  'airmail',
+  'melon',
+  'bows',
 ]
 
 const rng = (seed: number) => () => {
@@ -747,6 +757,151 @@ const draws: Record<PatternId, { tile: number; draw: Draw }> = {
       ]) {
         c.beginPath()
         starPath(c, x * s, y * s, r * s)
+        c.fill()
+      }
+    },
+  },
+  seigaiha: {
+    tile: 96,
+    draw: (c, s, ink, base, extra) => {
+      const r = s / 4
+      const rings = [1, 0.72, 0.44]
+      c.lineWidth = Math.max(1, s * 0.012)
+      c.strokeStyle = ink
+      for (let j = -3; j <= 10; j++) {
+        for (let i = -1; i <= 4; i++) {
+          const cx = i * r * 2 + (((j % 2) + 2) % 2) * r
+          const cy = j * r * 0.5
+          rings.forEach((k, n) => {
+            c.beginPath()
+            c.arc(cx, cy, r * k, 0, Math.PI * 2)
+            c.fillStyle = n % 2 ? base : extra
+            c.fill()
+            c.stroke()
+          })
+        }
+      }
+    },
+  },
+  asanoha: {
+    tile: 90,
+    draw: (c, s, ink, _base, extra) => {
+      c.fillStyle = extra
+      c.beginPath()
+      c.moveTo(s / 2, 0)
+      c.lineTo(s, s / 2)
+      c.lineTo(s / 2, s)
+      c.lineTo(0, s / 2)
+      c.closePath()
+      c.fill()
+      c.strokeStyle = ink
+      c.lineWidth = s * 0.022
+      c.lineJoin = 'round'
+      c.lineCap = 'round'
+      c.beginPath()
+      c.moveTo(s / 2, 0)
+      c.lineTo(s, s / 2)
+      c.lineTo(s / 2, s)
+      c.lineTo(0, s / 2)
+      c.closePath()
+      c.moveTo(0, 0)
+      c.lineTo(s, s)
+      c.moveTo(s, 0)
+      c.lineTo(0, s)
+      c.moveTo(s / 2, 0)
+      c.lineTo(s / 2, s)
+      c.moveTo(0, s / 2)
+      c.lineTo(s, s / 2)
+      c.stroke()
+    },
+  },
+  airmail: {
+    tile: 96,
+    draw: (c, s, ink, base, extra) => {
+      const cols = [ink, base, extra, base]
+      const w = s / 4
+      for (const shift of [-s, 0, s]) {
+        cols.forEach((col, i) => {
+          c.fillStyle = col
+          c.beginPath()
+          c.moveTo(shift + i * w, 0)
+          c.lineTo(shift + (i + 1) * w, 0)
+          c.lineTo(shift + (i + 1) * w - s, s)
+          c.lineTo(shift + i * w - s, s)
+          c.closePath()
+          c.fill()
+        })
+      }
+    },
+  },
+  melon: {
+    tile: 110,
+    draw: (c, s, ink, _base, extra) => {
+      const seed = (x: number, y: number, r: number, rot: number) => {
+        c.save()
+        c.translate(x * s, y * s)
+        c.rotate(rot)
+        c.fillStyle = ink
+        c.beginPath()
+        c.moveTo(0, -r * s * 1.5)
+        c.quadraticCurveTo(r * s * 1.1, -r * s * 0.2, 0, r * s)
+        c.quadraticCurveTo(-r * s * 1.1, -r * s * 0.2, 0, -r * s * 1.5)
+        c.fill()
+        c.globalAlpha = 0.5
+        c.fillStyle = extra
+        c.beginPath()
+        c.ellipse(-r * s * 0.3, -r * s * 0.2, r * s * 0.15, r * s * 0.3, 0, 0, Math.PI * 2)
+        c.fill()
+        c.restore()
+      }
+      seed(0.24, 0.28, 0.07, 0.5)
+      seed(0.74, 0.72, 0.07, -0.6)
+      seed(0.78, 0.2, 0.05, 1.2)
+      seed(0.2, 0.78, 0.05, -1)
+      c.fillStyle = extra
+      for (const [x, y] of [
+        [0.5, 0.5],
+        [0.5, 0.05],
+        [0.05, 0.5],
+        [0.95, 0.45],
+      ]) {
+        c.beginPath()
+        c.arc(x * s, y * s, s * 0.018, 0, Math.PI * 2)
+        c.fill()
+      }
+    },
+  },
+  bows: {
+    tile: 120,
+    draw: (c, s, ink, _base, extra) => {
+      const bow = (x: number, y: number, k: number, rot: number) => {
+        c.save()
+        c.translate(x * s, y * s)
+        c.rotate(rot)
+        c.fillStyle = ink
+        for (const dir of [-1, 1]) {
+          c.beginPath()
+          c.moveTo(0, 0)
+          c.quadraticCurveTo(dir * k * s * 0.4, -k * s * 0.7, dir * k * s * 0.85, -k * s * 0.35)
+          c.quadraticCurveTo(dir * k * s * 0.98, 0, dir * k * s * 0.85, k * s * 0.35)
+          c.quadraticCurveTo(dir * k * s * 0.4, k * s * 0.7, 0, 0)
+          c.fill()
+        }
+        c.beginPath()
+        c.arc(0, 0, k * s * 0.2, 0, Math.PI * 2)
+        c.fill()
+        c.restore()
+      }
+      bow(0.25, 0.27, 0.14, -0.2)
+      bow(0.75, 0.77, 0.14, 0.2)
+      c.fillStyle = extra
+      for (const [x, y] of [
+        [0.75, 0.27],
+        [0.25, 0.77],
+        [0.5, 0.52],
+      ]) {
+        c.beginPath()
+        c.arc(x * s, y * s, s * 0.035, 0, Math.PI * 2)
         c.fill()
       }
     },

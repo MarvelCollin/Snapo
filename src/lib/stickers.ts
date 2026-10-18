@@ -73,6 +73,18 @@ export const wordPresets: WordSpec[] = [
   { text: 'Wisuda!', style: 'bubble', color: '#f2d48a' },
   { text: 'Selamat Natal', style: 'script', color: '#e2445c' },
   { text: 'HBD!', style: 'outline', color: '#c08bff' },
+  { text: 'kawaii', style: 'bubble', color: '#ff8fab' },
+  { text: 'daijoubu', style: 'hand', color: '#7bdcb5' },
+  { text: 'arigato', style: 'script', color: '#ff6f91' },
+  { text: 'saranghae', style: 'script', color: '#e2445c' },
+  { text: 'annyeong', style: 'hand', color: '#62c6e8' },
+  { text: 'fighting!', style: 'label', color: '#ffd166' },
+  { text: 'te quiero', style: 'script', color: '#ff8fab' },
+  { text: 'bonjour', style: 'label', color: '#c08bff' },
+  { text: 'say it twice', style: 'hand', color: '#e2445c' },
+  { text: 'melon stars', style: 'label', color: '#ff5d73' },
+  { text: 'our summer', style: 'bubble', color: '#7bdcb5' },
+  { text: 'brave heart', style: 'outline', color: '#1e8a5a' },
 ]
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>()

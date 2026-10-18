@@ -1,7 +1,7 @@
 import type { CanvasEl, Design } from '../store/design'
 import type { Fill, Frame } from './frames'
 
-export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'local'
+export type TemplateGroup = 'cute' | 'editorial' | 'retro' | 'party' | 'drama' | 'local'
 
 type Sticker = { ref: string; x: number; y: number; w: number; rot?: number }
 
@@ -47,6 +47,37 @@ export const templates: Template[] = [
     stickers: [
       { ref: 'cat-face', x: 0.1, y: 0.075, w: 0.13, rot: -10 },
       { ref: 'heart-with-ribbon', x: 0.91, y: 0.95, w: 0.1, rot: 12 },
+    ],
+  },
+  {
+    id: 'tpl-mochi',
+    group: 'cute',
+    frame: frame('mochi', { kind: 'pattern', pattern: 'clouds', base: '#ece4ff', ink: '#ffffff', extra: '#ffffff', scale: 0.8 }, '#4a2a5c', '#ffffff', '#ffffff'),
+    filterId: 'strawberry-milk',
+    caption: 'soft and squishy',
+    captionFont: 'fredoka',
+    showDate: true,
+    showLogo: false,
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'sparkles', x: 0.93, y: 0.05, w: 0.09, rot: 12 },
+      { ref: 'strawberry', x: 0.07, y: 0.955, w: 0.09, rot: -12 },
+      { ref: 'bubble-tea', x: 0.93, y: 0.955, w: 0.09, rot: 10 },
+    ],
+  },
+  {
+    id: 'tpl-bakery',
+    group: 'cute',
+    frame: frame('bakery', { kind: 'pattern', pattern: 'gingham', base: '#ffffff', ink: '#e63950', extra: '#ffffff', scale: 0.9 }, '#b0152f', '#ffd0d8', '#ffffff'),
+    filterId: 'strawberry-milk',
+    caption: 'sweet as pie',
+    captionFont: 'fredoka',
+    showDate: true,
+    showLogo: false,
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'cherries', x: 0.09, y: 0.27, w: 0.12, rot: -10 },
+      { ref: 'shortcake', x: 0.91, y: 0.27, w: 0.12, rot: 10 },
     ],
   },
   {
@@ -143,6 +174,24 @@ export const templates: Template[] = [
     photoOutline: 'none',
   },
   {
+    id: 'tpl-pop',
+    group: 'retro',
+    frame: frame('pop', solid('#fff3dc'), '#c8102e', '#22b8b0', '#ffffff', true),
+    filterId: 'golden-hour',
+    caption: 'stay fizzy',
+    photoOutline: 'frame',
+    stickers: [{ ref: 'cherries', x: 0.9, y: 0.07, w: 0.1, rot: 14 }],
+  },
+  {
+    id: 'tpl-records',
+    group: 'retro',
+    frame: frame('records', solid('#ffe3d3'), '#2b1d3a', '#ff6b9a', null, true),
+    filterId: 'portra',
+    caption: 'Greatest Hits',
+    photoOutline: 'none',
+    stickers: [{ ref: 'musical-notes', x: 0.94, y: 0.1, w: 0.07, rot: 12 }],
+  },
+  {
     id: 'tpl-ticket',
     group: 'retro',
     frame: frame('ticket', solid('#ffd76e'), '#4a1c10', '#e9a93a'),
@@ -175,6 +224,14 @@ export const templates: Template[] = [
     filterId: 'y2k',
     caption: 'level up',
     photoOutline: 'none',
+  },
+  {
+    id: 'tpl-cereal',
+    group: 'party',
+    frame: frame('cereal', { kind: 'pattern', pattern: 'sprinkles', base: '#ffd23f', ink: '#ff8fb1', extra: '#7ad3ff', scale: 0.9 }, '#1d3fbb', '#ff4f79', '#ffffff'),
+    filterId: 'fresh',
+    caption: 'breakfast of besties',
+    photoOutline: 'frame',
   },
   {
     id: 'tpl-birthday',
@@ -226,9 +283,96 @@ export const templates: Template[] = [
       { ref: 'sparkles', x: 0.92, y: 0.93, w: 0.09, rot: 10 },
     ],
   },
+  {
+    id: 'tpl-timeslip',
+    group: 'drama',
+    frame: frame('timeslip', { kind: 'gradient', colors: ['#bfeaff', '#e8fbe9'], angle: 180 }, '#1f5a3a', '#ff5d73', null),
+    filterId: 'golden-hour',
+    caption: 'our summer band',
+    photoOutline: 'none',
+    stickers: [
+      { ref: 'headphone', x: 0.92, y: 0.255, w: 0.1, rot: 14 },
+      { ref: 'sunflower', x: 0.08, y: 0.26, w: 0.09, rot: -12 },
+    ],
+  },
+  {
+    id: 'tpl-firstsnow',
+    group: 'drama',
+    frame: frame('firstsnow', { kind: 'gradient', colors: ['#17204a', '#4a2b62'], angle: 180 }, '#fff7ef', '#f2c46d', '#fff7ef'),
+    filterId: 'portra',
+    caption: 'make a wish on the first snow',
+    photoOutline: 'frame',
+  },
+  {
+    id: 'tpl-subtitle',
+    group: 'drama',
+    frame: frame('subtitle', solid('#0e0d10'), '#ffffff', '#ffd84d'),
+    filterId: 'portra',
+    caption: 'Lost in Translation',
+    photoOutline: 'none',
+  },
+  {
+    id: 'tpl-poster',
+    group: 'drama',
+    frame: frame('poster', { kind: 'gradient', colors: ['#ffd6e3', '#fff4ea'], angle: 180 }, '#5a2140', '#ff7aa2'),
+    filterId: 'cherry-blossom',
+    caption: 'Love, Rewritten',
+    photoOutline: 'none',
+    stickers: [
+      { ref: 'cherry-blossom', x: 0.08, y: 0.1, w: 0.09, rot: -14 },
+      { ref: 'cherry-blossom', x: 0.93, y: 0.62, w: 0.07, rot: 18 },
+    ],
+  },
+  {
+    id: 'tpl-haori',
+    group: 'drama',
+    frame: frame('haori', { kind: 'gradient', colors: ['#0a1520', '#12302b'], angle: 180 }, '#f6ecd2', '#e5533d', '#f6ecd2'),
+    filterId: 'moonlight',
+    caption: 'brave hearts stay together',
+    captionFont: 'serif',
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'wind-chime', x: 0.91, y: 0.255, w: 0.09, rot: 8 },
+    ],
+  },
+  {
+    id: 'tpl-sayit',
+    group: 'drama',
+    frame: frame('sayit', solid('#fbf3e3'), '#1f2f5a', '#e04a5a', null, true),
+    filterId: 'portra',
+    caption: 'I like you in every language',
+    captionFont: 'caveat',
+    showDate: false,
+    photoOutline: 'none',
+    stickers: [
+      { ref: 'love-letter', x: 0.1, y: 0.935, w: 0.1, rot: -8 },
+      { ref: 'heart-with-ribbon', x: 0.9, y: 0.935, w: 0.1, rot: 8 },
+    ],
+  },
+  {
+    id: 'tpl-melon',
+    group: 'drama',
+    frame: frame('melon', { kind: 'gradient', colors: ['#140f3d', '#3d2580', '#e8557a'], angle: 180 }, '#fff6e0', '#ffd84d', '#fff6e0'),
+    filterId: 'sunset',
+    caption: 'our summer never ends',
+    captionFont: 'fredoka',
+    photoOutline: 'frame',
+    stickers: [
+      { ref: 'musical-notes', x: 0.1, y: 0.2, w: 0.1, rot: -12 },
+      { ref: 'microphone', x: 0.9, y: 0.2, w: 0.1, rot: 12 },
+    ],
+  },
+  {
+    id: 'tpl-manga',
+    group: 'drama',
+    frame: frame('manga', { kind: 'pattern', pattern: 'dots', base: '#ffffff', ink: '#e4e4e8', extra: '#ffffff', scale: 0.5 }, '#111111', '#ff8fb8', null, true),
+    filterId: 'idol',
+    caption: 'my heart just went doki doki',
+    photoOutline: 'none',
+  },
 ]
 
-export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'local']
+export const templateGroups: (TemplateGroup | 'all')[] = ['all', 'cute', 'editorial', 'retro', 'party', 'drama', 'local']
 
 export const templateById = (id: string) => templates.find((t) => t.id === id)
 

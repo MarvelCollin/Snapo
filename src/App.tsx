@@ -5,6 +5,7 @@ import { ToastRegion } from './components/ui/ToastRegion'
 import HomePage from './pages/HomePage'
 import BoothShell from './pages/booth/BoothShell'
 import { useT } from './i18n'
+import { usePageMeta } from './hooks/usePageMeta'
 
 const LayoutStep = lazy(() => import('./pages/booth/LayoutStep'))
 const ShootStep = lazy(() => import('./pages/booth/ShootStep'))
@@ -16,6 +17,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function RouteFocus() {
   const { pathname } = useLocation()
+  usePageMeta()
   useEffect(() => {
     window.scrollTo(0, 0)
     const main = document.getElementById('main')

@@ -51,7 +51,7 @@ const heroStrips: { layout: string; design: Partial<Design>; offset: number }[] 
   },
 ]
 
-const quickLayouts = ['tpl-kitty', 'tpl-newspaper', 'tpl-photocard', 'tpl-comic', 'tpl-camcorder', 'tpl-merdeka']
+const quickLayouts = ['tpl-mochi', 'tpl-kitty', 'tpl-newspaper', 'tpl-photocard', 'tpl-comic', 'tpl-merdeka']
 const demoFilters = ['original', 'seoul', 'strawberry-milk', 'golden-hour', 'life4', 'cotton-candy', 'pink-duo', 'y2k']
 const wall = ['sparkling-heart', 'rabbit-face', 'strawberry', 'ribbon', 'rainbow', 'cat-face', 'bubble-tea', 'sparkles', 'cherry-blossom', 'teddy-bear', 'shortcake', 'victory-hand', 'crown', 'butterfly', 'star-struck', 'cherries', 'hamster', 'love-letter', 'four-leaf-clover', 'unicorn', 'balloon', 'heart-hands', 'soft-ice-cream', 'ghost']
 
